@@ -1,0 +1,44 @@
+<pre class='metadata'>
+Title: LDES in LDP
+Shortname: LDESinLDP
+Level: 1
+Status: LD
+Group: TREE community group
+<!-- URL: https://w3id.org/ldes/specification -->
+Markup Shorthands: markdown yes
+Editor: Pieter Colpaert, https://pietercolpaert.be
+Editor: Wout Slabbinck
+<!-- Repository: https://github.com/SEMICeu/LinkedDataEventStreams -->
+Abstract: A time-based fragmented LDES that is stored on a Linked Data Platform.
+</pre>
+<pre class=bibliography> 
+{"ldes": {
+      "href":"https://w3id.org/ldes/specification",
+      		"authors": [
+			"Tab Atkins",
+			"Bat Snikta"
+		],
+		"title": "Foo Bar Level 1",
+		"status": "CR",
+		"publisher": "W3C",
+		"deliveredBy": [
+			"http://www.w3.org/html/wg/"
+		]
+	}
+}}
+</pre>
+# Introduction # {#introduction}
+
+We coin the term **LDES in LDP** to describe a time-based fragmented  [[!LDES]] that is stored on a Linked Data Platform ([[!LDP]]).
+Which allows to interact with LDESs using the LDP API.
+
+An LDES is initialized in a data pod as a container and identifyable with an URI.
+In this container, the view (a root node) is found
+<!-- \footnote{The view can be found at \textit{containerURI/}\textbf{root.ttl}}  -->
+which contains relations to fragments of the LDES. 
+Finally, a fragment container consists of several LDP resources, indicated by *ldp:contains*
+<!-- \footnote{\url{https://www.w3.org/ns/ldp\#contains}}. -->
+
+\cref{lst:LDESinLDP_root} is an example of a root, where \url{http://example.org/{container}/}) is the base URI of the LDES in LDP.
+This root consists of one \emph{TREE hypermedia Relation}, where its class and properties indicate that all members which were created after December the 15th can be found by traversing to node \url{http://example.org/{container}/1639526400000/}.
+
