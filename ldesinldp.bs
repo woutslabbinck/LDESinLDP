@@ -9,36 +9,148 @@ Markup Shorthands: markdown yes
 Editor: Pieter Colpaert, https://pietercolpaert.be
 Editor: Wout Slabbinck
 <!-- Repository: https://github.com/SEMICeu/LinkedDataEventStreams -->
-Abstract: A time-based fragmented LDES that is stored on a Linked Data Platform.
+Abstract: Writing to a time-based fragmented Linked Data Event Stream that is stored on a Linked Data Platform.
 </pre>
-<pre class=bibliography> 
+<pre class=biblio> 
 {"ldes": {
       "href":"https://w3id.org/ldes/specification",
       		"authors": [
-			"Tab Atkins",
-			"Bat Snikta"
+			"Pieter Colpaert"
 		],
-		"title": "Foo Bar Level 1",
-		"status": "CR",
-		"publisher": "W3C",
-		"deliveredBy": [
-			"http://www.w3.org/html/wg/"
-		]
-	}
-}}
-</pre>
-# Introduction # {#introduction}
+		"title": "Linked Data Event Streams",
+		"status": "LS"
+	},
+"tree":{
+		"href":"https://w3id.org/tree/specification",
+      		"authors": [
+			"Pieter Colpaert"
+		],
+		"title":"The TREE hypermedia specification",
+		"status": "LS"
 
-We coin the term **LDES in LDP** to describe a time-based fragmented  [[!LDES]] that is stored on a Linked Data Platform ([[!LDP]]).
+	}
+}
+</pre>
+Introduction {#introduction}
+=====================
+
+We coin the term **LDES in LDP** to describe a time-based fragmented  [[LDES]] that is stored on a Linked Data Platform [[!LDP]].
 Which allows to interact with LDESs using the LDP API.
+
+
+LDES in LDP {#ldesinldp}
+=====================
 
 An LDES is initialized in a data pod as a container and identifyable with an URI.
 In this container, the view (a root node) is found
-<!-- \footnote{The view can be found at \textit{containerURI/}\textbf{root.ttl}}  -->
+<!-- \footnote{The view can be found at containerURI/}\textbf{root.ttl}}  -->
 which contains relations to fragments of the LDES. 
-Finally, a fragment container consists of several LDP resources, indicated by *ldp:contains*
-<!-- \footnote{\url{https://www.w3.org/ns/ldp\#contains}}. -->
+Finally, a fragment container consists of several LDP resources, indicated by *ldp:contains*.
+<!-- \footnote{\url{https://www.w3.org/ns/ldp#contains}}. -->
 
-\cref{lst:LDESinLDP_root} is an example of a root, where \url{http://example.org/{container}/}) is the base URI of the LDES in LDP.
-This root consists of one \emph{TREE hypermedia Relation}, where its class and properties indicate that all members which were created after December the 15th can be found by traversing to node \url{http://example.org/{container}/1639526400000/}.
+Below is an example of a <a href="#root">root</a>, where *http://example.org/{container}* is the base URI of the LDES in LDP.
+This root consists of one [[TREE]] hypermedia Relation, where its class and properties indicate that all members which were created after December the 15th can be found by traversing to node *http://example.org/{container}/1639526400000/*
 
+<div class="example" highlight="turtle" id="root"> 
+```turtle
+@prefix : <http://example.org/{container}/root.ttl#> .
+
+<http://example.org/{container}/root.ttl> rdf:type tree:Node ;
+    tree:relation [ 
+        a tree:GreaterThanOrEqualToRelation ;
+        tree:node <http://example.org/{container}/1639526400000/> ;
+        tree:path dct:modified ;
+        tree:value "2021-12-15T00:00:00.000Z"^^xsd:dateTime
+        ] .
+
+:Collection a <https://w3id.org/ldes#EventStream> ;
+    tree:shape <http://example.org/{container}/shape> ;
+    tree:view <http://example.org/{container}/root.ttl>
+```
+</div>
+
+## Adding a Resources ## {#adding-resources}
+The method for adding a resource remains the same as for a normal LDP Resource creation: with an HTTP POST request. However, an application that adds a member to the Event Stream must know where to write to. 
+To indicate the write location, a property already defined in the LDP specification is reused: the LDP Inbox (`ldp:inbox`, originated from the [[!LDN]] specification).
+
+Thus a triple of the form `<baseContainer> ldp:inbox <locationURI>.` is added to the metadata of the base container.
+This location URI is retrieved via the Link Header as the link value to the relation `ldp:inbox` when sending a GET or HEAD HTTP request. 
+
+Below are examples of a HEAD <a href="#head-request">request</a> to the base URI and its <a href="#head-response">response</a> showing the Link Header response.
+
+<div class="example" highlight="HTTP" id="head-request">
+```HTTP
+HEAD /{container}/ HTTP/1.1
+Host: http://example.org
+```
+</div>
+<div class="example" highlight="HTTP" id="head-response">
+```HTTP
+HTTP/1.1 200
+link: <http://example.org/{container}/1639526400000/>; rel="http://www.w3.org/ns/ldp#inbox"
+```
+</div>
+
+Finally, a member can be added to the LDES with an HTTP POST request to the obtained location URI.
+
+## Improving Interoperability ## {#interoperability}
+When it is known a priori that the LDES will only have members with a certain predefined data model, it is possible to initialise the LDES in LDP with a shape. Thanks to shapes allowing to define the structure and constraints of RDF resources.
+
+To enforce shape validation executed by the LDP, the validator requires to know which shape resource to use.
+Therefore, the constrained by property of LDP(`ldp:constrainedBy`} will be used to encode an URI to the shape resource in the metadata of each fragment container.
+
+Since all requests to add data that does not conform to the shape will be rejected, the resulting Event Stream consists of members that all conform to the shape.
+
+Basic LDES Orchestrator {#orchestrator}
+=====================
+
+To make a Linked Data Event Stream scalable, the ever-growing LDES was introduced. 
+This complicates the writing process as it requires clients to create new containers, know the current write location and maintain the root. 
+Furthermore, clients do not always have permissions to update certain parts of the LDES in LDP.
+
+An active service component is required to orchestrate the writing process, which removes overhead for the clients and executes tasks that clients themselves can not perform. 
+For this, we introduce a service called the Basic LDES Orchestrator (henceforth shortened as Orchestrator).
+
+This Orchestrator has four roles:
+
+* Creation of new LDP Container: when the current relation is deemed full, a new container is created with added metadata to indicate shape support
+* Writable container indication: at the base container, update the metadata about the LDP Inbox
+* Maintain the root of the LDES: add triples with TREE syntax to keep the view up to date
+* Access control: when Solid is used, the Access Control List (ACL) files must be updated
+
+## Create Containers 
+Downloading a document on the internet takes time proportional to the location of the server versus the location of the client, the bandwidth and the size of the document. 
+Designing LDES in LDP while minimizing that time, results in controlling the size of documents where possible: the container size.
+When a container contains a large number of resources,  the serialization of the information of that container is large as well.
+This results in a bottleneck for the performance as loading the container page takes longer. 
+
+To overcome this bottleneck, every time the current container page is deemed full, a new, empty container is created.
+Furthermore, when the LDES in LDP is initialised with a shape, metadata must be added to this container to further impose this constraint.
+
+## Writable Container Indication 
+When a new container is created, the Inbox must be updated as well. 
+Clients that want to add a member to the LDES can then find the container where they can write new resources.
+It is the responsibility of the Orchestrator to update that triple in the metadata.
+
+## Maintain the View 
+The TREE Hypermedia specification states that a view of a collection must reach all its members. 
+Therefore on each creation of a new container, which is a new fragment of the collection, the view must be updated. 
+Thus a relation is added in the root by the Orchestrator for each new fragment.
+
+## Update ACL Files 
+In case a Solid pod is used as a back-end, ACL resources are responsible for making sure that it is impossible to add new resources to containers that are not indicated as writeable. 
+With an ACL resource in place in the current fragment container, it is enforced that only new resources may be added there.
+This is done by providing read\footnote{\url{http://www.w3.org/ns/auth/acl\#Read}} and append\footnote{\url{http://www.w3.org/ns/auth/acl\#Append}} rights in the ACL resource of that container.
+Namespaces {#namespaces}
+=====================
+
+Commonly used namespace prefixes used in this specification:
+```turtle
+@prefix acl: 	<http://www.w3.org/ns/auth/acl#> .
+@prefix dct: 	<http://purl.org/dc/terms/> .
+@prefix ldes: 	<https://w3id.org/ldes#> .
+@prefix ldp: 	<http://www.w3.org/ns/ldp#> .
+@prefix rdf: 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix tree: 	<https://w3id.org/tree#> .
+@prefix xsd: 	<http://www.w3.org/2001/XMLSchema#> .
+```
