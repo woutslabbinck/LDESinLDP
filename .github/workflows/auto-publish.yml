@@ -1,6 +1,7 @@
-name: CI
+# Workflow for processing and publishing bikeshed proposals to github pages
+name: publish specification
 on:
-  pull_request: {}
+  # only concerned with changes in the main branch
   push:
     branches: [main]
 jobs:
@@ -8,7 +9,26 @@ jobs:
     name: Build, Validate and Deploy
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: w3c/spec-prod@v2
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v2
         with:
-          GH_PAGES_BRANCH: gh-pages
+          python-version: '3.8'
+
+      - name: upgrade pip
+        run: python3 -m pip install --upgrade pip
+
+      - name: install bikeshed
+        run: |
+          python3 -m pip install --upgrade bikeshed
+          bikeshed update
+
+      - name: generate html
+        run: bikeshed spec ldesinldp.bs
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
