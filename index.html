@@ -1,7 +1,7 @@
 <!doctype html><html lang="en">
  <head>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-  <title>Linked Data Event Streams in ldp:BasicContainers</title>
+  <title>Linked Data Event Streams in LDP BasicContainers</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
 <style data-fill-with="stylesheet">/******************************************************************************
  *                   Style sheet for the W3C specifications                   *
@@ -1488,7 +1488,7 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
-  <meta content="6a1d0acff41ef8ac93cc0a7e3dfb29f31e5ef818" name="document-revision">
+  <meta content="3d392295e0adc11037a92004eea0a046a45c337a" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2007,7 +2007,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"></p>
-   <h1 class="p-name no-ref" id="title">Linked Data Event Streams in ldp:BasicContainers</h1>
+   <h1 class="p-name no-ref" id="title">Linked Data Event Streams in LDP BasicContainers</h1>
    <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-02-16">16 February 2022</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
@@ -2196,21 +2196,25 @@ Thus when a resource has multiple versions (e.g. due to it being edited) only th
 Though in order to use this feed as storage and let the LDP still appear as normal while creating, updating and deleting resources, additional modifications are required. 
    <h4 class="heading settled" data-level="4.2.2" id="creating"><span class="secno">4.2.2. </span><span class="content">Creating</span><a class="self-link" href="#creating"></a></h4>
    <p>An HTTP POST request is used to create a resource in an LDP.
-When a POST request is sent to an LDP Container three things happen: an identifier is created by the server\footnote{When a slug is provided in the Header of the request, a server can choose to use that slug as an identifier.} for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the container to indicate that it contains the new resource.</p>
-   <p>For LDES Write, the LDP behaviour for a POST is just the first step. After that, the body of the request is combined with two extra triples to indicate the version-specific representation.
-This is then added to the \textit{feed} LDES.</p>
+When a POST request is sent to an LDP Container three things happen: an identifier is created by the server for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the container to indicate that it contains the new resource.</p>
+   <p>For  Version-Agnostic implementations, the LDP behaviour for a POST is just the first step. The second step consists of combining the body of the request with two extra triples to indicate the version-specific representation.
+The newly composed body is then added to the <em>feed</em> LDES.</p>
    <p>The first triple is to indicate the time of the creation of the Resource, the second triple is the reference to the identifier of the resource.
-An example of those triples when the server chose <code>http://example.org/\{container\}/resource2</code> as identifier is shown in \cref{lst:LDES_Write_added_triples}.</p>
+An example of those triples when the server chose <code>http://example.org/\{container\}/resource2</code> as identifier is shown in the <a href="#add-version-triples">example</a> below.</p>
+   <div class="example" id="add-version-triples">
+    <a class="self-link" href="#add-version-triples"></a> 
 <pre class="language-turtle highlight">@prefix <c- p>:</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- p>.</c->
 
 <c- p>:</c-><c- f>feed</c->/<c- mi>1639612800000</c->/<c- p>{</c->uuid<c- p>}</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-16T10:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-> <c- p>.</c->
 <c- p>:</c-><c- f>feed</c->/<c- mi>1639612800000</c->/<c- p>{</c->uuid<c- p>}</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- p>:</c-><c- f>resource2</c-> <c- p>.</c->
 </pre>
+   </div>
+   <p class="note" role="note"><span>Note:</span> When a slug is provided in the Header of a POST request, a server can choose to use that slug as an identifier.</p>
    <h4 class="heading settled" data-level="4.2.3" id="updating"><span class="secno">4.2.3. </span><span class="content">Updating</span><a class="self-link" href="#updating"></a></h4>
    <p>Updating LDP Resources can be done in two ways.
 First, there is an HTTP PUT request which replaces the resource with the body that accompanies the request. 
-The second option is using an HTTP PATCH request that uses a SPARQL Update \cite{gearon_sparql_2013} query, where first the server applies the changes and then the result is stored as the updated resource.</p>
-   <p>An LDP with LDES Write support stores those updates in the <em>feed</em> as the newest version. Thus when using PUT, the whole body of the request together with the version-specific triples are added to <em>feed</em>.
+The second option is using an HTTP PATCH request that uses a <a data-link-type="biblio" href="#biblio-sparql-update">[SPARQL-UPDATE]</a> query, where first the server applies the changes and then the result is stored as the updated resource.</p>
+   <p>An LDP with Version-Agnostic LDES in LDP  support stores those updates in the <em>feed</em> as the newest version. Thus when using PUT, the whole body of the request together with the version-specific triples are added to <em>feed</em>.
 After applying the changes using a PATCH request, the resulting resource is accompanied with  the version-specific triples and appended to the <em>feed</em>.</p>
    <h4 class="heading settled" data-level="4.2.4" id="deleting"><span class="secno">4.2.4. </span><span class="content">Deleting</span><a class="self-link" href="#deleting"></a></h4>
    <p>An HTTP DELETE request to an identifier of a resource results in the removal of that resource and its corresponding metadata in the parent container. In the <em>feed</em> however, all the versions are not removed because of two reasons.
@@ -2394,6 +2398,8 @@ The trigger for creating new containers is when the current fragment container c
    <dd>Steve Speicher; John Arwe; Ashok Malhotra. <a href="https://www.w3.org/TR/ldp/"><cite>Linked Data Platform 1.0</cite></a>. 26 February 2015. REC. URL: <a href="https://www.w3.org/TR/ldp/">https://www.w3.org/TR/ldp/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
+   <dt id="biblio-sparql-update">[SPARQL-UPDATE]
+   <dd>Paula Gearon; Alexandre Passant; Axel Polleres. <a href="https://www.w3.org/TR/sparql11-update/"><cite>SPARQL 1.1 Update</cite></a>. 21 March 2013. REC. URL: <a href="https://www.w3.org/TR/sparql11-update/">https://www.w3.org/TR/sparql11-update/</a>
    <dt id="biblio-vocab-dcat-3">[VOCAB-DCAT-3]
    <dd>Riccardo Albertoni; et al. <a href="https://www.w3.org/TR/vocab-dcat-3/"><cite>Data Catalog Vocabulary (DCAT) - Version 3</cite></a>. 11 January 2022. WD. URL: <a href="https://www.w3.org/TR/vocab-dcat-3/">https://www.w3.org/TR/vocab-dcat-3/</a>
   </dl>
