@@ -253,7 +253,7 @@ Note: This section is still under construction
 
 ## Metadata notifications
 
-At [https://tree.linkeddatafragments.org/announcements/](https://tree.linkeddatafragments.org/announcements/), a public, shape constrained LDES in LDP can be found which is used for publishing metadata of [[!DCAT]] Application Profiles  about datasets or data services, or metadata of a TREE View.
+At [https://tree.linkeddatafragments.org/announcements/](https://tree.linkeddatafragments.org/announcements/), a public, shape constrained LDES in LDP can be found which is used for publishing metadata of DCAT Application Profiles [[!VOCAB-DCAT-3]] about datasets or data services, or metadata of a TREE View.
 As LDP, a Community Solid Server [[CSS](https://github.com/solid/community-server)] instance is used with shape support. 
 On the server where the CSS resides, the Basic LDES Orchestrator runs.
 The trigger for creating new containers is when the current fragment container contains 100 resources or more.
