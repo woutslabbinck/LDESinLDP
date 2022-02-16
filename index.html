@@ -1,7 +1,7 @@
 <!doctype html><html lang="en">
  <head>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-  <title>LDES in LDP</title>
+  <title>Linked Data Event Streams in ldp:BasicContainers</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
 <style data-fill-with="stylesheet">/******************************************************************************
  *                   Style sheet for the W3C specifications                   *
@@ -1488,7 +1488,7 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
-  <meta content="e0d82f4e2f0485b365a04554494d14f9622c9736" name="document-revision">
+  <meta content="6a1d0acff41ef8ac93cc0a7e3dfb29f31e5ef818" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2007,8 +2007,8 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"></p>
-   <h1 class="p-name no-ref" id="title">LDES in LDP</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-02-15">15 February 2022</time></span></h2>
+   <h1 class="p-name no-ref" id="title">Linked Data Event Streams in ldp:BasicContainers</h1>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-02-16">16 February 2022</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
@@ -2021,7 +2021,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" height="15" src="https://licensebuttons.net/p/zero/1.0/80x15.png" width="80"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 15 February 2022,
+In addition, as of 16 February 2022,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2049,6 +2049,7 @@ Parts of this work may be from another specification document.  If so, those par
       <li><a href="#writable-container-indication"><span class="secno">3.2</span> <span class="content">Writable Container Indication</span></a>
       <li><a href="#maintain-the-view"><span class="secno">3.3</span> <span class="content">Maintain the View</span></a>
       <li><a href="#update-acl-files"><span class="secno">3.4</span> <span class="content">Update ACL Files</span></a>
+      <li><a href="#sequence-diagram"><span class="secno">3.5</span> <span class="content">Sequence Diagram</span></a>
      </ol>
     <li>
      <a href="#implementation"><span class="secno">4</span> <span class="content">Implementation</span></a>
@@ -2057,7 +2058,7 @@ Parts of this work may be from another specification document.  If so, those par
       <li>
        <a href="#version-agnostic-implementation"><span class="secno">4.2</span> <span class="content">Version-Agnostic Implementation</span></a>
        <ol class="toc">
-        <li><a href="#architecture"><span class="secno">4.2.1</span> <span class="content">Architecture</span></a>
+        <li><a href="#architecture①"><span class="secno">4.2.1</span> <span class="content">Architecture</span></a>
         <li><a href="#creating"><span class="secno">4.2.2</span> <span class="content">Creating</span></a>
         <li><a href="#updating"><span class="secno">4.2.3</span> <span class="content">Updating</span></a>
         <li><a href="#deleting"><span class="secno">4.2.4</span> <span class="content">Deleting</span></a>
@@ -2066,11 +2067,7 @@ Parts of this work may be from another specification document.  If so, those par
     <li>
      <a href="#examples"><span class="secno">5</span> <span class="content">Examples</span></a>
      <ol class="toc">
-      <li>
-       <a href="#metadata-notifications"><span class="secno">5.1</span> <span class="content">Metadata notifications</span></a>
-       <ol class="toc">
-        <li><a href="#sequence-diagram"><span class="secno">5.1.1</span> <span class="content">Sequence Diagram</span></a>
-       </ol>
+      <li><a href="#metadata-notifications"><span class="secno">5.1</span> <span class="content">Metadata notifications</span></a>
      </ol>
     <li><a href="#namespaces"><span class="secno">6</span> <span class="content">Namespaces</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
@@ -2087,16 +2084,19 @@ Parts of this work may be from another specification document.  If so, those par
    <p>We coin the term <strong>LDES in LDP</strong> to describe a time-based fragmented <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> that is stored on a Linked Data Platform <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a>.
 Which allows to interact with LDESs using the LDP API.</p>
    <h2 class="heading settled" data-level="2" id="ldesinldp"><span class="secno">2. </span><span class="content">LDES in LDP</span><a class="self-link" href="#ldesinldp"></a></h2>
+   <figure id="architecture">
+     <img height="264" src="./img/LDESinLDP_Architecture.png" width="161"> 
+    <figcaption>Architecture of a Linked Data Event Stream in an LDP Container</figcaption>
+   </figure>
    <p>An LDES is initialized in a data pod as a container and identifyable with an URI.
 In this container, the view (a root node) is found
 which contains relations to fragments of the LDES. 
-Finally, a fragment container consists of several LDP resources, indicated by <em>ldp:contains</em>.</p>
+Finally, a fragment container consists of several LDP resources, indicated by <code>ldp:contains</code>.</p>
    <p>Below is an example of a <a href="#root">root</a>, where <em>http://example.org/{container}</em> is the base URI of the LDES in LDP.
 This root consists of one <a data-link-type="biblio" href="#biblio-tree">[TREE]</a> hypermedia Relation, where its class and properties indicate that all members which were created after December the 15th can be found by traversing to node <em>http://example.org/{container}/1639526400000/</em></p>
    <div class="example" id="root">
     <a class="self-link" href="#root"></a> 
 <pre class="language-turtle highlight">@prefix <c- p>:</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl<c- c>#> .</c->
-
 &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl> <c- nn>rdf</c-><c- p>:</c-><c- f>type</c-> <c- nn>tree</c-><c- p>:</c-><c- f>Node</c-> <c- p>;</c->
     <c- nn>tree</c-><c- p>:</c-><c- f>relation</c-> <c- p>[</c-> 
         <c- b>a</c-> <c- nn>tree</c-><c- p>:</c-><c- f>GreaterThanOrEqualToRelation</c-> <c- p>;</c->
@@ -2111,8 +2111,8 @@ This root consists of one <a data-link-type="biblio" href="#biblio-tree">[TREE]<
 </pre>
    </div>
    <h3 class="heading settled" data-level="2.1" id="adding-resources"><span class="secno">2.1. </span><span class="content">Adding a Resources</span><a class="self-link" href="#adding-resources"></a></h3>
-    The method for adding a resource remains the same as for a normal LDP Resource creation: with an HTTP POST request. However, an application that adds a member to the Event Stream must know where to write to. 
-To indicate the write location, a property already defined in the LDP specification is reused: the LDP Inbox (<code>ldp:inbox</code>, originated from the <a data-link-type="biblio" href="#biblio-ldn">[LDN]</a> specification). 
+   <p>The method for adding a resource remains the same as for a normal LDP Resource creation: with an HTTP POST request. However, an application that adds a member to the Event Stream must know where to write to.
+To indicate the write location, a property already defined in the LDP specification is reused: the LDP Inbox (<code>ldp:inbox</code>, originated from the <a data-link-type="biblio" href="#biblio-ldn">[LDN]</a> specification).</p>
    <p>Thus a triple of the form <code>&lt;baseContainer> ldp:inbox &lt;locationURI>.</code> is added to the metadata of the base container.
 This location URI is retrieved via the Link Header as the link value to the relation <code>ldp:inbox</code> when sending a GET or HEAD HTTP request.</p>
    <p>Below are examples of a HEAD <a href="#head-request">request</a> to the base URI and its <a href="#head-response">response</a> showing the Link Header response.</p>
@@ -2130,9 +2130,9 @@ This location URI is retrieved via the Link Header as the link value to the rela
    </div>
    <p>Finally, a member can be added to the LDES with an HTTP POST request to the obtained location URI.</p>
    <h3 class="heading settled" data-level="2.2" id="interoperability"><span class="secno">2.2. </span><span class="content">Improving Interoperability</span><a class="self-link" href="#interoperability"></a></h3>
-    When it is known a priori that the LDES will only have members with a certain predefined data model, it is possible to initialise the LDES in LDP with a shape. Thanks to shapes allowing to define the structure and constraints of RDF resources. 
+   <p>When it is known a priori that the LDES will only have members with a certain predefined data model, it is possible to initialise the LDES in LDP with a shape. Thanks to shapes allowing to define the structure and constraints of RDF resources.</p>
    <p>To enforce shape validation executed by the LDP, the validator requires to know which shape resource to use.
-Therefore, the constrained by property of LDP(<code>ldp:constrainedBy</code>} will be used to encode an URI to the shape resource in the metadata of each fragment container.</p>
+Therefore, the constrained by property of LDP (<code>ldp:constrainedBy</code>) will be used to encode an URI to the shape resource in the metadata of each fragment container.</p>
    <p>Since all requests to add data that does not conform to the shape will be rejected, the resulting Event Stream consists of members that all conform to the shape.</p>
    <h2 class="heading settled" data-level="3" id="orchestrator"><span class="secno">3. </span><span class="content">Basic LDES Orchestrator</span><a class="self-link" href="#orchestrator"></a></h2>
    <p>To make a Linked Data Event Stream scalable, the ever-growing LDES was introduced.
@@ -2170,21 +2170,30 @@ Thus a relation is added in the root by the Orchestrator for each new fragment.<
    <p>In case a Solid pod is used as a back-end, ACL resources are responsible for making sure that it is impossible to add new resources to containers that are not indicated as writeable.
 With an ACL resource in place in the current fragment container, it is enforced that only new resources may be added there.
 This is done by providing read (<code>acl:read</code>) and append (<code>acl:append</code>) rights in the ACL resource of that container.</p>
+   <h3 class="heading settled" data-level="3.5" id="sequence-diagram"><span class="secno">3.5. </span><span class="content">Sequence Diagram</span><a class="self-link" href="#sequence-diagram"></a></h3>
+   <p>Now that all the roles are elaborated, they are joined together in an arrangement to manage the growth of the LDES in LDP. <a href="sequence_diagram">The figure below</a> shows the operations that the Orchestrator performs each time a new fragment is created for the case of a public LDES in LDP.</p>
+   <figure id="sequence_diagram">
+     <img height="341" src="./img/LDES_Write-Orchestrator.png" width="671"> 
+    <figcaption>Sequence diagram of the Basic LDES Orchestrator for a public LDES in LDP</figcaption>
+   </figure>
    <h2 class="heading settled" data-level="4" id="implementation"><span class="secno">4. </span><span class="content">Implementation</span><a class="self-link" href="#implementation"></a></h2>
-   <p class="note" role="note"><span>Note:</span> This section is still under construction</p>
    <h3 class="heading settled" data-level="4.1" id="version-aware-implementation"><span class="secno">4.1. </span><span class="content">Version-Aware Implementation</span><a class="self-link" href="#version-aware-implementation"></a></h3>
-    When an application knows how to append to an LDES in LDP, it may add updates of resources directly to the <em>feed</em>. 
-As stated previously, this would also change the contents of the LDP Container because it is just a derived view of the <em>feed</em>. 
+   <p class="note" role="note"><span>Note:</span> Rewrite this, it should explain how to use LDES in LDP when clients understand the protocol</p>
+   <p>When an application knows how to append to an LDES in LDP, it may add updates of resources directly to the <em>feed</em>.
+As stated previously, this would also change the contents of the LDP Container because it is just a derived view of the <em>feed</em>.</p>
    <h3 class="heading settled" data-level="4.2" id="version-agnostic-implementation"><span class="secno">4.2. </span><span class="content">Version-Agnostic Implementation</span><a class="self-link" href="#version-agnostic-implementation"></a></h3>
    <p>With LDES in LDP it is possible to build up the history of a given resource using the Version Materializations of that resource, and synchronize and replicate this LDES with the use of LDES Action and LDES Client.
 Unfortunately, not all clients can understand LDES in LDP.</p>
    <p>Therefore, a proposal is being presented that combines the simplicity to perform CRUD operations with RDF data on an LDP and the expressivity of an LDES in LDP. Here, the LDES in LDP is used as the source for the resources that are shown in the LDP.</p>
-   <h4 class="heading settled" data-level="4.2.1" id="architecture"><span class="secno">4.2.1. </span><span class="content">Architecture</span><a class="self-link" href="#architecture"></a></h4>
-    <a data-link-type="dfn">The architecture figure</a> shows the structure when the LDP is combined with the LDES in LDP. The resources that are present in the <code>{container}</code> are a view derived from the LDES in <em>feed</em>, which is stored as an LDES in LDP. More specifically a view that only contains the latest version of a given member in the Event Stream.
-Thus when a resource has multiple versions (e.g. due to it being edited) only the latest version will be shown in the LDP. However, the whole history of those resources can be retrieved from the <em>feed</em>. 
-   <p class="note" role="note"><span>Note:</span> Figure about architecture should come here</p>
-   <p>With this proposal, reading from an LDES in LDP for clients who are not aware is thus solved.
-Though in order to use this feed as storage and let the LDP still appear as normal while creating, updating and deleting resources, additional modifications are required.</p>
+   <h4 class="heading settled" data-level="4.2.1" id="architecture①"><span class="secno">4.2.1. </span><span class="content">Architecture</span><a class="self-link" href="#architecture①"></a></h4>
+   <p><a href="#ldesasbase">The architecture figure</a> shows the structure when the LDP is combined with the LDES in LDP. The resources that are present in the <code>{container}</code> are a view derived from the LDES in <em>feed</em>, which is stored as an LDES in LDP. More specifically a view that only contains the latest version of a given member in the Event Stream.
+Thus when a resource has multiple versions (e.g. due to it being edited) only the latest version will be shown in the LDP. However, the whole history of those resources can be retrieved from the <em>feed</em>.</p>
+   <figure id="ldesasbase">
+     <img height="354" src="./img/Version_Materialized_View.png" width="196"> 
+    <figcaption>Architecture when LDES is used as base in a version-agnostic approach</figcaption>
+   </figure>
+    With this proposal, reading from an LDES in LDP for clients who are not aware is thus solved. 
+Though in order to use this feed as storage and let the LDP still appear as normal while creating, updating and deleting resources, additional modifications are required. 
    <h4 class="heading settled" data-level="4.2.2" id="creating"><span class="secno">4.2.2. </span><span class="content">Creating</span><a class="self-link" href="#creating"></a></h4>
    <p>An HTTP POST request is used to create a resource in an LDP.
 When a POST request is sent to an LDP Container three things happen: an identifier is created by the server\footnote{When a slug is provided in the Header of the request, a server can choose to use that slug as an identifier.} for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the container to indicate that it contains the new resource.</p>
@@ -2213,28 +2222,12 @@ For this last triple <code>&lt;https://example.org/versionMemberURI> ldes:state 
    <h2 class="heading settled" data-level="5" id="examples"><span class="secno">5. </span><span class="content">Examples</span><a class="self-link" href="#examples"></a></h2>
    <p class="note" role="note"><span>Note:</span> This section is still under construction</p>
    <h3 class="heading settled" data-level="5.1" id="metadata-notifications"><span class="secno">5.1. </span><span class="content">Metadata notifications</span><a class="self-link" href="#metadata-notifications"></a></h3>
-   <h4 class="heading settled" data-level="5.1.1" id="sequence-diagram"><span class="secno">5.1.1. </span><span class="content">Sequence Diagram</span><a class="self-link" href="#sequence-diagram"></a></h4>
-   <p>Now that all the roles are elaborated, they are joined together in an arrangement to manage the growth of the LDES in LDP.
-\Cref{fig:orchestrator} shows the operations that the Orchestrator performs each time a new fragment is created for the case of a public LDES in LDP.</p>
-   <p>\begin{figure}
-\includegraphics[width=\textwidth]{img/LDES_Write-Orchestrator.pdf}
-\caption{Sequence diagram of the Basic LDES Orchestrator for a public LDES in LDP} \label{fig:orchestrator}
-\end{figure}</p>
-   <p>\subsubsection{Architecture}
-In \cref{fig:ldes-in-ldp-architecture} the LDP (here a Solid Community Server (CSS) \cite{noauthor_community_2022}), the LDES in LDP and the Basic LDES Orchestrator are merged together as the complete architecture. This overview shows clearly the structure of the LDES. The base container contains one or more \textit{fragments} and the \textit{root} of the LDES, a \textit{metadata} resource and the \textit{shape}. 
-The \textit{metadata} resource indicates the fragment that is writable.
-The \textit{root} resource contains the Event Stream and the view with relations to all LDP containers (fragments) in \textit{\{container\}}. 
-Each fragment contains an \textit{ACL resource}, a \textit{metadata resource} and several other LDP Resources which are the members of the Event Stream. 
-In the metadata, a constraint is placed to indicate that all members conform to the \textit{shape}.</p>
-   <p>Finally, the Orchestrator is responsible for creating new fragments when the current one is deemed full.</p>
-   <p>\begin{figure}
-\centering
-\includegraphics[width=.6\textwidth]{img/LDES_Write-Architecture.pdf}
-\caption{Architecture of the LDES in LDP} \label{fig:ldes-in-ldp-architecture}
-\end{figure}</p>
-   <p>\subsubsection{Real Example}
-At \url{https://tree.linkeddatafragments.org/announcements/}, a public, shape constrained LDES in LDP can be found which is used for publishing metadata of DCAT Application Profiles \cite{albertoni_data_2020} about datasets or data services, or metadata of a TREE View.
-As LDP, a CSS instance is used with shape support\footnote{Branch feat/shape-support at \url{https://github.com/woutslabbinck/community-server}}. On the server where it CSS resides, the Basic LDES Orchestrator runs  where a fragment container is deemed full when 100 resources or more are present \footnote{The Orchestrator uses the following package: \url{https://www.npmjs.com/package/@treecg/ldes-orchestrator}.}.</p>
+   <p>At <a href="https://tree.linkeddatafragments.org/announcements/">https://tree.linkeddatafragments.org/announcements/</a>, a public, shape constrained LDES in LDP can be found which is used for publishing metadata of DCAT Application Profiles <a data-link-type="biblio" href="#biblio-vocab-dcat-3">[VOCAB-DCAT-3]</a> about datasets or data services, or metadata of a TREE View.
+As LDP, a Community Solid Server <a href="https://github.com/solid/community-server">[CSS</a>] instance is used with shape support. 
+On the server where the CSS resides, the Basic LDES Orchestrator runs.
+The trigger for creating new containers is when the current fragment container contains 100 resources or more.</p>
+   <p class="note" role="note"><span>Note:</span> The CSS with shape support can be found at <a href="https://github.com/woutslabbinck/community-server">https://github.com/woutslabbinck/community-server</a> on branch feat/shape-support</p>
+   <p class="note" role="note"><span>Note:</span> The Orchestrator uses the following package: <a href="https://www.npmjs.com/package/@treecg/ldes-orchestrator">LDES Orchestrator</a></p>
    <h2 class="heading settled" data-level="6" id="namespaces"><span class="secno">6. </span><span class="content">Namespaces</span><a class="self-link" href="#namespaces"></a></h2>
    <p>Commonly used namespace prefixes used in this specification:</p>
 <pre class="language-turtle highlight"><c- k>@prefix</c-> <c- nn>acl:</c-> 	<c- g>&lt;http://www.w3.org/ns/auth/acl#></c-> <c- p>.</c->
@@ -2401,6 +2394,8 @@ As LDP, a CSS instance is used with shape support\footnote{Branch feat/shape-sup
    <dd>Steve Speicher; John Arwe; Ashok Malhotra. <a href="https://www.w3.org/TR/ldp/"><cite>Linked Data Platform 1.0</cite></a>. 26 February 2015. REC. URL: <a href="https://www.w3.org/TR/ldp/">https://www.w3.org/TR/ldp/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
+   <dt id="biblio-vocab-dcat-3">[VOCAB-DCAT-3]
+   <dd>Riccardo Albertoni; et al. <a href="https://www.w3.org/TR/vocab-dcat-3/"><cite>Data Catalog Vocabulary (DCAT) - Version 3</cite></a>. 11 January 2022. WD. URL: <a href="https://www.w3.org/TR/vocab-dcat-3/">https://www.w3.org/TR/vocab-dcat-3/</a>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
