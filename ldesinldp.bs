@@ -1,5 +1,5 @@
 <pre class='metadata'>
-Title: Linked Data Event Streams in ldp:BasicContainers
+Title: Linked Data Event Streams in LDP BasicContainers
 Shortname: LDESinLDP
 Level: 1
 Status: LD
@@ -212,28 +212,32 @@ Though in order to use this feed as storage and let the LDP still appear as norm
 ### Creating
 
 An HTTP POST request is used to create a resource in an LDP. 
-When a POST request is sent to an LDP Container three things happen: an identifier is created by the server\footnote{When a slug is provided in the Header of the request, a server can choose to use that slug as an identifier.} for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the container to indicate that it contains the new resource.
+When a POST request is sent to an LDP Container three things happen: an identifier is created by the server for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the container to indicate that it contains the new resource.
 
-For LDES Write, the LDP behaviour for a POST is just the first step. After that, the body of the request is combined with two extra triples to indicate the version-specific representation. 
-This is then added to the \textit{feed} LDES.
+For  Version-Agnostic implementations, the LDP behaviour for a POST is just the first step. The second step consists of combining the body of the request with two extra triples to indicate the version-specific representation. 
+The newly composed body is then added to the *feed* LDES.
 
 The first triple is to indicate the time of the creation of the Resource, the second triple is the reference to the identifier of the resource.
-An example of those triples when the server chose `http://example.org/\{container\}/resource2` as identifier is shown in \cref{lst:LDES_Write_added_triples}.
+An example of those triples when the server chose `http://example.org/\{container\}/resource2` as identifier is shown in the <a href="#add-version-triples">example</a> below.
 
+<div class="example" highlight="turtle" id="add-version-triples">
 ```turtle
 @prefix : <http://example.org/{container}/> .
 
 :feed/1639612800000/{uuid} dct:issued "2021-12-16T10:00:00.000Z"^^xsd:dateTime .
 :feed/1639612800000/{uuid} dct:isVersionOf :resource2 .
 ```
+</div>
+
+Note: When a slug is provided in the Header of a POST request, a server can choose to use that slug as an identifier.
 
 ### Updating
 
 Updating LDP Resources can be done in two ways. 
 First, there is an HTTP PUT request which replaces the resource with the body that accompanies the request. 
-The second option is using an HTTP PATCH request that uses a SPARQL Update \cite{gearon_sparql_2013} query, where first the server applies the changes and then the result is stored as the updated resource.
+The second option is using an HTTP PATCH request that uses a [[!SPARQL-UPDATE]]  query, where first the server applies the changes and then the result is stored as the updated resource.
 
-An LDP with LDES Write support stores those updates in the *feed* as the newest version. Thus when using PUT, the whole body of the request together with the version-specific triples are added to *feed*.
+An LDP with Version-Agnostic LDES in LDP  support stores those updates in the *feed* as the newest version. Thus when using PUT, the whole body of the request together with the version-specific triples are added to *feed*.
 After applying the changes using a PATCH request, the resulting resource is accompanied with  the version-specific triples and appended to the *feed*.
 
 ### Deleting
