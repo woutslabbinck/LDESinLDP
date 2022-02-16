@@ -1,5 +1,5 @@
 <pre class='metadata'>
-Title: LDES in LDP
+Title: Linked Data Event Streams in ldp:BasicContainers
 Shortname: LDESinLDP
 Level: 1
 Status: LD
@@ -11,6 +11,7 @@ Editor: Wout Slabbinck
 <!-- Repository: https://github.com/SEMICeu/LinkedDataEventStreams -->
 Abstract: Writing to a time-based fragmented Linked Data Event Stream that is stored on a Linked Data Platform.
 </pre>
+
 <pre class=biblio> 
 {"ldes": {
       "href":"https://w3id.org/ldes/specification",
@@ -27,7 +28,6 @@ Abstract: Writing to a time-based fragmented Linked Data Event Stream that is st
 		],
 		"title":"The TREE hypermedia specification",
 		"status": "LS"
-
 	}
 }
 </pre>
@@ -40,12 +40,32 @@ Which allows to interact with LDESs using the LDP API.
 
 LDES in LDP {#ldesinldp}
 =====================
+<figure id="architecture">
+<img src="./img/LDESinLDP_Architecture.png">
+<figcaption>Architecture of a Linked Data Event Stream in an LDP Container</figcaption>
+</figure>
+<!--
+\subsubsection{Architecture}
+In \cref{fig:ldes-in-ldp-architecture} the LDP (here a Solid Community Server (CSS) \cite{noauthor_community_2022}), the LDES in LDP and the Basic LDES Orchestrator are merged together as the complete architecture. This overview shows clearly the structure of the LDES. The base container contains one or more \textit{fragments} and the \textit{root} of the LDES, a \textit{metadata} resource and the \textit{shape}. 
+The \textit{metadata} resource indicates the fragment that is writable.
+The \textit{root} resource contains the Event Stream and the view with relations to all LDP containers (fragments) in \textit{\{container\}}. 
+Each fragment contains an \textit{ACL resource}, a \textit{metadata resource} and several other LDP Resources which are the members of the Event Stream. 
+In the metadata, a constraint is placed to indicate that all members conform to the \textit{shape}. 
+
+Finally, the Orchestrator is responsible for creating new fragments when the current one is deemed full.
+
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{img/LDES_Write-Architecture.pdf}
+\caption{Architecture of the LDES in LDP} \label{fig:ldes-in-ldp-architecture}
+\end{figure}
+-->
 
 An LDES is initialized in a data pod as a container and identifyable with an URI.
 In this container, the view (a root node) is found
 <!-- \footnote{The view can be found at containerURI/}\textbf{root.ttl}}  -->
 which contains relations to fragments of the LDES. 
-Finally, a fragment container consists of several LDP resources, indicated by *ldp:contains*.
+Finally, a fragment container consists of several LDP resources, indicated by `ldp:contains`.
 <!-- \footnote{\url{https://www.w3.org/ns/ldp#contains}}. -->
 
 Below is an example of a <a href="#root">root</a>, where *http://example.org/{container}* is the base URI of the LDES in LDP.
@@ -54,7 +74,6 @@ This root consists of one [[TREE]] hypermedia Relation, where its class and prop
 <div class="example" highlight="turtle" id="root"> 
 ```turtle
 @prefix : <http://example.org/{container}/root.ttl#> .
-
 <http://example.org/{container}/root.ttl> rdf:type tree:Node ;
     tree:relation [ 
         a tree:GreaterThanOrEqualToRelation ;
@@ -70,6 +89,7 @@ This root consists of one [[TREE]] hypermedia Relation, where its class and prop
 </div>
 
 ## Adding a Resources ## {#adding-resources}
+
 The method for adding a resource remains the same as for a normal LDP Resource creation: with an HTTP POST request. However, an application that adds a member to the Event Stream must know where to write to. 
 To indicate the write location, a property already defined in the LDP specification is reused: the LDP Inbox (`ldp:inbox`, originated from the [[!LDN]] specification).
 
@@ -94,10 +114,11 @@ link: <http://example.org/{container}/1639526400000/>; rel="http://www.w3.org/ns
 Finally, a member can be added to the LDES with an HTTP POST request to the obtained location URI.
 
 ## Improving Interoperability ## {#interoperability}
+
 When it is known a priori that the LDES will only have members with a certain predefined data model, it is possible to initialise the LDES in LDP with a shape. Thanks to shapes allowing to define the structure and constraints of RDF resources.
 
 To enforce shape validation executed by the LDP, the validator requires to know which shape resource to use.
-Therefore, the constrained by property of LDP(`ldp:constrainedBy`} will be used to encode an URI to the shape resource in the metadata of each fragment container.
+Therefore, the constrained by property of LDP (`ldp:constrainedBy`) will be used to encode an URI to the shape resource in the metadata of each fragment container.
 
 Since all requests to add data that does not conform to the shape will be rejected, the resulting Event Stream consists of members that all conform to the shape.
 
@@ -146,14 +167,24 @@ In case a Solid pod is used as a back-end, ACL resources are responsible for mak
 With an ACL resource in place in the current fragment container, it is enforced that only new resources may be added there.
 This is done by providing read (`acl:read`) and append (`acl:append`) rights in the ACL resource of that container.
 
+## Sequence Diagram
 
+Now that all the roles are elaborated, they are joined together in an arrangement to manage the growth of the LDES in LDP. 
+<a href="sequence_diagram">The figure below</a> shows the operations that the Orchestrator performs each time a new fragment is created for the case of a public LDES in LDP.
+
+<figure id="sequence_diagram">
+<img src="./img/LDES_Write-Orchestrator.png">
+<figcaption>Sequence diagram of the Basic LDES Orchestrator for a public LDES in LDP</figcaption>
+</figure>
 
 Implementation {#implementation}
 =====================
 
-Note: This section is still under construction
 
 ## Version-Aware Implementation
+
+Note: Rewrite this, it should explain how to use LDES in LDP when clients understand the protocol
+
 When an application knows how to append to an LDES in LDP, it may add updates of resources directly to the *feed*. 
 As stated previously, this would also change the contents of the LDP Container because it is just a derived view of the *feed*.
 
@@ -167,11 +198,14 @@ Unfortunately, not all clients can understand LDES in LDP.
 Therefore, a proposal is being presented that combines the simplicity to perform CRUD operations with RDF data on an LDP and the expressivity of an LDES in LDP. Here, the LDES in LDP is used as the source for the resources that are shown in the LDP.
 
 ### Architecture
-<a>The architecture figure</a> shows the structure when the LDP is combined with the LDES in LDP. The resources that are present in the `{container}` are a view derived from the LDES in *feed*, which is stored as an LDES in LDP. More specifically a view that only contains the latest version of a given member in the Event Stream.
+
+<a href="#ldesasbase">The architecture figure</a> shows the structure when the LDP is combined with the LDES in LDP. The resources that are present in the `{container}` are a view derived from the LDES in *feed*, which is stored as an LDES in LDP. More specifically a view that only contains the latest version of a given member in the Event Stream.
 Thus when a resource has multiple versions (e.g. due to it being edited) only the latest version will be shown in the LDP. However, the whole history of those resources can be retrieved from the *feed*.
 
-Note: Figure about architecture should come here
-
+<figure id="ldesasbase">
+<img src="./img/Version_Materialized_View.png" />
+<figcaption>Architecture when LDES is used as base in a version-agnostic approach</figcaption>
+</figure>
 With this proposal, reading from an LDES in LDP for clients who are not aware is thus solved. 
 Though in order to use this feed as storage and let the LDP still appear as normal while creating, updating and deleting resources, additional modifications are required.
 
@@ -179,7 +213,7 @@ Though in order to use this feed as storage and let the LDP still appear as norm
 
 An HTTP POST request is used to create a resource in an LDP. 
 When a POST request is sent to an LDP Container three things happen: an identifier is created by the server\footnote{When a slug is provided in the Header of the request, a server can choose to use that slug as an identifier.} for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the container to indicate that it contains the new resource.
- 
+
 For LDES Write, the LDP behaviour for a POST is just the first step. After that, the body of the request is combined with two extra triples to indicate the version-specific representation. 
 This is then added to the \textit{feed} LDES.
 
@@ -191,7 +225,7 @@ An example of those triples when the server chose `http://example.org/\{containe
 
 :feed/1639612800000/{uuid} dct:issued "2021-12-16T10:00:00.000Z"^^xsd:dateTime .
 :feed/1639612800000/{uuid} dct:isVersionOf :resource2 .
-``` 
+```
 
 ### Updating
 
@@ -219,34 +253,14 @@ Note: This section is still under construction
 
 ## Metadata notifications
 
-### Sequence Diagram
+At [https://tree.linkeddatafragments.org/announcements/](https://tree.linkeddatafragments.org/announcements/), a public, shape constrained LDES in LDP can be found which is used for publishing metadata of [[!DCAT]] Application Profiles  about datasets or data services, or metadata of a TREE View.
+As LDP, a Community Solid Server [[CSS](https://github.com/solid/community-server)] instance is used with shape support. 
+On the server where the CSS resides, the Basic LDES Orchestrator runs.
+The trigger for creating new containers is when the current fragment container contains 100 resources or more.
 
-Now that all the roles are elaborated, they are joined together in an arrangement to manage the growth of the LDES in LDP. 
-\Cref{fig:orchestrator} shows the operations that the Orchestrator performs each time a new fragment is created for the case of a public LDES in LDP.
+Note: The CSS with shape support can be found at [https://github.com/woutslabbinck/community-server](https://github.com/woutslabbinck/community-server) on branch feat/shape-support
 
-\begin{figure}
-\includegraphics[width=\textwidth]{img/LDES_Write-Orchestrator.pdf}
-\caption{Sequence diagram of the Basic LDES Orchestrator for a public LDES in LDP} \label{fig:orchestrator}
-\end{figure}
-
-\subsubsection{Architecture}
-In \cref{fig:ldes-in-ldp-architecture} the LDP (here a Solid Community Server (CSS) \cite{noauthor_community_2022}), the LDES in LDP and the Basic LDES Orchestrator are merged together as the complete architecture. This overview shows clearly the structure of the LDES. The base container contains one or more \textit{fragments} and the \textit{root} of the LDES, a \textit{metadata} resource and the \textit{shape}. 
-The \textit{metadata} resource indicates the fragment that is writable.
-The \textit{root} resource contains the Event Stream and the view with relations to all LDP containers (fragments) in \textit{\{container\}}. 
-Each fragment contains an \textit{ACL resource}, a \textit{metadata resource} and several other LDP Resources which are the members of the Event Stream. 
-In the metadata, a constraint is placed to indicate that all members conform to the \textit{shape}. 
-
-Finally, the Orchestrator is responsible for creating new fragments when the current one is deemed full.
-
-\begin{figure}
-\centering
-\includegraphics[width=.6\textwidth]{img/LDES_Write-Architecture.pdf}
-\caption{Architecture of the LDES in LDP} \label{fig:ldes-in-ldp-architecture}
-\end{figure}
-
-\subsubsection{Real Example} 
-At \url{https://tree.linkeddatafragments.org/announcements/}, a public, shape constrained LDES in LDP can be found which is used for publishing metadata of DCAT Application Profiles \cite{albertoni_data_2020} about datasets or data services, or metadata of a TREE View.
-As LDP, a CSS instance is used with shape support\footnote{Branch feat/shape-support at \url{https://github.com/woutslabbinck/community-server}}. On the server where it CSS resides, the Basic LDES Orchestrator runs  where a fragment container is deemed full when 100 resources or more are present \footnote{The Orchestrator uses the following package: \url{https://www.npmjs.com/package/@treecg/ldes-orchestrator}.}.
+Note: The Orchestrator uses the following package: [LDES Orchestrator](https://www.npmjs.com/package/@treecg/ldes-orchestrator)
 
 Namespaces {#namespaces}
 =====================
