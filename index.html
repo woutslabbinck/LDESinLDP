@@ -1488,7 +1488,7 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
-  <meta content="2c922de020fc794cf6de7920116b34861b9cc5e4" name="document-revision">
+  <meta content="06cc969e4903c64b8ee186eb90a033ba5f7aac94" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2058,7 +2058,7 @@ Parts of this work may be from another specification document.  If so, those par
       <li>
        <a href="#version-agnostic-implementation"><span class="secno">4.2</span> <span class="content">Version-Agnostic Implementation</span></a>
        <ol class="toc">
-        <li><a href="#architecture①"><span class="secno">4.2.1</span> <span class="content">Architecture</span></a>
+        <li><a href="#version-agnostic-architecture"><span class="secno">4.2.1</span> <span class="content">Architecture</span></a>
         <li><a href="#creating"><span class="secno">4.2.2</span> <span class="content">Creating</span></a>
         <li><a href="#updating"><span class="secno">4.2.3</span> <span class="content">Updating</span></a>
         <li><a href="#deleting"><span class="secno">4.2.4</span> <span class="content">Deleting</span></a>
@@ -2153,8 +2153,8 @@ This location URI is retrieved via the Link Header as the link value to the rela
    <p>To enforce shape validation executed by the LDP, the validator requires to know which shape resource to use.
 Therefore, the constrained by property of LDP (<code>ldp:constrainedBy</code>) will be used to encode an URI to the shape resource in the metadata of each fragment container.</p>
    <p>Since all requests to add data that does not conform to the shape will be rejected, the resulting Event Stream consists of members that all conform to the shape.</p>
-   <div class="example" id="meta-inbox①">
-    <a class="self-link" href="#meta-inbox①"></a> Example of the metadata a fragment of an LDES in LDP that is constrained by a shape. 
+   <div class="example" id="meta-shape">
+    <a class="self-link" href="#meta-shape"></a> Example of the metadata a fragment of an LDES in LDP that is constrained by a shape. 
 <pre class="language-turtle highlight">&lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639526400000</c->/> <c- nn>tree</c-><c- p>:</c-><c- f>shape</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/shape><c- p>.</c->
 </pre>
    </div>
@@ -2169,7 +2169,7 @@ Therefore, the constrained by property of LDP (<code>ldp:constrainedBy</code>) w
     <li data-md>
      <p>Maintain the root of the LDES: add triples with TREE syntax to keep the view up to date</p>
     <li data-md>
-     <p>Access control: when Solid is used, the Access Control List (ACL) files must be updated</p>
+     <p>Access control: when <a data-link-type="biblio" href="#biblio-solid">[Solid]</a> is used, the Access Control List (ACL) files must be updated</p>
    </ul>
    <h3 class="heading settled" data-level="3.1" id="create-containers"><span class="secno">3.1. </span><span class="content">Create Containers</span><a class="self-link" href="#create-containers"></a></h3>
    <p>Downloading a document on the internet takes time proportional to the location of the server versus the location of the client, the bandwidth and the size of the document.
@@ -2187,7 +2187,7 @@ Clients that want to add a member to the LDES can then find the container where 
 Therefore on each creation of a new container, which is a new fragment of the collection, the view must be updated. 
 Thus a relation is added in the root by the Orchestrator for each new fragment.</p>
    <h3 class="heading settled" data-level="3.4" id="update-acl-files"><span class="secno">3.4. </span><span class="content">Update ACL Files</span><a class="self-link" href="#update-acl-files"></a></h3>
-   <p>In case a Solid pod is used as a back-end, ACL resources are responsible for making sure that it is impossible to add new resources to containers that are not indicated as writeable.
+   <p>In case a <a data-link-type="biblio" href="#biblio-solid">[Solid]</a> pod is used as a back-end, ACL resources (defined by the Web Acces Control <a data-link-type="biblio" href="#biblio-wac">[WAC]</a> specification) are responsible for making sure that it is impossible to add new resources to containers that are not indicated as writeable.
 With an ACL resource in place in the current fragment container, it is enforced that only new resources may be added there.
 This is done by providing read (<code>acl:read</code>) and append (<code>acl:append</code>) rights in the ACL resource of that container.</p>
    <p class="note" role="note"><span>Note:</span> The orchestrator must have <code>acl:Control</code> for the base container and each fragment container to be able to update the ACL resources.</p>
@@ -2207,7 +2207,7 @@ As stated previously, this would also change the contents of the LDP Container b
    <p>With LDES in LDP it is possible to build up the history of a given resource using the Version Materializations of that resource, and synchronize and replicate this LDES with the use of LDES Action and LDES Client.
 Unfortunately, not all clients can understand LDES in LDP.</p>
    <p>Therefore, a proposal is being presented that combines the simplicity to perform CRUD operations with RDF data on an LDP and the expressivity of an LDES in LDP. Here, the LDES in LDP is used as the source for the resources that are shown in the LDP.</p>
-   <h4 class="heading settled" data-level="4.2.1" id="architecture①"><span class="secno">4.2.1. </span><span class="content">Architecture</span><a class="self-link" href="#architecture①"></a></h4>
+   <h4 class="heading settled" data-level="4.2.1" id="version-agnostic-architecture"><span class="secno">4.2.1. </span><span class="content">Architecture</span><a class="self-link" href="#version-agnostic-architecture"></a></h4>
    <p><a href="#ldesasbase">The architecture figure</a> shows the structure when the LDP is combined with the LDES in LDP. The resources that are present in the <code>{container}</code> are a view derived from the LDES in <em>feed</em>, which is stored as an LDES in LDP. More specifically a view that only contains the latest version of a given member in the Event Stream.
 Thus when a resource has multiple versions (e.g. due to it being edited) only the latest version will be shown in the LDP. However, the whole history of those resources can be retrieved from the <em>feed</em>.</p>
    <figure id="ldesasbase">
@@ -2425,6 +2425,8 @@ The trigger for creating new containers is when the current fragment container c
    <dd>Holger Knublauch; Dimitris Kontokostas. <a href="https://www.w3.org/TR/shacl/"><cite>Shapes Constraint Language (SHACL)</cite></a>. 20 July 2017. REC. URL: <a href="https://www.w3.org/TR/shacl/">https://www.w3.org/TR/shacl/</a>
    <dt id="biblio-shex">[SHEX]
    <dd>Eric Prud'hommeaux; et al. <a href="http://shex.io/shex-semantics/index.html"><cite>Shape Expressions Language 2.1</cite></a>. URL: <a href="http://shex.io/shex-semantics/index.html">http://shex.io/shex-semantics/index.html</a>
+   <dt id="biblio-solid">[Solid]
+   <dd>Sarven Capasdisli; et al. <a href="https://solidproject.org/TR/protocol"><cite>Solid Protocol</cite></a>. URL: <a href="https://solidproject.org/TR/protocol">https://solidproject.org/TR/protocol</a>
    <dt id="biblio-sparql-update">[SPARQL-UPDATE]
    <dd>Paula Gearon; Alexandre Passant; Axel Polleres. <a href="https://www.w3.org/TR/sparql11-update/"><cite>SPARQL 1.1 Update</cite></a>. 21 March 2013. REC. URL: <a href="https://www.w3.org/TR/sparql11-update/">https://www.w3.org/TR/sparql11-update/</a>
    <dt id="biblio-tree">[TREE]
@@ -2433,4 +2435,6 @@ The trigger for creating new containers is when the current fragment container c
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
    <dt id="biblio-vocab-dcat-3">[VOCAB-DCAT-3]
    <dd>Riccardo Albertoni; et al. <a href="https://www.w3.org/TR/vocab-dcat-3/"><cite>Data Catalog Vocabulary (DCAT) - Version 3</cite></a>. 11 January 2022. WD. URL: <a href="https://www.w3.org/TR/vocab-dcat-3/">https://www.w3.org/TR/vocab-dcat-3/</a>
+   <dt id="biblio-wac">[WAC]
+   <dd>Sarven Capasdisli. <a href="https://solidproject.org/TR/wac"><cite>Web Access Control</cite></a>. Draft. URL: <a href="https://solidproject.org/TR/wac">https://solidproject.org/TR/wac</a>
   </dl>

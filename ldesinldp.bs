@@ -14,30 +14,50 @@ Abstract: Writing to a time-based fragmented Linked Data Event Stream that is st
 
 <pre class=biblio> 
 {"ldes": {
-      "href":"https://w3id.org/ldes/specification",
-      		"authors": [
+	"href":"https://w3id.org/ldes/specification",
+	"authors": [
 			"Pieter Colpaert"
 		],
 		"title": "Linked Data Event Streams",
 		"status": "LS"
 	},
 "tree":{
-		"href":"https://w3id.org/tree/specification",
-      		"authors": [
+	"href":"https://w3id.org/tree/specification",
+	"authors": [
 			"Pieter Colpaert"
 		],
 		"title":"The TREE hypermedia specification",
 		"status": "LS"
 	},   
 "shex": {
-		"href": "http://shex.io/shex-semantics/index.html",
-		"title": "Shape Expressions Language 2.1",
-		"authors": [
-			"Eric Prud'hommeaux",
-			"Iovka Boneva",
-			"Jose Emilio Labra Gayo",
-			"Gregg Kellogg"
+    "href": "http://shex.io/shex-semantics/index.html",
+    "title": "Shape Expressions Language 2.1",
+    "authors": [
+        "Eric Prud'hommeaux",
+        "Iovka Boneva",
+        "Jose Emilio Labra Gayo",
+        "Gregg Kellogg"
 		]
+    },
+"solid": {
+    "href": "https://solidproject.org/TR/protocol",
+    "title": "Solid Protocol",
+	"authors": [
+        "Sarven Capasdisli",
+        "Tim Berners-Lee",
+        "Kjetil Kjernsmo",
+        "Justin Bingham",
+        "Ruben Verborgh",
+        "Dmitri Zagidulin"]
+    },
+"wac": {
+    "href": "https://solidproject.org/TR/wac",
+    "title": "Web Access Control",
+	"authors": [
+        "Sarven Capasdisli"],
+	"publisher":"W3C Solid Community Group",
+	"status":"Draft",
+	"data":"11 July 2021"
     }
 }
 </pre>
@@ -158,7 +178,7 @@ Therefore, the constrained by property of LDP (`ldp:constrainedBy`) will be used
 Since all requests to add data that does not conform to the shape will be rejected, the resulting Event Stream consists of members that all conform to the shape.
 
 
-<div class="example" highlight="turtle" id="meta-inbox"> 
+<div class="example" highlight="turtle" id="meta-shape"> 
 Example of the metadata a fragment of an LDES in LDP that is constrained by a shape.
 ```turtle
 <http://example.org/{container}/1639526400000/> tree:shape <http://example.org/{container}/shape>.
@@ -175,7 +195,7 @@ This Basic LDES Orchestrator has four roles:
 * Creation of new LDP Container: when the current relation is deemed full, a new container is created with added metadata to indicate shape support
 * Writable container indication: at the base container, update the metadata about the LDP Inbox
 * Maintain the root of the LDES: add triples with TREE syntax to keep the view up to date
-* Access control: when Solid is used, the Access Control List (ACL) files must be updated
+* Access control: when [[!Solid]] is used, the Access Control List (ACL) files must be updated
 
 ## Create Containers 
 
@@ -202,7 +222,7 @@ Thus a relation is added in the root by the Orchestrator for each new fragment.
 
 ## Update ACL Files 
 
-In case a Solid pod is used as a back-end, ACL resources are responsible for making sure that it is impossible to add new resources to containers that are not indicated as writeable. 
+In case a [[!Solid]] pod is used as a back-end, ACL resources (defined by the Web Acces Control [[!WAC]] specification) are responsible for making sure that it is impossible to add new resources to containers that are not indicated as writeable. 
 With an ACL resource in place in the current fragment container, it is enforced that only new resources may be added there.
 This is done by providing read (`acl:read`) and append (`acl:append`) rights in the ACL resource of that container.
 
@@ -240,7 +260,7 @@ Unfortunately, not all clients can understand LDES in LDP.
 
 Therefore, a proposal is being presented that combines the simplicity to perform CRUD operations with RDF data on an LDP and the expressivity of an LDES in LDP. Here, the LDES in LDP is used as the source for the resources that are shown in the LDP.
 
-### Architecture
+### Architecture ### {#version-agnostic-architecture}
 
 <a href="#ldesasbase">The architecture figure</a> shows the structure when the LDP is combined with the LDES in LDP. The resources that are present in the `{container}` are a view derived from the LDES in *feed*, which is stored as an LDES in LDP. More specifically a view that only contains the latest version of a given member in the Event Stream.
 Thus when a resource has multiple versions (e.g. due to it being edited) only the latest version will be shown in the LDP. However, the whole history of those resources can be retrieved from the *feed*.
