@@ -68,30 +68,13 @@ We coin the term **LDES in LDP** to describe a time-based fragmented  [[!LDES]] 
 Which allows to interact with LDESs using the LDP API.
 
 
-LDES in LDP {#ldesinldp}
+LDES in LDP Protocol {#ldesinldp}
 =====================
 <figure id="architecture">
 <img src="./img/LDESinLDP_Architecture.png">
 <figcaption>Architecture of a Linked Data Event Stream in an LDP Container</figcaption>
 </figure>
-<!--<!---->
-<!--\subsubsection{Architecture}-->
-<!--In \cref{fig:ldes-in-ldp-architecture} the LDP (here a Solid Community Server (CSS) \cite{noauthor_community_2022}), the LDES in LDP and the Basic LDES Orchestrator are merged together as the complete architecture. This overview shows clearly the structure of the LDES. The base container contains one or more \textit{fragments} and the \textit{root} of the LDES, a \textit{metadata} resource and the \textit{shape}.--> 
-<!--The \textit{metadata} resource indicates the fragment that is writable.-->
-<!--The \textit{root} resource contains the Event Stream and the view with relations to all LDP containers (fragments) in \textit{\{container\}}.--> 
-<!--Each fragment contains an \textit{ACL resource}, a \textit{metadata resource} and several other LDP Resources which are the members of the Event Stream.--> 
-<!--In the metadata, a constraint is placed to indicate that all members conform to the \textit{shape}.--> 
-
-<!--Finally, the Orchestrator is responsible for creating new fragments when the current one is deemed full.-->
-
-<!--\begin{figure}-->
-<!--\centering-->
-<!--\includegraphics[width=.6\textwidth]{img/LDES_Write-Architecture.pdf}-->
-<!--\caption{Architecture of the LDES in LDP} \label{fig:ldes-in-ldp-architecture}-->
-<!--\end{figure}-->
-<!---->
-
-**LDES in LDP** consists of the structure and protocol to create, update and interpret a continously growing time-based fragmented [[!LDES]].
+The **LDES in LDP** Protocol consists of the structure and the rules to create, update and interpret a continously growing time-based fragmented [[!LDES]] that is stored in an [[!LDP]].
 
 The structure is visualized in the <a href="#architecture">figure</a> above and can be summarized in the following components:
 
@@ -242,14 +225,30 @@ Note: An implementation of the Basic LDES Orchestrator can be found on **npm**: 
 
 Implementation {#implementation}
 =====================
+There are two approaches to use **LDES in LDP**:
 
+* A **Version-Aware** approach: Here the client is writing and reading directly to the **LDES in LDP** as it is knowledgeable about [](#ldesinldp) of this specification. Furthermore, it knows how to update a resource using **Version Materializations** from the [[!LDES]] specification.
+* A **Version-Agnostic** approach: Here the client is not knowledgeable about [](#ldesinldp) . The client interacts with the server with the [[!LDP]] API. **LDES in LDP** is used as back-end by the server and it is abstracted away from the client.
+
+Note: Explain versioning first
 
 ## Version-Aware Implementation
 
-Note: Rewrite this, it should explain how to use LDES in LDP when clients understand the protocol
+* Clients are aware of LDES in LDP
+      * They know how to retrieve the Write Location using the `ldp:inbox` Link Header
+      * They know that to update the LDES, they can only POST a resource to the write location (the current inbox) to indicate a member is created, updated or deleted in the Event Stream
+      * They know that if the LDES in LDP is shape constrained, only valid resources will be accepted
+      * They know that there is a Basic LDES Orchestrator running in the background (either initiate by them or by the owner of the LDES in LDP)
+* Any LDP Server Implementation SHOULD be able to handle the operations executed by the client and the Basic LDES Orchestrator without modifications
+      * SERVER REQUIREMENT: The server MUST allow to edit the metadata of containers (such that the `ldp:inbox` or `tree:shape` metadata can be added)
+          * SERVER REQUIREMENT: The server MUST reply `ldp:inbox` and (OPTIONAL) `ldp:constrainedBy` in Link Headers when performing GET or HEAD requests on a `ldp:BasicContainer` when it is present in its metadata.
+          * OPTIONAL: The server MAY have shape validation capabilities. When the server does not have those capabilities, the clients MUST only add resources which conform to the shape (when indicated by the root)
+          * Note: Currently the orchestrator only works with the [Community Solid Server](https://github.com/solid/community-server)
 
-When an application knows how to append to an LDES in LDP, it may add updates of resources directly to the *feed*. 
-As stated previously, this would also change the contents of the LDP Container because it is just a derived view of the *feed*.
+<!--Note: The fact that the client is responsible for all actions MAY have a negative impact on the perfomance-->
+
+<!--When an application knows how to append to an LDES in LDP, it may add updates of resources directly to the *feed*.--> 
+<!--As stated previously, this would also change the contents of the LDP Container because it is just a derived view of the *feed*.-->
 
 
 ## Version-Agnostic Implementation

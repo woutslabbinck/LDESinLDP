@@ -1488,7 +1488,7 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
-  <meta content="06cc969e4903c64b8ee186eb90a033ba5f7aac94" name="document-revision">
+  <meta content="66dc5a43dab99ae379eddb6c3290fcf21e90da80" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2037,7 +2037,7 @@ Parts of this work may be from another specification document.  If so, those par
    <ol class="toc" role="directory">
     <li><a href="#introduction"><span class="secno">1</span> <span class="content">Introduction</span></a>
     <li>
-     <a href="#ldesinldp"><span class="secno">2</span> <span class="content">LDES in LDP</span></a>
+     <a href="#ldesinldp"><span class="secno">2</span> <span class="content">LDES in LDP Protocol</span></a>
      <ol class="toc">
       <li><a href="#adding-resources"><span class="secno">2.1</span> <span class="content">Adding Resources</span></a>
       <li><a href="#interoperability"><span class="secno">2.2</span> <span class="content">Improving Interoperability</span></a>
@@ -2082,12 +2082,12 @@ Parts of this work may be from another specification document.  If so, those par
    <h2 class="heading settled" data-level="1" id="introduction"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#introduction"></a></h2>
    <p>We coin the term <strong>LDES in LDP</strong> to describe a time-based fragmented <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> that is stored on a Linked Data Platform <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a>.
 Which allows to interact with LDESs using the LDP API.</p>
-   <h2 class="heading settled" data-level="2" id="ldesinldp"><span class="secno">2. </span><span class="content">LDES in LDP</span><a class="self-link" href="#ldesinldp"></a></h2>
+   <h2 class="heading settled" data-level="2" id="ldesinldp"><span class="secno">2. </span><span class="content">LDES in LDP Protocol</span><a class="self-link" href="#ldesinldp"></a></h2>
    <figure id="architecture">
      <img height="264" src="./img/LDESinLDP_Architecture.png" width="161"> 
     <figcaption>Architecture of a Linked Data Event Stream in an LDP Container</figcaption>
    </figure>
-   <p><strong>LDES in LDP</strong> consists of the structure and protocol to create, update and interpret a continously growing time-based fragmented <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a>.</p>
+    The <strong>LDES in LDP</strong> Protocol consists of the structure and the rules to create, update and interpret a continously growing time-based fragmented <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> that is stored in an <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a>. 
    <p>The structure is visualized in the <a href="#architecture">figure</a> above and can be summarized in the following components:</p>
    <ul>
     <li data-md>
@@ -2199,10 +2199,43 @@ This is done by providing read (<code>acl:read</code>) and append (<code>acl:app
    </figure>
    <p class="note" role="note"><span>Note:</span> An implementation of the Basic LDES Orchestrator can be found on <strong>npm</strong>: <a href="https://www.npmjs.com/package/@treecg/ldes-orchestrator">LDES Orchestrator</a></p>
    <h2 class="heading settled" data-level="4" id="implementation"><span class="secno">4. </span><span class="content">Implementation</span><a class="self-link" href="#implementation"></a></h2>
+    There are two approaches to use <strong>LDES in LDP</strong>: 
+   <ul>
+    <li data-md>
+     <p>A <strong>Version-Aware</strong> approach: Here the client is writing and reading directly to the <strong>LDES in LDP</strong> as it is knowledgeable about <a href="#ldesinldp">§ 2 LDES in LDP Protocol</a> of this specification. Furthermore, it knows how to update a resource using <strong>Version Materializations</strong> from the <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification.</p>
+    <li data-md>
+     <p>A <strong>Version-Agnostic</strong> approach: Here the client is not knowledgeable about <a href="#ldesinldp">§ 2 LDES in LDP Protocol</a> . The client interacts with the server with the <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a> API. <strong>LDES in LDP</strong> is used as back-end by the server and it is abstracted away from the client.</p>
+   </ul>
+   <p class="note" role="note"><span>Note:</span> Explain versioning first</p>
    <h3 class="heading settled" data-level="4.1" id="version-aware-implementation"><span class="secno">4.1. </span><span class="content">Version-Aware Implementation</span><a class="self-link" href="#version-aware-implementation"></a></h3>
-   <p class="note" role="note"><span>Note:</span> Rewrite this, it should explain how to use LDES in LDP when clients understand the protocol</p>
-   <p>When an application knows how to append to an LDES in LDP, it may add updates of resources directly to the <em>feed</em>.
-As stated previously, this would also change the contents of the LDP Container because it is just a derived view of the <em>feed</em>.</p>
+   <ul>
+    <li data-md>
+     <p>Clients are aware of LDES in LDP</p>
+     <ul>
+      <li data-md>
+       <p>They know how to retrieve the Write Location using the <code>ldp:inbox</code> Link Header</p>
+      <li data-md>
+       <p>They know that to update the LDES, they can only POST a resource to the write location (the current inbox) to indicate a member is created, updated or deleted in the Event Stream</p>
+      <li data-md>
+       <p>They know that if the LDES in LDP is shape constrained, only valid resources will be accepted</p>
+      <li data-md>
+       <p>They know that there is a Basic LDES Orchestrator running in the background (either initiate by them or by the owner of the LDES in LDP)</p>
+     </ul>
+    <li data-md>
+     <p>Any LDP Server Implementation SHOULD be able to handle the operations executed by the client and the Basic LDES Orchestrator without modifications</p>
+     <ul>
+      <li data-md>
+       <p>SERVER REQUIREMENT: The server MUST allow to edit the metadata of containers (such that the <code>ldp:inbox</code> or <code>tree:shape</code> metadata can be added)</p>
+       <ul>
+        <li data-md>
+         <p>SERVER REQUIREMENT: The server MUST reply <code>ldp:inbox</code> and (OPTIONAL) <code>ldp:constrainedBy</code> in Link Headers when performing GET or HEAD requests on a <code>ldp:BasicContainer</code> when it is present in its metadata.</p>
+        <li data-md>
+         <p>OPTIONAL: The server MAY have shape validation capabilities. When the server does not have those capabilities, the clients MUST only add resources which conform to the shape (when indicated by the root)</p>
+        <li data-md>
+         <p class="note" role="note"><span>Note:</span> Currently the orchestrator only works with the <a href="https://github.com/solid/community-server">Community Solid Server</a></p>
+       </ul>
+     </ul>
+   </ul>
    <h3 class="heading settled" data-level="4.2" id="version-agnostic-implementation"><span class="secno">4.2. </span><span class="content">Version-Agnostic Implementation</span><a class="self-link" href="#version-agnostic-implementation"></a></h3>
    <p>With LDES in LDP it is possible to build up the history of a given resource using the Version Materializations of that resource, and synchronize and replicate this LDES with the use of LDES Action and LDES Client.
 Unfortunately, not all clients can understand LDES in LDP.</p>
