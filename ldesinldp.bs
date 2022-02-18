@@ -230,15 +230,90 @@ There are two approaches to use **LDES in LDP**:
 * A **Version-Aware** approach: Here the client is writing and reading directly to the **LDES in LDP** as it is knowledgeable about [](#ldesinldp) of this specification. Furthermore, it knows how to update a resource using **Version Materializations** from the [[!LDES]] specification.
 * A **Version-Agnostic** approach: Here the client is not knowledgeable about [](#ldesinldp) . The client interacts with the server with the [[!LDP]] API. **LDES in LDP** is used as back-end by the server and it is abstracted away from the client.
 
-Note: Explain versioning first
+## Versioning
+
+[[!LDES]] supports versioning of resources through [Version Materializations](https://semiceu.github.io/LinkedDataEventStreams/#version-materializations).
+To support versioning, an `ldes:EventStream` MUST define two properties: `ldes:versionOfPath` and `ldes:timestampPath`.
+
+`ldes:versionOfPath` declares the property that is used to define that a `tree:member` of an `ldes:EventStream` is a version of another `tree:member` in that `ldes:EventStream`.
+
+`ldes:timestampPath` declares the property that is used to define the datetime of a `tree:member`.
+
+In the examples below, `dct:isVersionOf` is being used to define that a `tree:member` is a version of another member and `dct:issued` is used to denote the datetime of when a this version was added to the Event Stream.
+
+<div class="example"  highlight="turtle" id="ldes-versioning-1">
+An Event Stream with one member which supports versioning (both `ldes:versionOfPath` and `ldes:timestampPath` are defined).
+```turtle
+ex:ES a ldes:EventStream;
+	ldes:versionOfPath dct:isVersionOf;
+	ldes:timestampPath dct:issued;
+	tree:member ex:resource1.
+
+ex:resource1 dct:title "Original member of a collection".
+```
+</div>
+
+<div class="example"  highlight="turtle" id="ldes-versioning-2">
+An Event Stream where a member has been updated with a newer version.
+```turtle
+ex:ES a ldes:EventStream;
+	ldes:versionOfPath dct:isVersionOf;
+	ldes:timestampPath dct:issued;
+	tree:member ex:resource1, ex:resource1v1.
+
+ex:resource1 dct:title "Original member of an Event Stream".
+
+ex:resource1v1 
+	dct:isVersionOf ex:resource1;
+	dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime.
+	dct:title "Member has been updated once".
+```
+</div>
+
+### Deleting of a member
+
+The [[!LDES]] specification states that all members in an `ldes:EventStream` are immutable. This indicates that a member MUST NOT be changed and implicates that it MUST NOT be deleted.
+
+With versioning however, it SHOULD be possible to mark that a member of an Event Stream has become obsolete.
+
+Therefore, this specification introduces two properties that can define that a `tree:member` is not in the Event Stream anymore, which means that they MUST always be placed together with the versioning properties.
+
+* `ldes:state` : The property that is used as a predicate to define the state a `tree:member` has within an `ldes:EventStream`
+* `ldes:removed`: The property that defines the state of a `tree:member`: more specifically that it has been removed for the `ldes:EventStream`
+
+
+<div class="example"  highlight="turtle" id="ldes-versioning-2">
+An Event Stream where the most recent version of a member states that is has been deleted.
+```turtle
+ex:ES a ldes:EventStream;
+	ldes:versionOfPath dct:isVersionOf;
+	ldes:timestampPath dct:issued;
+	tree:member ex:resource1, ex:resource1v1, ex:resource1v2.
+
+ex:resource1 dct:title "Original member of an Event Stream".
+
+ex:resource1v1 
+	dct:isVersionOf ex:resource1;
+	dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime.
+	dct:title "Member has been updated once".
+
+ex:resource1v2
+	dct:isVersionOf ex:resource1;
+	dct:issued "2021-12-15T14:00:00.000Z"^^xsd:dateTime;
+	ldes:state ldes:removed.
+```
+</div>
+
+
+
 
 ## Version-Aware Implementation
 
 * Clients are aware of LDES in LDP
       * They know how to retrieve the Write Location using the `ldp:inbox` Link Header
-      * They know that to update the LDES, they can only POST a resource to the write location (the current inbox) to indicate a member is created, updated or deleted in the Event Stream
-      * They know that if the LDES in LDP is shape constrained, only valid resources will be accepted
-      * They know that there is a Basic LDES Orchestrator running in the background (either initiate by them or by the owner of the LDES in LDP)
+          * They know that to update the LDES, they can only POST a resource to the write location (the current inbox) to indicate a member is created, updated or deleted in the Event Stream
+          * They know that if the LDES in LDP is shape constrained, only valid resources will be accepted
+          * They know that there is a Basic LDES Orchestrator running in the background (either initiate by them or by the owner of the LDES in LDP)
 * Any LDP Server Implementation SHOULD be able to handle the operations executed by the client and the Basic LDES Orchestrator without modifications
       * SERVER REQUIREMENT: The server MUST allow to edit the metadata of containers (such that the `ldp:inbox` or `tree:shape` metadata can be added)
           * SERVER REQUIREMENT: The server MUST reply `ldp:inbox` and (OPTIONAL) `ldp:constrainedBy` in Link Headers when performing GET or HEAD requests on a `ldp:BasicContainer` when it is present in its metadata.

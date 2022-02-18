@@ -1488,7 +1488,7 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
-  <meta content="66dc5a43dab99ae379eddb6c3290fcf21e90da80" name="document-revision">
+  <meta content="07a612f0e9e447add3aaf5777fb8befb8f25d66a" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2008,7 +2008,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Writing Linked Data Event Streams in LDP Basic Containers</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-02-16">16 February 2022</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-02-18">18 February 2022</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
@@ -2021,7 +2021,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" height="15" src="https://licensebuttons.net/p/zero/1.0/80x15.png" width="80"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 16 February 2022,
+In addition, as of 18 February 2022,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2054,14 +2054,19 @@ Parts of this work may be from another specification document.  If so, those par
     <li>
      <a href="#implementation"><span class="secno">4</span> <span class="content">Implementation</span></a>
      <ol class="toc">
-      <li><a href="#version-aware-implementation"><span class="secno">4.1</span> <span class="content">Version-Aware Implementation</span></a>
       <li>
-       <a href="#version-agnostic-implementation"><span class="secno">4.2</span> <span class="content">Version-Agnostic Implementation</span></a>
+       <a href="#versioning"><span class="secno">4.1</span> <span class="content">Versioning</span></a>
        <ol class="toc">
-        <li><a href="#version-agnostic-architecture"><span class="secno">4.2.1</span> <span class="content">Architecture</span></a>
-        <li><a href="#creating"><span class="secno">4.2.2</span> <span class="content">Creating</span></a>
-        <li><a href="#updating"><span class="secno">4.2.3</span> <span class="content">Updating</span></a>
-        <li><a href="#deleting"><span class="secno">4.2.4</span> <span class="content">Deleting</span></a>
+        <li><a href="#deleting-of-a-member"><span class="secno">4.1.1</span> <span class="content">Deleting of a member</span></a>
+       </ol>
+      <li><a href="#version-aware-implementation"><span class="secno">4.2</span> <span class="content">Version-Aware Implementation</span></a>
+      <li>
+       <a href="#version-agnostic-implementation"><span class="secno">4.3</span> <span class="content">Version-Agnostic Implementation</span></a>
+       <ol class="toc">
+        <li><a href="#version-agnostic-architecture"><span class="secno">4.3.1</span> <span class="content">Architecture</span></a>
+        <li><a href="#creating"><span class="secno">4.3.2</span> <span class="content">Creating</span></a>
+        <li><a href="#updating"><span class="secno">4.3.3</span> <span class="content">Updating</span></a>
+        <li><a href="#deleting"><span class="secno">4.3.4</span> <span class="content">Deleting</span></a>
        </ol>
      </ol>
     <li>
@@ -2206,20 +2211,82 @@ This is done by providing read (<code>acl:read</code>) and append (<code>acl:app
     <li data-md>
      <p>A <strong>Version-Agnostic</strong> approach: Here the client is not knowledgeable about <a href="#ldesinldp">§ 2 LDES in LDP Protocol</a> . The client interacts with the server with the <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a> API. <strong>LDES in LDP</strong> is used as back-end by the server and it is abstracted away from the client.</p>
    </ul>
-   <p class="note" role="note"><span>Note:</span> Explain versioning first</p>
-   <h3 class="heading settled" data-level="4.1" id="version-aware-implementation"><span class="secno">4.1. </span><span class="content">Version-Aware Implementation</span><a class="self-link" href="#version-aware-implementation"></a></h3>
+   <h3 class="heading settled" data-level="4.1" id="versioning"><span class="secno">4.1. </span><span class="content">Versioning</span><a class="self-link" href="#versioning"></a></h3>
+   <p><a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> supports versioning of resources through <a href="https://semiceu.github.io/LinkedDataEventStreams/#version-materializations">Version Materializations</a>.
+To support versioning, an <code>ldes:EventStream</code> MUST define two properties: <code>ldes:versionOfPath</code> and <code>ldes:timestampPath</code>.</p>
+   <p><code>ldes:versionOfPath</code> declares the property that is used to define that a <code>tree:member</code> of an <code>ldes:EventStream</code> is a version of another <code>tree:member</code> in that <code>ldes:EventStream</code>.</p>
+   <p><code>ldes:timestampPath</code> declares the property that is used to define the datetime of a <code>tree:member</code>.</p>
+   <p>In the examples below, <code>dct:isVersionOf</code> is being used to define that a <code>tree:member</code> is a version of another member and <code>dct:issued</code> is used to denote the datetime of when a this version was added to the Event Stream.</p>
+   <div class="example" id="ldes-versioning-1">
+    <a class="self-link" href="#ldes-versioning-1"></a> An Event Stream with one member which supports versioning (both <code class="highlight"><c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-></code> and <code class="highlight"><c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-></code> are defined). 
+<pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
+	<c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
+	<c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
+	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-> <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Original member of a collection"</c-><c- p>.</c->
+</pre>
+   </div>
+   <div class="example" id="ldes-versioning-2">
+    <a class="self-link" href="#ldes-versioning-2"></a> An Event Stream where a member has been updated with a newer version. 
+<pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
+	<c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
+	<c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
+	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-> <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Original member of an Event Stream"</c-><c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-> 
+	<c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+	<c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T12:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
+	<c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Member has been updated once"</c-><c- p>.</c->
+</pre>
+   </div>
+   <h4 class="heading settled" data-level="4.1.1" id="deleting-of-a-member"><span class="secno">4.1.1. </span><span class="content">Deleting of a member</span><a class="self-link" href="#deleting-of-a-member"></a></h4>
+   <p>The <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification states that all members in an <code>ldes:EventStream</code> are immutable. This indicates that a member MUST NOT be changed and implicates that it MUST NOT be deleted.</p>
+   <p>With versioning however, it SHOULD be possible to mark that a member of an Event Stream has become obsolete.</p>
+   <p>Therefore, this specification introduces two properties that can define that a <code>tree:member</code> is not in the Event Stream anymore, which means that they MUST always be placed together with the versioning properties.</p>
+   <ul>
+    <li data-md>
+     <p><code>ldes:state</code> : The property that is used as a predicate to define the state a <code>tree:member</code> has within an <code>ldes:EventStream</code></p>
+    <li data-md>
+     <p><code>ldes:removed</code>: The property that defines the state of a <code>tree:member</code>: more specifically that it has been removed for the <code>ldes:EventStream</code></p>
+   </ul>
+   <div class="example" id="ldes-versioning-2①">
+    <a class="self-link" href="#ldes-versioning-2①"></a> An Event Stream where the most recent version of a member states that is has been deleted. 
+<pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
+	<c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
+	<c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
+	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v2</c-><c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-> <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Original member of an Event Stream"</c-><c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-> 
+	<c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+	<c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T12:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
+	<c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Member has been updated once"</c-><c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v2</c->
+	<c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+	<c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T14:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
+	<c- nn>ldes</c-><c- p>:</c-><c- f>state</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>removed</c-><c- p>.</c->
+</pre>
+   </div>
+   <h3 class="heading settled" data-level="4.2" id="version-aware-implementation"><span class="secno">4.2. </span><span class="content">Version-Aware Implementation</span><a class="self-link" href="#version-aware-implementation"></a></h3>
    <ul>
     <li data-md>
      <p>Clients are aware of LDES in LDP</p>
      <ul>
       <li data-md>
        <p>They know how to retrieve the Write Location using the <code>ldp:inbox</code> Link Header</p>
-      <li data-md>
-       <p>They know that to update the LDES, they can only POST a resource to the write location (the current inbox) to indicate a member is created, updated or deleted in the Event Stream</p>
-      <li data-md>
-       <p>They know that if the LDES in LDP is shape constrained, only valid resources will be accepted</p>
-      <li data-md>
-       <p>They know that there is a Basic LDES Orchestrator running in the background (either initiate by them or by the owner of the LDES in LDP)</p>
+       <ul>
+        <li data-md>
+         <p>They know that to update the LDES, they can only POST a resource to the write location (the current inbox) to indicate a member is created, updated or deleted in the Event Stream</p>
+        <li data-md>
+         <p>They know that if the LDES in LDP is shape constrained, only valid resources will be accepted</p>
+        <li data-md>
+         <p>They know that there is a Basic LDES Orchestrator running in the background (either initiate by them or by the owner of the LDES in LDP)</p>
+       </ul>
      </ul>
     <li data-md>
      <p>Any LDP Server Implementation SHOULD be able to handle the operations executed by the client and the Basic LDES Orchestrator without modifications</p>
@@ -2236,11 +2303,11 @@ This is done by providing read (<code>acl:read</code>) and append (<code>acl:app
        </ul>
      </ul>
    </ul>
-   <h3 class="heading settled" data-level="4.2" id="version-agnostic-implementation"><span class="secno">4.2. </span><span class="content">Version-Agnostic Implementation</span><a class="self-link" href="#version-agnostic-implementation"></a></h3>
+   <h3 class="heading settled" data-level="4.3" id="version-agnostic-implementation"><span class="secno">4.3. </span><span class="content">Version-Agnostic Implementation</span><a class="self-link" href="#version-agnostic-implementation"></a></h3>
    <p>With LDES in LDP it is possible to build up the history of a given resource using the Version Materializations of that resource, and synchronize and replicate this LDES with the use of LDES Action and LDES Client.
 Unfortunately, not all clients can understand LDES in LDP.</p>
    <p>Therefore, a proposal is being presented that combines the simplicity to perform CRUD operations with RDF data on an LDP and the expressivity of an LDES in LDP. Here, the LDES in LDP is used as the source for the resources that are shown in the LDP.</p>
-   <h4 class="heading settled" data-level="4.2.1" id="version-agnostic-architecture"><span class="secno">4.2.1. </span><span class="content">Architecture</span><a class="self-link" href="#version-agnostic-architecture"></a></h4>
+   <h4 class="heading settled" data-level="4.3.1" id="version-agnostic-architecture"><span class="secno">4.3.1. </span><span class="content">Architecture</span><a class="self-link" href="#version-agnostic-architecture"></a></h4>
    <p><a href="#ldesasbase">The architecture figure</a> shows the structure when the LDP is combined with the LDES in LDP. The resources that are present in the <code>{container}</code> are a view derived from the LDES in <em>feed</em>, which is stored as an LDES in LDP. More specifically a view that only contains the latest version of a given member in the Event Stream.
 Thus when a resource has multiple versions (e.g. due to it being edited) only the latest version will be shown in the LDP. However, the whole history of those resources can be retrieved from the <em>feed</em>.</p>
    <figure id="ldesasbase">
@@ -2249,7 +2316,7 @@ Thus when a resource has multiple versions (e.g. due to it being edited) only th
    </figure>
     With this proposal, reading from an LDES in LDP for clients who are not aware is thus solved. 
 Though in order to use this feed as storage and let the LDP still appear as normal while creating, updating and deleting resources, additional modifications are required. 
-   <h4 class="heading settled" data-level="4.2.2" id="creating"><span class="secno">4.2.2. </span><span class="content">Creating</span><a class="self-link" href="#creating"></a></h4>
+   <h4 class="heading settled" data-level="4.3.2" id="creating"><span class="secno">4.3.2. </span><span class="content">Creating</span><a class="self-link" href="#creating"></a></h4>
    <p>An HTTP POST request is used to create a resource in an LDP.
 When a POST request is sent to an LDP Container three things happen: an identifier is created by the server for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the container to indicate that it contains the new resource.</p>
    <p>For  Version-Agnostic implementations, the LDP behaviour for a POST is just the first step. The second step consists of combining the body of the request with two extra triples to indicate the version-specific representation.
@@ -2265,13 +2332,13 @@ An example of those triples when the server chose <code>http://example.org/\{con
 </pre>
    </div>
    <p class="note" role="note"><span>Note:</span> When a slug is provided in the Header of a POST request, a server can choose to use that slug as an identifier.</p>
-   <h4 class="heading settled" data-level="4.2.3" id="updating"><span class="secno">4.2.3. </span><span class="content">Updating</span><a class="self-link" href="#updating"></a></h4>
+   <h4 class="heading settled" data-level="4.3.3" id="updating"><span class="secno">4.3.3. </span><span class="content">Updating</span><a class="self-link" href="#updating"></a></h4>
    <p>Updating LDP Resources can be done in two ways.
 First, there is an HTTP PUT request which replaces the resource with the body that accompanies the request. 
 The second option is using an HTTP PATCH request that uses a <a data-link-type="biblio" href="#biblio-sparql-update">[SPARQL-UPDATE]</a> query, where first the server applies the changes and then the result is stored as the updated resource.</p>
    <p>An LDP with Version-Agnostic LDES in LDP  support stores those updates in the <em>feed</em> as the newest version. Thus when using PUT, the whole body of the request together with the version-specific triples are added to <em>feed</em>.
 After applying the changes using a PATCH request, the resulting resource is accompanied with  the version-specific triples and appended to the <em>feed</em>.</p>
-   <h4 class="heading settled" data-level="4.2.4" id="deleting"><span class="secno">4.2.4. </span><span class="content">Deleting</span><a class="self-link" href="#deleting"></a></h4>
+   <h4 class="heading settled" data-level="4.3.4" id="deleting"><span class="secno">4.3.4. </span><span class="content">Deleting</span><a class="self-link" href="#deleting"></a></h4>
    <p>An HTTP DELETE request to an identifier of a resource results in the removal of that resource and its corresponding metadata in the parent container. In the <em>feed</em> however, all the versions are not removed because of two reasons.
 The first one is that an LDES is immutable, meaning that members can not be edited once they are in an LDES.
 The second reason is that the history of this resource would be removed as well.</p>
