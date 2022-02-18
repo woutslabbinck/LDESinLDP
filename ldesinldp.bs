@@ -271,7 +271,7 @@ ex:resource1v1
 ```
 </div>
 
-### Deleting of a member
+### Deleting a member
 
 The [[!LDES]] specification states that all members in an `ldes:EventStream` are immutable. This indicates that a member MUST NOT be changed and implicates that it MUST NOT be deleted.
 
@@ -310,7 +310,7 @@ ex:resource1v2
 
 
 
-## Version-Aware Aproach
+## Version-Aware Approach
 
 ### Client Implications
 
@@ -322,10 +322,10 @@ They  know:
 
 ### Server Implications
 
-A result, any LDP Server Implementation SHOULD be able to handle the operations executed by the client and the Basic LDES Orchestrator without modifications.
+As a result, any LDP Server Implementation SHOULD be able to handle the operations executed by the client and the Basic LDES Orchestrator without modifications.
 
 For completeness: the minimum requirements for the LDP Server to comply with the [LDES in LDP Protocol](#ldesinldp) and the [Basic LDES Orchestrator](#orchestrator) are listed below:
-* SERVER REQUIREMENT: The server MUST allow to edit the metadata of containers (such that the `ldp:inbox` or `tree:shape` metadata can be added)
+* SERVER REQUIREMENT: The server MUST allow editing the metadata of containers (such that the `ldp:inbox` or `tree:shape` metadata can be added)
 * SERVER REQUIREMENT: The server MUST reply `ldp:inbox` and (OPTIONAL) `ldp:constrainedBy` in Link Headers when performing GET or HEAD requests on a `ldp:BasicContainer` when it is present in its metadata.
 * OPTIONAL: The server MAY have shape validation capabilities. When the server does not have those capabilities, the clients MUST only add resources that conform to the shape (when indicated by the root)
 
@@ -336,28 +336,39 @@ Note: Currently the  Basic LDES Orchestrator  only works with the [Community Sol
 
 ## Version-Agnostic Approach
 
-With LDES in LDP, it is possible to build up the history of a given resource using the Version Materializations of that resource, and synchronize and replicate this LDES with the use of LDES Action and LDES Client.
-<!--\footnote{Version Materializations defined in the LDES specification \url{https://semiceu.github.io/LinkedDataEventStreams/\#version-materializations}}\footnote{\url{https://github.com/TREEcg/event-stream-client} \cite{van_lancker_publishing_2021}}.-->
-Unfortunately, not all clients can understand LDES in LDP.
+In contrast to the [Version-Aware Approach](#version-aware-approach), where a client is required to know everything, with a Version-Agnostic approach only knowledge about the LDP API is required.
 
-Therefore, a proposal is being presented that combines the simplicity to perform CRUD operations with RDF data on an LDP and the expressivity of an LDES in LDP. Here, the LDES in LDP is used as the source for the resources that are shown in the LDP.
+<!-- Therefore, a proposal is being presented that combines the simplicity to perform CRUD operations with RDF data on an LDP and the expressivity of an LDES in LDP. Here, the LDES in LDP is used as the source for the resources that are shown in the LDP. -->
 
 ### Architecture ### {#version-agnostic-architecture}
 
-<a href="#ldesasbase">The architecture figure</a> shows the structure when the LDP is combined with the LDES in LDP. The resources that are present in the `{container}` are a view derived from the LDES in *feed*, which is stored as an LDES in LDP. More specifically a view that only contains the latest version of a given member in the Event Stream.
-Thus when a resource has multiple versions (e.g. due to it being edited) only the latest version will be shown in the LDP. However, the whole history of those resources can be retrieved from the *feed*.
+<a href="#ldesasbase">The architecture figure</a> shows the structure when the LDP is combined with the **LDES in LDP**.
+The resources that are present in the `{container}` are a view derived from the LDES in *feed*, which is stored as an **LDES in LDP**. 
+
+More specifically `{container}` is a view, represented as an `ldp:BasicContainer`, that 
+contains links to the original members of the Event Stream via `ldp:contains`.
+Dereferencing that link, leads to an LDP Resource that has the latest version of that member as content.
+
+When a resource has multiple versions (e.g. due to it being edited), only the latest version will be shown as the LDP Resource.
+
+Note: The whole history of those resources can be retrieved from the *feed*.
 
 <figure id="ldesasbase">
 <img src="./img/Version_Materialized_View.png" />
 <figcaption>Architecture when LDES is used as base in a version-agnostic approach</figcaption>
 </figure>
-With this proposal, reading from an LDES in LDP for clients who are not aware is thus solved. 
-Though to use this feed as storage and let the LDP still appear as normal while creating, updating and deleting resources, additional modifications are required.
+
+The abstraction of the **LDES in LDP** through the LDP API results in several modifications to Creating, Reading, Updating and Deleting a Resource.
+
+How to read the resources is already explained in the first paragraphs of the architecture. 
+The other operations are explained in the subsections below.
+<!-- With this proposal, reading from an LDES in LDP for clients who are not aware is thus solved. 
+Though to use this feed as storage and let the LDP still appear as normal while creating, updating and deleting resources, additional modifications are required. -->
 
 ### Creating
 
 An HTTP POST request is used to create a resource in an LDP. 
-When a POST request is sent to an LDP Container three things happen: an identifier is created by the server for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the container to indicate that it contains the new resource.
+When a POST request is sent to an LDP Container three things happen: an identifier is created by the server for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the parent `ldp:Container` to indicate that it contains the new resource.
 
 For  Version-Agnostic implementations, the LDP behaviour for a POST is just the first step. The second step consists of combining the body of the request with two extra triples to indicate the version-specific representation. 
 The newly composed body is then added to the *feed* LDES.
@@ -391,9 +402,12 @@ An HTTP DELETE request to an identifier of a resource results in the removal of 
 The first one is that an LDES is immutable, meaning that members can not be edited once they are in an LDES.
 The second reason is that the history of this resource would be removed as well.
 
-Thus next to the LDP behaviour, an item consisting of three triples is added to the *feed* to indicate a resource has been removed. 
-Two of those triples are the version-specific ones, the last one is just an indication that the resource has been removed from the LDP. 
-For this last triple `<https://example.org/versionMemberURI> ldes:state ldes:removed .` is proposed.
+Thus next to the LDP behaviour, an LDP Resource consisting of three triples is added to the *feed* to indicate the resource has been removed. 
+
+An example of such three triples can be seen in the <a href="#ldes-versioning-2">example</a> in [](#deleting-a-member). They are the triples with as subject `ex:resource1v2`.
+
+<!--Two of those triples are the version-specific ones, the last one is just an indication that the resource has been removed from the LDP.--> 
+<!--For this last triple `<https://example.org/versionMemberURI> ldes:state ldes:removed .` is proposed.-->
 
 Examples {#examples}
 =====================
@@ -401,6 +415,7 @@ Examples {#examples}
 ## Metadata notifications
 
 At [https://tree.linkeddatafragments.org/announcements/](https://tree.linkeddatafragments.org/announcements/), a public, shape constrained LDES in LDP can be found which is used for publishing metadata of DCAT Application Profiles [[!VOCAB-DCAT-3]] about datasets or data services, or metadata of a [[!TREE]] View.
+
 As LDP, a Community Solid Server [[CSS](https://github.com/solid/community-server)] instance is used with shape support. 
 On the server where the CSS resides, the Basic LDES Orchestrator runs.
 The trigger for creating new containers is when the current fragment container contains 100 resources or more.
