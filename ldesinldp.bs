@@ -280,7 +280,6 @@ ex:resource1v1
 Here, a newer version of `ex:resource1` has been created (`ex:resource1v1`), where the title has been changed.
 </div>
 
-Note: When materializing this LDES to create a snapshot in time,
 
 ### Deleting a member
 
