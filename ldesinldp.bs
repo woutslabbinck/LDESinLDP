@@ -247,9 +247,9 @@ In the examples below, `dct:isVersionOf` is being used to define that a `tree:me
 An Event Stream with one member which supports versioning (both `ldes:versionOfPath` and `ldes:timestampPath` are defined).
 ```turtle
 ex:ES a ldes:EventStream;
-	ldes:versionOfPath dct:isVersionOf;
-	ldes:timestampPath dct:issued;
-	tree:member ex:resource1v0.
+    ldes:versionOfPath dct:isVersionOf;
+    ldes:timestampPath dct:issued;
+    tree:member ex:resource1v0.
 
 ex:resource1v0
     dct:isVersionOf ex:resource1;
@@ -263,9 +263,9 @@ Here, `ex:resource1v0` is the first version of `ex:resource1`.
 An Event Stream where a member has been updated with a newer version.
 ```turtle
 ex:ES a ldes:EventStream;
-	ldes:versionOfPath dct:isVersionOf;
-	ldes:timestampPath dct:issued;
-	tree:member ex:resource1v0, ex:resource1v1.
+    ldes:versionOfPath dct:isVersionOf;
+    ldes:timestampPath dct:issued;
+    tree:member ex:resource1v0, ex:resource1v1.
 
 ex:resource1v0
     dct:isVersionOf ex:resource1;
@@ -273,9 +273,9 @@ ex:resource1v0
     dct:title "First version of the title".
     
 ex:resource1v1 
-	dct:isVersionOf ex:resource1;
-	dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime.
-	dct:title "Title has been updated once".
+    dct:isVersionOf ex:resource1;
+    dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime.
+    dct:title "Title has been updated once".
 ```
 Here, a newer version of `ex:resource1` has been created (`ex:resource1v1`), where the title has been changed.
 </div>
@@ -294,9 +294,9 @@ Therefore, this specification introduces the specific type `ldes:DeletedLDPResou
 An Event Stream where the most recent version of `ex:resource1` is marked as deleted.
 ```turtle
 ex:ES a ldes:EventStream;
-	ldes:versionOfPath dct:isVersionOf;
-	ldes:timestampPath dct:issued;
-	tree:member ex:resource1v0, ex:resource1v1, ex:resource1v2.
+    ldes:versionOfPath dct:isVersionOf;
+    ldes:timestampPath dct:issued;
+    tree:member ex:resource1v0, ex:resource1v1, ex:resource1v2.
 
 ex:resource1v0
     dct:isVersionOf ex:resource1;
@@ -304,15 +304,15 @@ ex:resource1v0
     dct:title "First version of the title".
     
 ex:resource1v1 
-	dct:isVersionOf ex:resource1;
-	dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime.
-	dct:title "Title has been updated once".
+    dct:isVersionOf ex:resource1;
+    dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime.
+    dct:title "Title has been updated once".
 
 ex:resource1v2
-	a ldes:DeletedLDPResource;
-	dct:isVersionOf ex:resource1;
-	dct:issued "2021-12-15T14:00:00.000Z"^^xsd:dateTime;
-	dct:title "Title has been updated once".
+    a ldes:DeletedLDPResource;
+    dct:isVersionOf ex:resource1;
+    dct:issued "2021-12-15T14:00:00.000Z"^^xsd:dateTime;
+    dct:title "Title has been updated once".
 
 ```
 

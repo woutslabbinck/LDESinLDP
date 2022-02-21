@@ -1488,7 +1488,7 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
-  <meta content="e5d01f91663c528c320748e7c4a0f5903556f58a" name="document-revision">
+  <meta content="e31b1e30de2bc248155b878edba8353fed1b0bce" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2226,9 +2226,9 @@ To support versioning, an <code>ldes:EventStream</code> MUST define two properti
    <div class="example" id="ldes-versioning-1">
     <a class="self-link" href="#ldes-versioning-1"></a> An Event Stream with one member which supports versioning (both <code class="highlight"><c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-></code> and <code class="highlight"><c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-></code> are defined). 
 <pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
-	<c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
-	<c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
-	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>.</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>.</c->
 
 <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c->
     <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
@@ -2240,9 +2240,9 @@ To support versioning, an <code>ldes:EventStream</code> MUST define two properti
    <div class="example" id="ldes-versioning-2">
     <a class="self-link" href="#ldes-versioning-2"></a> An Event Stream where a member has been updated with a newer version. 
 <pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
-	<c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
-	<c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
-	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>.</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>.</c->
 
 <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c->
     <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
@@ -2250,9 +2250,9 @@ To support versioning, an <code>ldes:EventStream</code> MUST define two properti
     <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"First version of the title"</c-><c- p>.</c->
     
 <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-> 
-	<c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
-	<c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T12:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
-	<c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T12:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
 </pre>
     Here, a newer version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code> has been created (<code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-></code>), where the title has been changed. 
    </div>
@@ -2264,9 +2264,9 @@ To support versioning, an <code>ldes:EventStream</code> MUST define two properti
    <div class="example" id="ldes-versioning-2①">
     <a class="self-link" href="#ldes-versioning-2①"></a> An Event Stream where the most recent version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code> is marked as deleted. 
 <pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
-	<c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
-	<c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
-	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v2</c-><c- p>.</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v2</c-><c- p>.</c->
 
 <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c->
     <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
@@ -2274,15 +2274,15 @@ To support versioning, an <code>ldes:EventStream</code> MUST define two properti
     <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"First version of the title"</c-><c- p>.</c->
     
 <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-> 
-	<c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
-	<c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T12:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
-	<c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T12:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
 
 <c- nn>ex</c-><c- p>:</c-><c- f>resource1v2</c->
-	<c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>DeletedLDPResource</c-><c- p>;</c->
-	<c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
-	<c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T14:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
-	<c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
+    <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>DeletedLDPResource</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T14:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
 </pre>
    </div>
    <p class="note" role="note"><span>Note:</span> It is preferred to mark members as deleted with a custom domain specific type. <code>ldes:DeletedLDPResource</code> is used to mark a member to be deleted in the case of LDESinLDP.
