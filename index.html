@@ -1488,7 +1488,7 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
-  <meta content="e03af41ba69ce68c0f6262de6e517390ab435496" name="document-revision">
+  <meta content="427e30280cadeef086216d0112c93d73bb1fc59a" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2008,7 +2008,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Writing Linked Data Event Streams in LDP Basic Containers</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-02-18">18 February 2022</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-02-21">21 February 2022</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editors:
@@ -2022,7 +2022,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" height="15" src="https://licensebuttons.net/p/zero/1.0/80x15.png" width="80"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 18 February 2022,
+In addition, as of 21 February 2022,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2220,7 +2220,7 @@ This is done by providing read (<code>acl:read</code>) and append (<code>acl:app
    <h3 class="heading settled" data-level="4.1" id="versioning"><span class="secno">4.1. </span><span class="content">Versioning</span><a class="self-link" href="#versioning"></a></h3>
    <p><a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> supports versioning of resources through <a href="https://semiceu.github.io/LinkedDataEventStreams/#version-materializations">Version Materializations</a>.
 To support versioning, an <code>ldes:EventStream</code> MUST define two properties: <code>ldes:versionOfPath</code> and <code>ldes:timestampPath</code>.</p>
-   <p><code>ldes:versionOfPath</code> declares the property that is used to define that a <code>tree:member</code> of an <code>ldes:EventStream</code> is a version of another <code>tree:member</code> in that <code>ldes:EventStream</code>.</p>
+   <p><code>ldes:versionOfPath</code> declares the property that is used to define that a <code>tree:member</code> of an <code>ldes:EventStream</code> is a version.</p>
    <p><code>ldes:timestampPath</code> declares the property that is used to define the DateTime of a <code>tree:member</code>.</p>
    <p>In the examples below, <code>dct:isVersionOf</code> is being used to define that a <code>tree:member</code> is a version of another member and <code>dct:issued</code> is used to denote the DateTime of when a this version was added to the Event Stream.</p>
    <div class="example" id="ldes-versioning-1">
@@ -2228,54 +2228,60 @@ To support versioning, an <code>ldes:EventStream</code> MUST define two properti
 <pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
 	<c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
 	<c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
-	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>.</c->
+	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>.</c->
 
-<c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-> <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Original member of a collection"</c-><c- p>.</c->
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T10:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"First version of the title"</c-><c- p>.</c->
 </pre>
+    Here, <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-></code> is the first version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code>. 
    </div>
    <div class="example" id="ldes-versioning-2">
     <a class="self-link" href="#ldes-versioning-2"></a> An Event Stream where a member has been updated with a newer version. 
 <pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
 	<c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
 	<c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
-	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>.</c->
+	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>.</c->
 
-<c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-> <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Original member of an Event Stream"</c-><c- p>.</c->
-
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T10:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"First version of the title"</c-><c- p>.</c->
+    
 <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-> 
 	<c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
 	<c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T12:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
-	<c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Member has been updated once"</c-><c- p>.</c->
+	<c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
 </pre>
+    Here, a newer version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code> has been created (<code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-></code>), where the title has been changed. 
    </div>
+   <p class="note" role="note"><span>Note:</span> When materializing this LDES to create a snapshot in time,</p>
    <h4 class="heading settled" data-level="4.1.1" id="deleting-a-member"><span class="secno">4.1.1. </span><span class="content">Deleting a member</span><a class="self-link" href="#deleting-a-member"></a></h4>
    <p>The <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification states that all members in an <code>ldes:EventStream</code> are immutable. This indicates that a member MUST NOT be changed and implicates that it MUST NOT be deleted.</p>
    <p>With versioning, however, it SHOULD be possible to mark that a member of an Event Stream has become obsolete.</p>
-   <p>Therefore, this specification introduces two properties that can define that a <code>tree:member</code> is not in the Event Stream anymore, which means that they MUST always be placed together with the versioning properties.</p>
-   <ul>
-    <li data-md>
-     <p><code>ldes:state</code> : The property that is used as a predicate to define the state a <code>tree:member</code> has within an <code>ldes:EventStream</code></p>
-    <li data-md>
-     <p><code>ldes:removed</code>: The property that defines the state of a <code>tree:member</code> more specifically that it has been removed for the <code>ldes:EventStream</code></p>
-   </ul>
+   <p>Therefore, this specification introduces the specific type <code>ldes:DeletedLDPResource</code>. This type for a <code>tree:member</code> states, when an LDES is used in the context for <strong>LDESinLDP</strong>, that it is marked as deleted from the <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a>.</p>
    <div class="example" id="ldes-versioning-2①">
-    <a class="self-link" href="#ldes-versioning-2①"></a> An Event Stream where the most recent version of a member states that is has been deleted. 
+    <a class="self-link" href="#ldes-versioning-2①"></a> An Event Stream where the most recent version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code> is marked as deleted. 
 <pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
 	<c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
 	<c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
-	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v2</c-><c- p>.</c->
+	<c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v2</c-><c- p>.</c->
 
-<c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-> <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Original member of an Event Stream"</c-><c- p>.</c->
-
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T10:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"First version of the title"</c-><c- p>.</c->
+    
 <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-> 
 	<c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
 	<c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T12:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>.</c->
-	<c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Member has been updated once"</c-><c- p>.</c->
+	<c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
 
 <c- nn>ex</c-><c- p>:</c-><c- f>resource1v2</c->
+	<c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>DeletedLDPResource</c-><c- p>;</c->
 	<c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
 	<c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T14:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
-	<c- nn>ldes</c-><c- p>:</c-><c- f>state</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>removed</c-><c- p>.</c->
 </pre>
    </div>
    <h3 class="heading settled" data-level="4.2" id="version-aware-approach"><span class="secno">4.2. </span><span class="content">Version-Aware Approach</span><a class="self-link" href="#version-aware-approach"></a></h3>

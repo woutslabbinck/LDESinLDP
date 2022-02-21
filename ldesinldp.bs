@@ -62,6 +62,7 @@ Abstract: Writing to a time-based fragmented Linked Data Event Stream that is st
     }
 }
 </pre>
+
 Introduction {#introduction}
 =====================
 
@@ -236,7 +237,7 @@ There are two approaches to use **LDES in LDP**:
 [[!LDES]] supports versioning of resources through [Version Materializations](https://semiceu.github.io/LinkedDataEventStreams/#version-materializations).
 To support versioning, an `ldes:EventStream` MUST define two properties: `ldes:versionOfPath` and `ldes:timestampPath`.
 
-`ldes:versionOfPath` declares the property that is used to define that a `tree:member` of an `ldes:EventStream` is a version of another `tree:member` in that `ldes:EventStream`.
+`ldes:versionOfPath` declares the property that is used to define that a `tree:member` of an `ldes:EventStream` is a version.
 
 `ldes:timestampPath` declares the property that is used to define the DateTime of a `tree:member`.
 
@@ -248,10 +249,14 @@ An Event Stream with one member which supports versioning (both `ldes:versionOfP
 ex:ES a ldes:EventStream;
 	ldes:versionOfPath dct:isVersionOf;
 	ldes:timestampPath dct:issued;
-	tree:member ex:resource1.
+	tree:member ex:resource1v0.
 
-ex:resource1 dct:title "Original member of a collection".
+ex:resource1v0
+    dct:isVersionOf ex:resource1;
+    dct:issued "2021-12-15T10:00:00.000Z"^^xsd:dateTime.
+    dct:title "First version of the title".
 ```
+Here, `ex:resource1v0` is the first version of `ex:resource1`.
 </div>
 
 <div class="example"  highlight="turtle" id="ldes-versioning-2">
@@ -260,16 +265,22 @@ An Event Stream where a member has been updated with a newer version.
 ex:ES a ldes:EventStream;
 	ldes:versionOfPath dct:isVersionOf;
 	ldes:timestampPath dct:issued;
-	tree:member ex:resource1, ex:resource1v1.
+	tree:member ex:resource1v0, ex:resource1v1.
 
-ex:resource1 dct:title "Original member of an Event Stream".
-
+ex:resource1v0
+    dct:isVersionOf ex:resource1;
+    dct:issued "2021-12-15T10:00:00.000Z"^^xsd:dateTime.
+    dct:title "First version of the title".
+    
 ex:resource1v1 
 	dct:isVersionOf ex:resource1;
 	dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime.
-	dct:title "Member has been updated once".
+	dct:title "Title has been updated once".
 ```
+Here, a newer version of `ex:resource1` has been created (`ex:resource1v1`), where the title has been changed.
 </div>
+
+Note: When materializing this LDES to create a snapshot in time,
 
 ### Deleting a member
 
@@ -277,34 +288,32 @@ The [[!LDES]] specification states that all members in an `ldes:EventStream` are
 
 With versioning, however, it SHOULD be possible to mark that a member of an Event Stream has become obsolete.
 
-Therefore, this specification introduces two properties that can define that a `tree:member` is not in the Event Stream anymore, which means that they MUST always be placed together with the versioning properties.
-
-* `ldes:state` : The property that is used as a predicate to define the state a `tree:member` has within an `ldes:EventStream`
-* `ldes:removed`: The property that defines the state of a `tree:member` more specifically that it has been removed for the `ldes:EventStream`
-
-
-
+Therefore, this specification introduces the specific type `ldes:DeletedLDPResource`. This type for a `tree:member` states, when an LDES is used in the context for **LDESinLDP**, that it is marked as deleted from the [[!LDES]].
 
 <div class="example"  highlight="turtle" id="ldes-versioning-2">
-An Event Stream where the most recent version of a member states that is has been deleted.
+An Event Stream where the most recent version of `ex:resource1` is marked as deleted.
 ```turtle
 ex:ES a ldes:EventStream;
 	ldes:versionOfPath dct:isVersionOf;
 	ldes:timestampPath dct:issued;
-	tree:member ex:resource1, ex:resource1v1, ex:resource1v2.
+	tree:member ex:resource1v0, ex:resource1v1, ex:resource1v2.
 
-ex:resource1 dct:title "Original member of an Event Stream".
-
+ex:resource1v0
+    dct:isVersionOf ex:resource1;
+    dct:issued "2021-12-15T10:00:00.000Z"^^xsd:dateTime.
+    dct:title "First version of the title".
+    
 ex:resource1v1 
 	dct:isVersionOf ex:resource1;
 	dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime.
-	dct:title "Member has been updated once".
+	dct:title "Title has been updated once".
 
 ex:resource1v2
+	a ldes:DeletedLDPResource;
 	dct:isVersionOf ex:resource1;
 	dct:issued "2021-12-15T14:00:00.000Z"^^xsd:dateTime;
-	ldes:state ldes:removed.
 ```
+
 </div>
 
 
@@ -406,8 +415,6 @@ Thus next to the LDP behaviour, an LDP Resource consisting of three triples is a
 
 An example of such three triples can be seen in the <a href="#ldes-versioning-2">example</a> in [](#deleting-a-member). They are the triples with as subject `ex:resource1v2`.
 
-<!--Two of those triples are the version-specific ones, the last one is just an indication that the resource has been removed from the LDP.--> 
-<!--For this last triple `<https://example.org/versionMemberURI> ldes:state ldes:removed .` is proposed.-->
 
 Examples {#examples}
 =====================
