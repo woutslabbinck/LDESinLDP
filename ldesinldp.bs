@@ -312,12 +312,14 @@ ex:resource1v2
 	a ldes:DeletedLDPResource;
 	dct:isVersionOf ex:resource1;
 	dct:issued "2021-12-15T14:00:00.000Z"^^xsd:dateTime;
+	dct:title "Title has been updated once".
+
 ```
 
 </div>
 
-
-
+Note: It is preferred to mark members as deleted with a custom domain specific type. `ldes:DeletedLDPResource` is used to mark a member to be deleted in the case of LDESinLDP.
+Therefore, clients MUST also copy the last contents of the member when a domain specific type is added (which is done in <a href="#ldes-versioning-2">this example</a> as the title is copied from `ex:resource1v1`).
 
 ## Version-Aware Approach
 

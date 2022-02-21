@@ -1488,7 +1488,7 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
-  <meta content="427e30280cadeef086216d0112c93d73bb1fc59a" name="document-revision">
+  <meta content="e5d01f91663c528c320748e7c4a0f5903556f58a" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2282,8 +2282,11 @@ To support versioning, an <code>ldes:EventStream</code> MUST define two properti
 	<c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>DeletedLDPResource</c-><c- p>;</c->
 	<c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
 	<c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T14:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
+	<c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
 </pre>
    </div>
+   <p class="note" role="note"><span>Note:</span> It is preferred to mark members as deleted with a custom domain specific type. <code>ldes:DeletedLDPResource</code> is used to mark a member to be deleted in the case of LDESinLDP.
+Therefore, clients MUST also copy the last contents of the member when a domain specific type is added (which is done in <a href="#ldes-versioning-2">this example</a> as the title is copied from <code>ex:resource1v1</code>).</p>
    <h3 class="heading settled" data-level="4.2" id="version-aware-approach"><span class="secno">4.2. </span><span class="content">Version-Aware Approach</span><a class="self-link" href="#version-aware-approach"></a></h3>
    <h4 class="heading settled" data-level="4.2.1" id="client-implications"><span class="secno">4.2.1. </span><span class="content">Client Implications</span><a class="self-link" href="#client-implications"></a></h4>
    <p>In this approach, clients are aware of the <a href="#ldesinldp">LDES in LDP Protocol</a>.
