@@ -253,7 +253,7 @@ ex:ES a ldes:EventStream;
 
 ex:resource1v0
     dct:isVersionOf ex:resource1;
-    dct:issued "2021-12-15T10:00:00.000Z"^^xsd:dateTime.
+    dct:issued "2021-12-15T10:00:00.000Z"^^xsd:dateTime;
     dct:title "First version of the title".
 ```
 Here, `ex:resource1v0` is the first version of `ex:resource1`.
@@ -269,12 +269,12 @@ ex:ES a ldes:EventStream;
 
 ex:resource1v0
     dct:isVersionOf ex:resource1;
-    dct:issued "2021-12-15T10:00:00.000Z"^^xsd:dateTime.
+    dct:issued "2021-12-15T10:00:00.000Z"^^xsd:dateTime;
     dct:title "First version of the title".
     
 ex:resource1v1 
     dct:isVersionOf ex:resource1;
-    dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime.
+    dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime;
     dct:title "Title has been updated once".
 ```
 Here, a newer version of `ex:resource1` has been created (`ex:resource1v1`), where the title has been changed.
@@ -300,12 +300,12 @@ ex:ES a ldes:EventStream;
 
 ex:resource1v0
     dct:isVersionOf ex:resource1;
-    dct:issued "2021-12-15T10:00:00.000Z"^^xsd:dateTime.
+    dct:issued "2021-12-15T10:00:00.000Z"^^xsd:dateTime;
     dct:title "First version of the title".
     
 ex:resource1v1 
     dct:isVersionOf ex:resource1;
-    dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime.
+    dct:issued "2021-12-15T12:00:00.000Z"^^xsd:dateTime;
     dct:title "Title has been updated once".
 
 ex:resource1v2
