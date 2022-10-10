@@ -1487,8 +1487,8 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
-  <meta content="4197241d935e401dab4c731d64394cb97367eceb" name="document-revision">
+  <meta content="Bikeshed version 11cdbd324, updated Fri Oct 7 18:14:16 2022 -0700" name="generator">
+  <meta content="917bc45232e6bba908a1c87cd34bed3eb73fb9c0" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2008,7 +2008,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Writing Linked Data Event Streams in LDP Basic Containers</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-03-02">2 March 2022</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-10-10">10 October 2022</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editors:
@@ -2022,7 +2022,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" height="15" src="https://licensebuttons.net/p/zero/1.0/80x15.png" width="80"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 2 March 2022,
+In addition, as of 10 October 2022,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2256,7 +2256,6 @@ To support versioning, an <code>ldes:EventStream</code> MUST define two properti
 </pre>
     Here, a newer version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code> has been created (<code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-></code>), where the title has been changed. 
    </div>
-   <p class="note" role="note"><span>Note:</span> When materializing this LDES to create a snapshot in time,</p>
    <h4 class="heading settled" data-level="4.1.1" id="deleting-a-member"><span class="secno">4.1.1. </span><span class="content">Deleting a member</span><a class="self-link" href="#deleting-a-member"></a></h4>
    <p>The <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification states that all members in an <code>ldes:EventStream</code> are immutable. This indicates that a member MUST NOT be changed and implicates that it MUST NOT be deleted.</p>
    <p>With versioning, however, it SHOULD be possible to mark that a member of an Event Stream has become obsolete.</p>
@@ -2390,7 +2389,7 @@ The trigger for creating new containers is when the current fragment container c
    <div class="example" id="example-example"><a class="self-link" href="#example-example"></a> This is an example of an informative example. </div>
    <p> Informative notes begin with the word “Note”
             and are set apart from the normative text with <code>class="note"</code>, like this: </p>
-   <p class="note" role="note"> Note, this is an informative note. </p>
+   <p class="note" role="note"> Note, this is an informative note.</p>
   </div>
 <script>
 (function() {
@@ -2527,13 +2526,13 @@ The trigger for creating new containers is when the current fragment container c
    <dt id="biblio-ldes">[LDES]
    <dd>Pieter Colpaert. <a href="https://w3id.org/ldes/specification"><cite>Linked Data Event Streams</cite></a>. LS. URL: <a href="https://w3id.org/ldes/specification">https://w3id.org/ldes/specification</a>
    <dt id="biblio-ldn">[LDN]
-   <dd>Sarven Capadisli; Amy Guy. <a href="https://www.w3.org/TR/ldn/"><cite>Linked Data Notifications</cite></a>. 2 May 2017. REC. URL: <a href="https://www.w3.org/TR/ldn/">https://www.w3.org/TR/ldn/</a>
+   <dd>Sarven Capadisli; Amy Guy. <a href="https://linkedresearch.org/ldn/"><cite>Linked Data Notifications</cite></a>. URL: <a href="https://linkedresearch.org/ldn/">https://linkedresearch.org/ldn/</a>
    <dt id="biblio-ldp">[LDP]
-   <dd>Steve Speicher; John Arwe; Ashok Malhotra. <a href="https://www.w3.org/TR/ldp/"><cite>Linked Data Platform 1.0</cite></a>. 26 February 2015. REC. URL: <a href="https://www.w3.org/TR/ldp/">https://www.w3.org/TR/ldp/</a>
+   <dd>Steve Speicher; John Arwe; Ashok Malhotra. <a href="https://www.w3.org/2012/ldp/hg/ldp.html"><cite>Linked Data Platform 1.0</cite></a>. URL: <a href="https://www.w3.org/2012/ldp/hg/ldp.html">https://www.w3.org/2012/ldp/hg/ldp.html</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
    <dt id="biblio-shacl">[SHACL]
-   <dd>Holger Knublauch; Dimitris Kontokostas. <a href="https://www.w3.org/TR/shacl/"><cite>Shapes Constraint Language (SHACL)</cite></a>. 20 July 2017. REC. URL: <a href="https://www.w3.org/TR/shacl/">https://www.w3.org/TR/shacl/</a>
+   <dd>Holger Knublauch; Dimitris Kontokostas. <a href="https://w3c.github.io/data-shapes/shacl/"><cite>Shapes Constraint Language (SHACL)</cite></a>. URL: <a href="https://w3c.github.io/data-shapes/shacl/">https://w3c.github.io/data-shapes/shacl/</a>
    <dt id="biblio-shex">[SHEX]
    <dd>Eric Prud'hommeaux; et al. <a href="http://shex.io/shex-semantics/index.html"><cite>Shape Expressions Language 2.1</cite></a>. URL: <a href="http://shex.io/shex-semantics/index.html">http://shex.io/shex-semantics/index.html</a>
    <dt id="biblio-solid">[Solid]
@@ -2545,7 +2544,7 @@ The trigger for creating new containers is when the current fragment container c
    <dt id="biblio-url">[URL]
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
    <dt id="biblio-vocab-dcat-3">[VOCAB-DCAT-3]
-   <dd>Riccardo Albertoni; et al. <a href="https://www.w3.org/TR/vocab-dcat-3/"><cite>Data Catalog Vocabulary (DCAT) - Version 3</cite></a>. 11 January 2022. WD. URL: <a href="https://www.w3.org/TR/vocab-dcat-3/">https://www.w3.org/TR/vocab-dcat-3/</a>
+   <dd>Riccardo Albertoni; et al. <a href="https://w3c.github.io/dxwg/dcat/"><cite>Data Catalog Vocabulary (DCAT) - Version 3</cite></a>. URL: <a href="https://w3c.github.io/dxwg/dcat/">https://w3c.github.io/dxwg/dcat/</a>
    <dt id="biblio-wac">[WAC]
    <dd>Sarven Capasdisli. <a href="https://solidproject.org/TR/wac"><cite>Web Access Control</cite></a>. Draft. URL: <a href="https://solidproject.org/TR/wac">https://solidproject.org/TR/wac</a>
   </dl>
