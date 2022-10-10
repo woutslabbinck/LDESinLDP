@@ -191,7 +191,36 @@ Versioned LDES in LDP {#VLIL}
 
 TODO: add versioning to the mix -> see powerpoint Pieter Colpaert
 
+As stated in the [[!LDES]] specification, members are immutable. However, through version-objects, it is possible to indicate changes. 
+More information can be found in the specification in the section **Version Materializations**.
 
+An LDES in LDP can also be made versioned. To facilitate this, two properties MUST be added to the **Event Stream** description:
+
+* `ldes:versionOfPath`: the version of path declares the [[!SHACL]] property path that is used to define that a `tree:member` of an `ldes:EventStream` is a version.
+* `ldes:timestampPath`: the timestamp path declares the [[!SHACL]] property path the `xsd:dateTime` (i.e. the timestamp) of the version.
+
+TODO: add example
+
+Thus each member in a versioned LDES in LDP MUST have these two triples... TODO: expand
+
+TODO: add deleted description
+
+Two ways to interact with a versioned LDES in LDP.
+
+* aware of VLIL protocol
+* agnostic of the protocol
+
+## Client managed versioned LDES in LDP
+
+Either through following the protocol yourself or by libraries you can interact with the VLIL.
+
+The minimum reqs for the client: ...
+
+The minimum reqs for the server: ...
+
+## Server managed versioned LDES in LDP
+
+Enables a client to work with CRUD operation to an LDES. The versioned LDES in LDP is abstracted away by the LDP API. makes it possible to have Memento RFC over LDP using ... (just like fedora and trellis) and have an LDES view/ views of your data...
 
 <!--
 Basic LDES Orchestrator {#orchestrator}
@@ -239,7 +268,6 @@ Note: The orchestrator must have `acl:Control` for the base container and each f
 
 ## Sequence Diagram
 
-<!--Now that all the roles are elaborated, they are joined together in an arrangement to manage the growth of the LDES in LDP. -->
 <a href="sequence_diagram">The figure below</a> shows the operations that the Orchestrator performs each time a new fragment is created for the case of a public LDES in LDP.
 
 <figure id="sequence_diagram">
@@ -455,7 +483,6 @@ The trigger for creating new containers is when the current fragment container c
 
 Note: The CSS with shape support can be found at [https://github.com/woutslabbinck/community-server](https://github.com/woutslabbinck/community-server) on branch feat/shape-support
 
-Note: The Orchestrator uses the following package: [LDES Orchestrator](https://www.npmjs.com/package/@treecg/ldes-orchestrator)
 
 Namespaces {#namespaces}
 =====================
