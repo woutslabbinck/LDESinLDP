@@ -67,10 +67,7 @@ Introduction {#introduction}
 =====================
 
 We coin the term **LDES in LDP** to describe a time-based fragmented  [[!LDES]] that is stored on a Linked Data Platform [[!LDP]].
-Which allows interacting with LDESs using the LDP API.
-
-TODO: Why do we want this? -> now we can actually append stuff to the LDES as a client. Even more authorization when it is with solid
-
+Which allows interacting with LDESs using the LDP API. Furthermore, when a [[!Solid]] server is used as [[!LDP]], authorisation over the LDES is provided.
 
 LDES in LDP Protocol {#ldesinldp}
 =====================
@@ -78,7 +75,8 @@ LDES in LDP Protocol {#ldesinldp}
 <img src="./img/LDESinLDP_Architecture.png">
 <figcaption>Architecture of a Linked Data Event Stream in an LDP Container</figcaption>
 </figure>
-The **LDES in LDP** Protocol consists of the structure and the rules to create, update and interpret a continuously growing time-based fragmented [[!LDES]] that is stored in an [[!LDP]].
+
+The **LDES in LDP** Protocol consists of the structure and the rules to initialise, append to and create a new fragment to a continuously growing time-based fragmented [[!LDES]] that is stored in an [[!LDP]].
 
 The structure is visualized in the <a href="#architecture">figure</a> above and can be summarized in the following components:
 
@@ -88,77 +86,86 @@ The structure is visualized in the <a href="#architecture">figure</a> above and 
 * (Optionally) The shape
 * (Optionally) Access control List Resources
 
+An **LDES in LDP** is initialized in a data pod as an `ldp:BasicContainer` which contains the root of the LDES, a first fragment and extra metadata about this container. More info can be found in the [initialisation section](#initialising)
 
-An **LDES in LDP** is initialized in a data pod as an `ldp:BasicContainer` which contains the root of the LDES, a first fragment and extra metadata about this container. In the subsections, more details about this metadata will be given.
-
-The **root** resource contains metadata about the **Event Stream** and its **view** using the [[!TREE]] hypermedia and [[!LDES]] vocabulary.
+The information about the about the **Event Stream** and its **view** (which uses the [[!TREE]] hypermedia and [[!LDES]] specification) can be found in the metadata resource of the root `{container}` of the LDES.
+<!-- The **root** resource contains metadata about the **Event Stream** and its **view** using the [[!TREE]] hypermedia and [[!LDES]] vocabulary. -->
 The **view** consists of several `tree:relation`s which contain information about the **fragments** of the **Event Stream**.
 
 Each **Fragment** of an **LDES in LDP** is an `ldp:BasicContainer`. The LDP Resources present in a fragment (indicated by `ldp:contains`), are the members of the **Event Stream**.
 
-Below is an example of a <a href="#root">root</a> <!--,where `http://example.org/{container}/` is the base URI of the LDES in LDP-->.
-It consists of one `tree:relation`, where its class and properties indicate that all members, which were created after December the 15th, can be found by traversing to node `http://example.org/{container}/1639526400000/`.
+Below is an example of a [root](#root)<!--,where `http://example.org/{container}/` is the base URI of the LDES in LDP-->.
+It consists of two `tree:relation`s. The first one indicating that all members, which were created after December the 15th and before December the 16th, can be found by traversing to node `http://example.org/{container}/1639526400000/`.
 
 <div class="example" highlight="turtle" id="root"> 
 ```turtle
-@prefix : <http://example.org/{container}/root.ttl#> .
-<http://example.org/{container}/root.ttl> rdf:type tree:Node ;
+@prefix : <http://example.org/{container}/#> .
+<http://example.org/{container}/> rdf:type tree:Node ;
     tree:relation [ 
         a tree:GreaterThanOrEqualToRelation ;
         tree:node <http://example.org/{container}/1639526400000/> ;
         tree:path dct:modified ;
         tree:value "2021-12-15T00:00:00.000Z"^^xsd:dateTime
+        ], [
+        a tree:GreaterThanOrEqualToRelation ;
+        tree:node <http://example.org/{container}/1639612800000/> ;
+        tree:path dct:modified ;
+        tree:value "2021-12-16T00:00:00.000Z"^^xsd:dateTime
         ] .
 
-:Collection a <https://w3id.org/ldes#EventStream> ;
+:EventStream a <https://w3id.org/ldes#EventStream> ;
     tree:shape <http://example.org/{container}/shape> ;
-    tree:view <http://example.org/{container}/root.ttl>
-
+    tree:view <http://example.org/{container}/root.ttl>.
 ```
 </div>
+
+Note: It is also allowed to have a root resource called `root` in the root container which contains the information about the Event Stream and its view.
 
 ## Initialising ## {#initialising}
 
-TODO: explain how to initialise
+To initialise an LDES in LDP, the following steps must be performed.
+
+1. Create the root container
+2. Create the Even Stream + view information
+3. Create the first fragment (more information can be found in its [section](#new-fragment))
+4. Add the inbox triple to the root container to make sure the write location is discoverable
 
 ## Appending a member ## {#adding-member}
 
-TODO: rewrite as if it is were an LDES
+The method for appending a member to the LDES is executed via an HTTP POST request to the **write location** with as body the member.
+To indicate the **write location**, a property already defined in the LDP specification is reused: the LDP Inbox (`ldp:inbox`, originated from the [[!LDN]] specification).
 
-The method for adding a resource remains the same as for a normal LDP Resource creation: with an HTTP POST request. However, an application that adds a member to the Event Stream must know where to write to. 
-To indicate the write location, a property already defined in the LDP specification is reused: the LDP Inbox (`ldp:inbox`, originated from the [[!LDN]] specification).
-
-Thus a triple of the form `<baseContainer> ldp:inbox <locationURI>.` is added to the metadata of the base container.
-This location URI is retrieved via the Link Header as the link value to the relation `ldp:inbox` when sending a GET or HEAD HTTP request. 
-
-Finally, a member can be added to the LDES with an HTTP POST request to the obtained location URI.
-
-The following <a href="#meta-inbox">example</a> shows the inbox triple. When performing a HEAD <a href="#head-request">request</a> to the base URL (`http://example.org/{container}/`), the Link Header with the write location (`http://example.org/{container}/1639526400000/`) is present in the corresponding <a href="#head-response">response</a>.
+A triple of the form `<baseContainer> ldp:inbox <locationURL>.` is added to the metadata of the base container.
+This location URL is retrieved via the Link Header as the link value to the relation `ldp:inbox` when sending a GET or HEAD HTTP request (as is defined in [[!LDN]]).
 
 <div class="example" highlight="turtle" id="meta-inbox"> 
+An example of the inbox triple.
 ```turtle
-<http://example.org/{container}/> ldp:inbox <http://example.org/{container}/1639526400000/>.
+<http://example.org/{container}/> ldp:inbox <http://example.org/{container}/1639612800000/>.
 ```
 </div>
 
-<!--Below are examples of a HEAD <a href="#head-request">request</a> to the base URL and the corresponding <a href="#head-response">response</a> showing the Link Header.-->
-
 <div class="example" highlight="HTTP" id="head-request">
+A HEAD request to the base of an LDES in LDP.
 ```HTTP
 HEAD /{container}/ HTTP/1.1
 Host: http://example.org
 ```
-</div>
-<div class="example" highlight="HTTP" id="head-response">
+
+The Link Header in the response of the HEAD request to the LDES in LDP base indicating that `http://example.org/{container}/1639612800000/` is the write location of the LDES in LDP
 ```HTTP
 HTTP/1.1 200
-link: <http://example.org/{container}/1639526400000/>; rel="http://www.w3.org/ns/ldp#inbox"
+link: <http://example.org/{container}/1639612800000/>; rel="http://www.w3.org/ns/ldp#inbox"
 ```
 </div>
 
 ## Creating a new fragment ## {#new-fragment}
 
-TODO: explain
+The following steps need to be executed to create a new fragment:
+
+1. Create a new `ldp:Container`
+2. Add relation triples to the view of the LDES in LDP
+3. Update the inbox to link to the newly created container from step 1
 
 ## Improving Interoperability ## {#interoperability}
 
@@ -186,6 +193,7 @@ TODO: add versioning to the mix -> see powerpoint Pieter Colpaert
 
 
 
+<!--
 Basic LDES Orchestrator {#orchestrator}
 =====================
 
@@ -240,6 +248,7 @@ Note: The orchestrator must have `acl:Control` for the base container and each f
 </figure>
 
 Note: An implementation of the Basic LDES Orchestrator can be found on **npm**: [LDES Orchestrator](https://www.npmjs.com/package/@treecg/ldes-orchestrator)
+-->
 
 Versioning Approaches {#approaches}
 =====================
