@@ -191,95 +191,15 @@ Example of the metadata a fragment of an LDES in LDP that is constrained by a sh
 Versioned LDES in LDP {#VLIL}
 ====================
 
-TODO: add versioning to the mix -> see powerpoint Pieter Colpaert
+<!-- context about versioning -->
 
 As stated in the [[!LDES]] specification, members are immutable. However, through version-objects, it is possible to indicate changes. 
-More information can be found in the specification in the section **Version Materializations**.
+More information can be found in the [[!LDES]] specification in the section **Version Materializations**.
 
-An LDES in LDP can also be made versioned. To facilitate this, two properties MUST be added to the **Event Stream** description:
+Two properties MUST be added to the **Event Stream** description for a versioned [[!LDES]].
 
 * `ldes:versionOfPath`: the version of path declares the [[!SHACL]] property path that is used to define that a `tree:member` of an `ldes:EventStream` is a version.
 * `ldes:timestampPath`: the timestamp path declares the [[!SHACL]] property path the `xsd:dateTime` (i.e. the timestamp) of the version.
-
-TODO: add example
-
-Thus each member in a versioned LDES in LDP MUST have these two triples... TODO: expand
-
-TODO: add deleted description
-
-Two ways to interact with a versioned LDES in LDP.
-
-* aware of VLIL protocol
-* agnostic of the protocol
-
-## Client managed versioned LDES in LDP {#version-aware-approach}
-
-A client can interact with a versioned LDES in LDP by following the protocol either by manually sending the requests or by libraries that have implemented it.
-
-The basic requirements for the client and server are stated in the following subsections.
-
-### Client Implications
-
-In this approach, clients are aware of the [LDES in LDP Protocol](#ldesinldp).
-They  know:
-* how to initialise an LDES in LDP ([](#initialising))
-* how to retrieve the *Write Location* to add a resource to the LDES ([](#adding-member))
-    * how to apply versioning of members of the LDES ([](#versioning))
-* how to create a new fragment ([](#new-fragment))
-
-### Server Implications
-
-As a result, any LDP Server Implementation MUST be able to handle the operations executed by the client.
-
-For completeness: the minimum requirements for the LDP Server to comply with the [LDES in LDP Protocol](#ldesinldp):
-
-* SERVER REQUIREMENT: The server MUST allow editing the metadata of containers (such that the `ldp:inbox` or `tree:shape` metadata can be added)
-* SERVER REQUIREMENT: The server MUST reply `ldp:inbox` and (OPTIONAL) `ldp:constrainedBy` in Link Headers when performing GET or HEAD requests on a `ldp:BasicContainer` when it is present in its metadata.
-* OPTIONAL: The server MAY have shape validation capabilities. When the server does not have those capabilities, the clients MUST only add resources that conform to the shape (when indicated by the root)
-
-<!--Note: The fact that the client is responsible for all actions MAY harm the performance-->
-
-## Server managed versioned LDES in LDP
-
-Enables a client to work with CRUD operation to a versioned LDES. The versioned LDES in LDP protocol is abstracted away by the LDP API. 
-
-Note: TODO: write properly that having an LDP API with a versioned LDES (in LDP) as backend makes it possible to have Memento RFC over LDP (just like fedora and trellis) and have an LDES view/views of your data.
-
-The following subsections describe which requirements a server MUST conform to when it wants to be an LDP that abstracts away a versioned LDES in LDP.
-
-### LDP Container for VLIL
-
-Note: fill in the blanks, find where the architecture should be added
-
-A mapping from a versioned LDES in LDP to an LDP Container is provided.
-
-This means that when such an `ldp:container` is created, a versioned ldes in ldp is initialised whereas the container that you request is just a view of the versioned LDES.
-
-Operating the CRUD methods to the LDP results into respective interaction with the versioned LDES
-
-Creating a resource, ...
-Updating a resource does this,
-Deleting ...
-
-Reading, ...
-
-As an extension reading ... accept-datetime can be provided by the request ...
-
-Versioning Approaches {#approaches}
-=====================
-There are two approaches to use **LDES in LDP**:
-
-* A **Version-Aware** approach: Here the client is writing and reading directly to the **LDES in LDP** as it is knowledgeable about [](#ldesinldp) of this specification. Furthermore, it knows how to update a resource using **Version Materializations** from the [[!LDES]] specification.
-* A **Version-Agnostic** approach: Here the client is not knowledgeable about [](#ldesinldp). The client interacts with the server with the [[!LDP]] API. **LDES in LDP** is used as a back-end by the server and it is abstracted away from the client.
-
-## Versioning
-
-[[!LDES]] supports versioning of resources through [Version Materializations](https://semiceu.github.io/LinkedDataEventStreams/#version-materializations).
-To support versioning, an `ldes:EventStream` MUST define two properties: `ldes:versionOfPath` and `ldes:timestampPath`.
-
-`ldes:versionOfPath` declares the property that is used to define that a `tree:member` of an `ldes:EventStream` is a version.
-
-`ldes:timestampPath` declares the property that is used to define the DateTime of a `tree:member`.
 
 In the examples below, `dct:isVersionOf` is being used to define that a `tree:member` is a version of another member and `dct:issued` is used to denote the DateTime of when a this version was added to the Event Stream.
 
@@ -320,14 +240,13 @@ ex:resource1v1
 Here, a newer version of `ex:resource1` has been created (`ex:resource1v1`), where the title has been changed.
 </div>
 
+As can be seen in the example, each member has two version-object triples. Thus in a versioned LDES in LDP, each member MUST have these version-object triples as well.
 
-### Deleting a member
 
-The [[!LDES]] specification states that all members in an `ldes:EventStream` are immutable. This indicates that a member MUST NOT be changed and implicates that it MUST NOT be deleted.
+<!--The [[!LDES]] specification states that all members in an `ldes:EventStream` are immutable. This indicates that a member MUST NOT be changed and implicates that it MUST NOT be deleted. -->
+With versioning it SHOULD be possible to mark that a member of an Event Stream has become obsolete.
 
-With versioning, however, it SHOULD be possible to mark that a member of an Event Stream has become obsolete.
-
-Therefore, this specification introduces the specific type `ldes:DeletedLDPResource`. This type for a `tree:member` states, when an LDES is used in the context for **LDESinLDP**, that it is marked as deleted from the [[!LDES]].
+To mark a member of an Event Stream obsolete, this specification introduces the specific type `ldes:DeletedLDPResource`. This type for a `tree:member` states, when an LDES is used in the context for **LDESinLDP**, that it is marked as deleted from the [[!LDES]].
 
 <div class="example"  highlight="turtle" id="ldes-versioning-3">
 An Event Stream where the most recent version of `ex:resource1` is marked as deleted.
@@ -358,7 +277,121 @@ ex:resource1v2
 </div>
 
 Note: It is preferred to mark members as deleted with a custom domain specific type. `ldes:DeletedLDPResource` is used to mark a member to be deleted in the case of LDESinLDP.
-Therefore, clients MUST also copy the last contents of the member when a domain specific type is added (which is done in <a href="#ldes-versioning-2">this example</a> as the title is copied from `ex:resource1v1`).
+Therefore, clients MUST also copy the last contents of the member when a domain specific type is added (which is done in <a href="#ldes-versioning-3">this example</a> as the title is copied from `ex:resource1v1`).
+
+This specification introduces two ways to interact with a versioned LDES in LDP.
+
+* Directly interacting with a versioned LDES in LDP, thus being aware of the LDES in LDP protocol and manually applying versioning.
+* Interacting with a versioned LDES in LDP while being agnostic of the protocol. (I.e. it is abstracted away)
+
+## Client managed versioned LDES in LDP ## {#version-aware-approach}
+
+A client can interact with a versioned LDES in LDP by following the protocol either by manually sending the requests or by libraries that have implemented it.
+
+The basic requirements for the client and server are stated in the following subsections.
+
+### Client Implications
+
+In this approach, clients are aware of the [LDES in LDP Protocol](#ldesinldp).
+They  know:
+* how to initialise an LDES in LDP ([](#initialising))
+* how to retrieve the *Write Location* to add a resource to the LDES ([](#adding-member))
+    * how to apply versioning of members of the LDES
+* how to create a new fragment ([](#new-fragment))
+
+### Server Implications
+
+As a result, any LDP Server Implementation MUST be able to handle the operations executed by the client.
+
+For completeness: the minimum requirements for the LDP Server to comply with the [LDES in LDP Protocol](#ldesinldp):
+
+* SERVER REQUIREMENT: The server MUST allow editing the metadata of containers (such that the `ldp:inbox` or `tree:shape` metadata can be added)
+* SERVER REQUIREMENT: The server MUST reply `ldp:inbox` and (OPTIONAL) `ldp:constrainedBy` in Link Headers when performing GET or HEAD requests on a `ldp:BasicContainer` when it is present in its metadata.
+* OPTIONAL: The server MAY have shape validation capabilities. When the server does not have those capabilities, the clients MUST only add resources that conform to the shape (when indicated by the root)
+
+<!--Note: The fact that the client is responsible for all actions MAY harm the performance-->
+
+## Server managed versioned LDES in LDP
+
+
+The versioned LDES in LDP protocol is abstracted away by the LDP API, which enables clients to work with CRUD operation to a versioned LDES.
+
+Note: TODO: write properly that having an LDP API with a versioned LDES (in LDP) as backend makes it possible to have Memento RFC over LDP (just like fedora and trellis) and have an LDES view/views of your data.
+
+The following subsections describe which requirements a server MUST conform to when it wants to be an LDP that abstracts away a versioned LDES in LDP.
+
+### LDP Container
+
+Note: TODO: fill in the blanks, find where the architecture should be added
+
+A mapping from a versioned LDES in LDP to an LDP Container is provided.
+
+This means that when such an `ldp:container` is created, a versioned ldes in ldp is initialised whereas the container that you request is just a view of the versioned LDES.
+
+Operating the CRUD methods to the LDP results into respective interaction with the versioned LDES.
+
+#### Creating a Resource #### {#create}
+
+An HTTP POST request is used to create a resource in an LDP. 
+When a POST request is sent to an LDP Container three things happen: an identifier is created by the server for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the parent `ldp:Container` to indicate that it contains the new resource.
+
+For the server, the LDP behaviour for a POST is just the first step. The second step consists of combining the body of the request with two extra triples to indicate the version-specific representation. 
+The newly composed body is then added to the *feed* LDES.
+
+The first triple is to indicate the time of the creation of the Resource, the second triple is the reference to the identifier of the resource.
+An example of those triples when the server chose `http://example.org/\{container\}/resource2` as identifier is shown in the <a href="#add-version-triples">example</a> below.
+
+<div class="example" highlight="HTTP" id="post-resource">
+An HTTP POST request to create an `ldp:resource`
+```HTTP
+POST /{container}/ HTTP/1.1
+Host: http://example.org
+Slug: resource1
+Content-Type: text/turtle
+
+<resource1> dct:title "First version of the title.".
+```
+</div>
+
+<div class="example" highlight="turtle" id="add-version-triples">
+The effect of the POST request that now persists in the versioned LDES in LDP.
+```turtle
+@prefix : <http://example.org/{container}/> .
+
+:feed/1639612800000/{uuid} tree:member.
+:feed/1639612800000/{uuid} dct:title "First version of the title." .
+:feed/1639612800000/{uuid} dct:issued "2021-12-16T10:00:00.000Z"^^xsd:dateTime .
+:feed/1639612800000/{uuid} dct:isVersionOf :resource1 .
+```
+</div>
+
+#### Reading a Resource #### {#read}
+
+Reading the above created resource with a GET request using the LDP API will result in the following triple: `<http://example.org/{container}/resource1> dct:title "First version of the title." .`
+
+Note: TODO: As an extension reading ... accept-datetime can be provided by the request ...
+
+#### Updating a Resource #### {#update}
+
+Updating LDP Resources can be done in two ways. 
+First, there is an HTTP PUT request which replaces the resource with the body that accompanies the request. 
+The second option is using an HTTP PATCH request that uses a [[!SPARQL-UPDATE]] or N3 Patch query, where first the server applies the changes and then the result is stored as the updated resource.
+
+An LDP with a versioned LDES in LDP backend stores those updates in the *feed* as the newest version. Thus when using PUT, the whole body of the request together with the version-specific triples are added to *feed*.
+After applying the changes using a PATCH request, the resulting resource is accompanied by the version-specific triples and appended to the *feed*.
+
+#### Deleting a Resource #### {#delete}
+
+An HTTP DELETE request to an identifier of a resource results in the removal of that resource and its corresponding metadata in the parent container. In the *feed* however, all the versions are not removed because of two reasons. 
+The first one is that an LDES is immutable, meaning that members can not be edited once they are in an LDES.
+The second reason is that the history of this resource would be removed as well.
+
+Thus next to the LDP behaviour, an LDP Resource consisting of three triples is added to the *feed* to indicate the resource has been removed. 
+
+An example of such three triples can be seen in the <a href="#ldes-versioning-3">example</a>. They are the triples with as subject `ex:resource1v2`.
+
+Versioning Approaches {#approaches}
+=====================
 
 ## Version-Agnostic Approach
 
@@ -390,48 +423,6 @@ How to read the resources is already explained in the first paragraphs of the ar
 The other operations are explained in the subsections below.
 <!-- With this proposal, reading from an LDES in LDP for clients who are not aware is thus solved. 
 Though to use this feed as storage and let the LDP still appear as normal while creating, updating and deleting resources, additional modifications are required. -->
-
-### Creating
-
-An HTTP POST request is used to create a resource in an LDP. 
-When a POST request is sent to an LDP Container three things happen: an identifier is created by the server for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the parent `ldp:Container` to indicate that it contains the new resource.
-
-For  Version-Agnostic implementations, the LDP behaviour for a POST is just the first step. The second step consists of combining the body of the request with two extra triples to indicate the version-specific representation. 
-The newly composed body is then added to the *feed* LDES.
-
-The first triple is to indicate the time of the creation of the Resource, the second triple is the reference to the identifier of the resource.
-An example of those triples when the server chose `http://example.org/\{container\}/resource2` as identifier is shown in the <a href="#add-version-triples">example</a> below.
-
-<div class="example" highlight="turtle" id="add-version-triples">
-```turtle
-@prefix : <http://example.org/{container}/> .
-
-:feed/1639612800000/{uuid} dct:issued "2021-12-16T10:00:00.000Z"^^xsd:dateTime .
-:feed/1639612800000/{uuid} dct:isVersionOf :resource2 .
-```
-</div>
-
-Note: When a slug is provided in the Header of a POST request, a server can choose to use that slug as an identifier.
-
-### Updating
-
-Updating LDP Resources can be done in two ways. 
-First, there is an HTTP PUT request which replaces the resource with the body that accompanies the request. 
-The second option is using an HTTP PATCH request that uses a [[!SPARQL-UPDATE]]  query, where first the server applies the changes and then the result is stored as the updated resource.
-
-An LDP with Version-Agnostic LDES in LDP  support stores those updates in the *feed* as the newest version. Thus when using PUT, the whole body of the request together with the version-specific triples are added to *feed*.
-After applying the changes using a PATCH request, the resulting resource is accompanied by the version-specific triples and appended to the *feed*.
-
-### Deleting
-
-An HTTP DELETE request to an identifier of a resource results in the removal of that resource and its corresponding metadata in the parent container. In the *feed* however, all the versions are not removed because of two reasons. 
-The first one is that an LDES is immutable, meaning that members can not be edited once they are in an LDES.
-The second reason is that the history of this resource would be removed as well.
-
-Thus next to the LDP behaviour, an LDP Resource consisting of three triples is added to the *feed* to indicate the resource has been removed. 
-
-An example of such three triples can be seen in the <a href="#ldes-versioning-2">example</a> in [](#deleting-a-member). They are the triples with as subject `ex:resource1v2`.
-
 
 Examples {#examples}
 =====================
