@@ -284,13 +284,13 @@ This specification introduces two ways to interact with a versioned LDES in LDP.
 * Directly interacting with a versioned LDES in LDP, thus being aware of the LDES in LDP protocol and manually applying versioning.
 * Interacting with a versioned LDES in LDP while being agnostic of the protocol. (I.e. it is abstracted away)
 
-## Client managed versioned LDES in LDP ## {#version-aware-approach}
+## Client managed versioned LDES in LDP ## {#client-managed}
 
 A client can interact with a versioned LDES in LDP by following the protocol either by manually sending the requests or by libraries that have implemented it.
 
 The basic requirements for the client and server are stated in the following subsections.
 
-### Client Implications
+### Client Implications ### {#client-implication}
 
 In this approach, clients are aware of the [LDES in LDP Protocol](#ldesinldp).
 They  know:
@@ -299,7 +299,7 @@ They  know:
     * how to apply versioning of members of the LDES
 * how to create a new fragment ([](#new-fragment))
 
-### Server Implications
+### Server Implications ### {#server-implication}
 
 As a result, any LDP Server Implementation MUST be able to handle the operations executed by the client.
 
@@ -311,7 +311,7 @@ For completeness: the minimum requirements for the LDP Server to comply with the
 
 <!--Note: The fact that the client is responsible for all actions MAY harm the performance-->
 
-## Server managed versioned LDES in LDP
+## Server managed versioned LDES in LDP ## {#server-managed}
 
 The versioned LDES in LDP protocol is abstracted away by the LDP API, which enables clients to work with CRUD operation to a versioned LDES.
 
@@ -325,13 +325,18 @@ With this explanation the requirements for such an LDP server (that abstracts aw
 
 ### LDP Container ###{#container}
 
-Note: TODO: fill in the blanks, find where the architecture should be added + give proper intro for the CRUD methods
-
 A bi-directional mapping from an LDP Container to a versioned LDES in LDP is provided.
 
 This means that when such an `ldp:container` is created, a versioned ldes in ldp is initialised whereas the container that you request is just a view of the versioned LDES.
 
-Operating the CRUD methods to the LDP results into respective interaction with the versioned LDES.
+An architectural overview of a view of an `ldp:BasicContainer` with two resources which uses a versioned LDES in LDP as backend can be seen in the following <a href="#ldesasbase">figure</a>.
+
+<figure id="ldesasbase">
+<img src="./img/Version_Materialized_View.png" />
+<figcaption>Architecture where a versioned LDES in LDP is used as a backend for LDP.</figcaption>
+</figure>
+
+Operating the CRUD methods to the LDP results into respective interaction with the versioned LDES, which is further elaborated per operation in the following paragraphs.
 
 #### Creating a Resource #### {#create}
 
@@ -372,7 +377,7 @@ The effect of the POST request that now persists in the versioned LDES in LDP.
 
 Reading the above created resource with a GET request using the LDP API will result in the following triple: `<http://example.org/{container}/resource1> dct:title "First version of the title." .`
 
-Note: TODO: As an extension reading ... accept-datetime can be provided by the request ...
+Note:  When the memento specification ([[!RFC7089]]) is used as an extension, the `Accept-Datetime` request reader can be used to read previous versions of the resource. Additional information can be found in the [[#extensions]]
 
 #### Updating a Resource #### {#update}
 
@@ -393,44 +398,10 @@ Thus next to the LDP behaviour, an LDP Resource consisting of three triples is a
 
 An example of such three triples can be seen in the <a href="#ldes-versioning-3">example</a>. They are the triples with as subject `ex:resource1v2`.
 
-Versioning Approaches {#approaches}
-=====================
-
-## Version-Agnostic Approach
-
-In contrast to the [Version-Aware Approach](#version-aware-approach), where a client is required to know everything, with a Version-Agnostic approach only knowledge about the LDP API is required.
-
-<!-- Therefore, a proposal is being presented that combines the simplicity to perform CRUD operations with RDF data on an LDP and the expressivity of an LDES in LDP. Here, the LDES in LDP is used as the source for the resources that are shown in the LDP. -->
-
-### Architecture ### {#version-agnostic-architecture}
-
-<a href="#ldesasbase">The architecture figure</a> shows the structure when the LDP is combined with the **LDES in LDP**.
-The resources that are present in the `{container}` are a view derived from the LDES in *feed*, which is stored as an **LDES in LDP**. 
-
-More specifically `{container}` is a view, represented as an `ldp:BasicContainer`, that 
-contains links to the original members of the Event Stream via `ldp:contains`.
-Dereferencing that link, leads to an LDP Resource that has the latest version of that member as content.
-
-When a resource has multiple versions (e.g. due to it being edited), only the latest version will be shown as the LDP Resource.
-
-Note: The whole history of those resources can be retrieved from the *feed*.
-
-<figure id="ldesasbase">
-<img src="./img/Version_Materialized_View.png" />
-<figcaption>Architecture when LDES is used as base in a version-agnostic approach</figcaption>
-</figure>
-
-The abstraction of the **LDES in LDP** through the LDP API results in several modifications to Creating, Reading, Updating and Deleting a Resource.
-
-How to read the resources is already explained in the first paragraphs of the architecture. 
-The other operations are explained in the subsections below.
-<!-- With this proposal, reading from an LDES in LDP for clients who are not aware is thus solved. 
-Though to use this feed as storage and let the LDP still appear as normal while creating, updating and deleting resources, additional modifications are required. -->
-
 Examples {#examples}
 =====================
 
-## Metadata notifications
+## Metadata notifications ## {#metadata-POC}
 
 At [https://tree.linkeddatafragments.org/announcements/](https://tree.linkeddatafragments.org/announcements/), a public, shape constrained LDES in LDP can be found which is used for publishing metadata of DCAT Application Profiles [[!VOCAB-DCAT-3]] about datasets or data services, or metadata of a [[!TREE]] View.
 
@@ -440,8 +411,13 @@ The trigger for creating new containers is when the current fragment container c
 
 Note: The CSS with shape support can be found at [https://github.com/woutslabbinck/community-server](https://github.com/woutslabbinck/community-server) on branch feat/shape-support
 
+## Solid Event Sourcing project ## {#SES}
+
+TODO: elaborate project
+
 Extensions {#extensions}
 =====================
+TODO: elaborate each bullet point with an example and add the MUSTs
 
 * memento RFC used on top of LDP when using the server managed LDES in LDP
 * add view description
