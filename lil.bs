@@ -313,18 +313,21 @@ For completeness: the minimum requirements for the LDP Server to comply with the
 
 ## Server managed versioned LDES in LDP
 
-
 The versioned LDES in LDP protocol is abstracted away by the LDP API, which enables clients to work with CRUD operation to a versioned LDES.
 
-Note: TODO: write properly that having an LDP API with a versioned LDES (in LDP) as backend makes it possible to have Memento RFC over LDP (just like fedora and trellis) and have an LDES view/views of your data.
+The client is **agnostic** that version-objects were used to realise the resources. Though the use of those version-objects allows the client to query the history of a given `ldp:Resource`, which can be achieved by incorporating the Memento specification [[!RFC7089]] on top of the LDP ([](#extensions)).
+Furthermore, it is possible to engineer additional views on top of the LDES through an LDES server.
 
-The following subsections describe which requirements a server MUST conform to when it wants to be an LDP that abstracts away a versioned LDES in LDP.
+An LDP server on top of a versioned LDES in LDP must translate the LDP operations to append and query operations to a versioned LDES. 
+To illustrate how the operations can be translated to a versioned LDES, the complete behaviour of interactions with an `ldp:Container` is explained in the following subsection: [](#container).
 
-### LDP Container
+With this explanation the requirements for such an LDP server (that abstracts away a versioned LDES in LDP) are elaborated, such that they can be build.
 
-Note: TODO: fill in the blanks, find where the architecture should be added
+### LDP Container ###{#container}
 
-A mapping from a versioned LDES in LDP to an LDP Container is provided.
+Note: TODO: fill in the blanks, find where the architecture should be added + give proper intro for the CRUD methods
+
+A bi-directional mapping from an LDP Container to a versioned LDES in LDP is provided.
 
 This means that when such an `ldp:container` is created, a versioned ldes in ldp is initialised whereas the container that you request is just a view of the versioned LDES.
 
@@ -342,7 +345,7 @@ The first triple is to indicate the time of the creation of the Resource, the se
 An example of those triples when the server chose `http://example.org/\{container\}/resource2` as identifier is shown in the <a href="#add-version-triples">example</a> below.
 
 <div class="example" highlight="HTTP" id="post-resource">
-An HTTP POST request to create an `ldp:resource`
+An HTTP POST request to create an `ldp:Resource`
 ```HTTP
 POST /{container}/ HTTP/1.1
 Host: http://example.org
@@ -443,7 +446,7 @@ Extensions {#extensions}
 * memento RFC used on top of LDP when using the server managed LDES in LDP
 * add view description
 * B-TREE implementation
-* for high loads: it is possible to have multiple `tree:member`s per ldp:resource
+* for high loads: it is possible to have multiple `tree:member`s per `ldp:Resource`
 
 Namespaces {#namespaces}
 =====================
