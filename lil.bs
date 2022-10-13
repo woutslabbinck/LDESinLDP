@@ -169,6 +169,8 @@ The following steps need to be executed to create a new fragment:
 2. Add relation triples to the view of the LDES in LDP
 3. Update the inbox to link to the newly created container from step 1
 
+[[#view-description]] provides extra information/instructions about **when** to create a new fragment.
+
 ## Improving Interoperability ## {#interoperability}
 
 The `tree:shape` property of a [[!TREE]] Collection indicates the data model that all of its members conform to. This data model is called a **shape** and is expressed in a shape language like [[!SHACL]] or [[!SHEX]].
@@ -413,16 +415,83 @@ Note: The CSS with shape support can be found at [https://github.com/woutslabbin
 
 ## Solid Event Sourcing project ## {#SES}
 
-TODO: elaborate project
+A [repository](https://github.com/woutslabbinck/SolidEventSourcing) to publish raw gpx data to a Solid pod. Here each location point is encapsulated as a version-object in a versioned LDES in LDP.
+
+Furthermore, it provides functions with documentation to store any kind of streaming data to a Solid pod.
 
 Extensions {#extensions}
 =====================
-TODO: elaborate each bullet point with an example and add the MUSTs
 
-* memento RFC used on top of LDP when using the server managed LDES in LDP
-* add view description
-* B-TREE implementation
-* for high loads: it is possible to have multiple `tree:member`s per `ldp:Resource`
+## Memento ## {#memento}
+
+The [Fedora API Specification](https://fedora.info/2018/11/22/spec/) and [Trellis Linked Data Server](https://www.trellisldp.org/) implement the memento specification ([[!RFC7089]]) on top of [[!LDP]]. This allows dateTime negotiation over `ldp:Resource`s, which provides the historical values of that resource.
+
+In a server managed versioned LDES in LDP, the memento specification can also be provided on top of that abstract LDP implementation. This provides an alternative (complementary to [[!LDES]]) to retrieve a historical version of a given `ldp:Resource`. 
+Implementation wise, when an `Accept-DateTime` header is provided, the correct version-object is then queried in the versioned LDES in LDP and provided as response.
+
+## View Description ## {#view-description}
+
+The [[#ldesinldp]] provides instructions on **how** to create a new fragment. However, it does not state **when** to create one.
+
+The **View Description** solves this problem by encapsulating the explicit strategy used to create an [[LDES]] or how it was created.
+
+TODO: add example and explain
+<div class="example" highlight="turtle" id="root"> 
+
+```turtle
+@prefix : <http://example.org/{container}/#> .
+<http://example.org/{container}/> rdf:type tree:Node ;
+    tree:relation [ 
+        a tree:GreaterThanOrEqualToRelation ;
+        tree:node <http://example.org/{container}/1639526400000/> ;
+        tree:path dct:modified ;
+        tree:value "2021-12-15T00:00:00.000Z"^^xsd:dateTime
+        ], [
+        a tree:GreaterThanOrEqualToRelation ;
+        tree:node <http://example.org/{container}/1639612800000/> ;
+        tree:path dct:modified ;
+        tree:value "2021-12-16T00:00:00.000Z"^^xsd:dateTime
+        ] .
+
+:EventStream a <https://w3id.org/ldes#EventStream> ;
+    tree:viewDescription ex:Fragmentation ;
+    tree:shape <http://example.org/{container}/shape> ;
+    tree:view <http://example.org/{container}/root.ttl>.
+  
+:Fragmentation a tree:ViewDescription ; 
+    dcat:endpointURL :EventStream; # One of the rootnotes from which you can access all members
+    dcat:servesDataset <http://example.org/{container}/> ; # the LDES
+    ldes:retentionPolicy [
+        a ldes:DurationAgoPolicy ;
+        # ...
+    ];
+    ldes:managedBy <client>. # wie is er verantwoordelijk om de structuur van de LDES te onderhouden
+    # Options: 
+    # * ingester voor een sds:Stream
+    # * de client 
+
+<client> a ldes:LDESinLDPClient;
+    ldes:bucketizeStrategy ex:BucketizeStrategy.
+    # evt property om te zeggen dat er tools zijn om mee te werken e.g. ex:preferedTool VALIL
+
+:BucketizeStrategy a ldes:BucketizeStrategy;
+    ldes:bucketType ldes:timestampFragmentation; # zegt aan de client dat ik een timestampfragmentation aan het maken ben ***
+    tree:path dct:created; 
+    ldes:pageSize 100.
+```
+</div>
+
+## B+-TREE implementation ## {#b+-tree}
+
+Currently, new Fragments are made as a new container under the base container. This might become a bottleneck if lots of Fragments are present. A possibility is have nested fragments, which results in the LDES in LDP having a [B+ tree structure](https://en.wikipedia.org/wiki/B%2B_tree).
+
+<!-- Might be easier to have multiple levels a priori rather than later?-->
+## Multiple members per LDP Resource ## {#multiple-members}
+
+Due to a high velocity of incoming data, the number of HTTP POST requests might add too much overhead.
+
+To overcome this, multiple version-objects can be grouped together into one `ldp:Resource`.
+
 
 Namespaces {#namespaces}
 =====================
