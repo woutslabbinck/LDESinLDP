@@ -1487,8 +1487,8 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 11cdbd324, updated Fri Oct 7 18:14:16 2022 -0700" name="generator">
-  <meta content="917bc45232e6bba908a1c87cd34bed3eb73fb9c0" name="document-revision">
+  <meta content="Bikeshed version 07caf056f, updated Wed Oct 12 12:03:55 2022 -0700" name="generator">
+  <meta content="c89ba71b0a0d5185b28c91bdce514a53bf02b8fe" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2008,9 +2008,11 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Writing Linked Data Event Streams in LDP Basic Containers</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-10-10">10 October 2022</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-10-13">13 October 2022</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
+     <dt>Previous Versions:
+     <dd><a href="https://woutslabbinck.github.io/LDESinLDP/V2022-03-02.html" rel="prev">https://woutslabbinck.github.io/LDESinLDP/V2022-03-02.html</a>
      <dt class="editor">Editors:
      <dd class="editor p-author h-card vcard"><a class="p-name fn u-url url" href="https://pietercolpaert.be">Pieter Colpaert</a>
      <dd class="editor p-author h-card vcard"><span class="p-name fn">Wout Slabbinck</span>
@@ -2022,7 +2024,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" height="15" src="https://licensebuttons.net/p/zero/1.0/80x15.png" width="80"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 10 October 2022,
+In addition, as of 13 October 2022,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2040,45 +2042,46 @@ Parts of this work may be from another specification document.  If so, those par
     <li>
      <a href="#ldesinldp"><span class="secno">2</span> <span class="content">LDES in LDP Protocol</span></a>
      <ol class="toc">
-      <li><a href="#adding-resources"><span class="secno">2.1</span> <span class="content">Adding Resources</span></a>
-      <li><a href="#interoperability"><span class="secno">2.2</span> <span class="content">Improving Interoperability</span></a>
+      <li><a href="#initialising"><span class="secno">2.1</span> <span class="content">Initialising</span></a>
+      <li><a href="#adding-member"><span class="secno">2.2</span> <span class="content">Appending a member</span></a>
+      <li><a href="#new-fragment"><span class="secno">2.3</span> <span class="content">Creating a new fragment</span></a>
+      <li><a href="#interoperability"><span class="secno">2.4</span> <span class="content">Improving Interoperability</span></a>
      </ol>
     <li>
-     <a href="#orchestrator"><span class="secno">3</span> <span class="content">Basic LDES Orchestrator</span></a>
-     <ol class="toc">
-      <li><a href="#create-containers"><span class="secno">3.1</span> <span class="content">Create Containers</span></a>
-      <li><a href="#writable-container-indication"><span class="secno">3.2</span> <span class="content">Writable Container Indication</span></a>
-      <li><a href="#maintain-the-view"><span class="secno">3.3</span> <span class="content">Maintain the View</span></a>
-      <li><a href="#update-acl-files"><span class="secno">3.4</span> <span class="content">Update ACL Files</span></a>
-      <li><a href="#sequence-diagram"><span class="secno">3.5</span> <span class="content">Sequence Diagram</span></a>
-     </ol>
-    <li>
-     <a href="#approaches"><span class="secno">4</span> <span class="content">Versioning Approaches</span></a>
+     <a href="#VLIL"><span class="secno">3</span> <span class="content">Versioned LDES in LDP</span></a>
      <ol class="toc">
       <li>
-       <a href="#versioning"><span class="secno">4.1</span> <span class="content">Versioning</span></a>
+       <a href="#client-managed"><span class="secno">3.1</span> <span class="content">Client managed versioned LDES in LDP</span></a>
        <ol class="toc">
-        <li><a href="#deleting-a-member"><span class="secno">4.1.1</span> <span class="content">Deleting a member</span></a>
+        <li><a href="#client-implication"><span class="secno">3.1.1</span> <span class="content">Client Implications</span></a>
+        <li><a href="#server-implication"><span class="secno">3.1.2</span> <span class="content">Server Implications</span></a>
        </ol>
       <li>
-       <a href="#version-aware-approach"><span class="secno">4.2</span> <span class="content">Version-Aware Approach</span></a>
+       <a href="#server-managed"><span class="secno">3.2</span> <span class="content">Server managed versioned LDES in LDP</span></a>
        <ol class="toc">
-        <li><a href="#client-implications"><span class="secno">4.2.1</span> <span class="content">Client Implications</span></a>
-        <li><a href="#server-implications"><span class="secno">4.2.2</span> <span class="content">Server Implications</span></a>
-       </ol>
-      <li>
-       <a href="#version-agnostic-approach"><span class="secno">4.3</span> <span class="content">Version-Agnostic Approach</span></a>
-       <ol class="toc">
-        <li><a href="#version-agnostic-architecture"><span class="secno">4.3.1</span> <span class="content">Architecture</span></a>
-        <li><a href="#creating"><span class="secno">4.3.2</span> <span class="content">Creating</span></a>
-        <li><a href="#updating"><span class="secno">4.3.3</span> <span class="content">Updating</span></a>
-        <li><a href="#deleting"><span class="secno">4.3.4</span> <span class="content">Deleting</span></a>
+        <li>
+         <a href="#container"><span class="secno">3.2.1</span> <span class="content">LDP Container</span></a>
+         <ol class="toc">
+          <li><a href="#create"><span class="secno">3.2.1.1</span> <span class="content">Creating a Resource</span></a>
+          <li><a href="#read"><span class="secno">3.2.1.2</span> <span class="content">Reading a Resource</span></a>
+          <li><a href="#update"><span class="secno">3.2.1.3</span> <span class="content">Updating a Resource</span></a>
+          <li><a href="#delete"><span class="secno">3.2.1.4</span> <span class="content">Deleting a Resource</span></a>
+         </ol>
        </ol>
      </ol>
     <li>
-     <a href="#examples"><span class="secno">5</span> <span class="content">Examples</span></a>
+     <a href="#examples"><span class="secno">4</span> <span class="content">Examples</span></a>
      <ol class="toc">
-      <li><a href="#metadata-notifications"><span class="secno">5.1</span> <span class="content">Metadata notifications</span></a>
+      <li><a href="#metadata-POC"><span class="secno">4.1</span> <span class="content">Metadata notifications</span></a>
+      <li><a href="#SES"><span class="secno">4.2</span> <span class="content">Solid Event Sourcing project</span></a>
+     </ol>
+    <li>
+     <a href="#extensions"><span class="secno">5</span> <span class="content">Extensions</span></a>
+     <ol class="toc">
+      <li><a href="#memento"><span class="secno">5.1</span> <span class="content">Memento</span></a>
+      <li><a href="#view-description"><span class="secno">5.2</span> <span class="content">View Description</span></a>
+      <li><a href="#b+-tree"><span class="secno">5.3</span> <span class="content">B+-TREE implementation</span></a>
+      <li><a href="#multiple-members"><span class="secno">5.4</span> <span class="content">Multiple members per LDP Resource</span></a>
      </ol>
     <li><a href="#namespaces"><span class="secno">6</span> <span class="content">Namespaces</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
@@ -2092,13 +2095,13 @@ Parts of this work may be from another specification document.  If so, those par
   <main>
    <h2 class="heading settled" data-level="1" id="introduction"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#introduction"></a></h2>
    <p>We coin the term <strong>LDES in LDP</strong> to describe a time-based fragmented <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> that is stored on a Linked Data Platform <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a>.
-Which allows interacting with LDESs using the LDP API.</p>
+Which allows interacting with LDESs using the LDP API. Furthermore, when a <a data-link-type="biblio" href="#biblio-solid">[Solid]</a> server is used as <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a>, authorisation over the LDES is provided.</p>
    <h2 class="heading settled" data-level="2" id="ldesinldp"><span class="secno">2. </span><span class="content">LDES in LDP Protocol</span><a class="self-link" href="#ldesinldp"></a></h2>
    <figure id="architecture">
      <img height="264" src="./img/LDESinLDP_Architecture.png" width="161"> 
     <figcaption>Architecture of a Linked Data Event Stream in an LDP Container</figcaption>
    </figure>
-    The <strong>LDES in LDP</strong> Protocol consists of the structure and the rules to create, update and interpret a continuously growing time-based fragmented <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> that is stored in an <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a>. 
+   <p>The <strong>LDES in LDP</strong> Protocol consists of the structure and the rules to initialise, append to and create a new fragment to a continuously growing time-based fragmented <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> that is stored in an <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a>.</p>
    <p>The structure is visualized in the <a href="#architecture">figure</a> above and can be summarized in the following components:</p>
    <ul>
     <li data-md>
@@ -2112,53 +2115,79 @@ Which allows interacting with LDESs using the LDP API.</p>
     <li data-md>
      <p>(Optionally) Access control List Resources</p>
    </ul>
-   <p>An <strong>LDES in LDP</strong> is initialized in a data pod as an <code>ldp:BasicContainer</code> which contains the root of the LDES, a first fragment and extra metadata about this container. In the subsections, more details about this metadata will be given.</p>
-   <p>The <strong>root</strong> resource contains metadata about the <strong>Event Stream</strong> and its <strong>view</strong> using the <a data-link-type="biblio" href="#biblio-tree">[TREE]</a> hypermedia and <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> vocabulary.
+   <p>An <strong>LDES in LDP</strong> is initialized in a data pod as an <code>ldp:BasicContainer</code> which contains the root of the LDES, a first fragment and extra metadata about this container. More info can be found in the <a href="#initialising">initialisation section</a></p>
+   <p>The information about the about the <strong>Event Stream</strong> and its <strong>view</strong> (which uses the <a data-link-type="biblio" href="#biblio-tree">[TREE]</a> hypermedia and <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification) can be found in the metadata resource of the root <code>{container}</code> of the LDES.
 The <strong>view</strong> consists of several <code>tree:relation</code>s which contain information about the <strong>fragments</strong> of the <strong>Event Stream</strong>.</p>
    <p>Each <strong>Fragment</strong> of an <strong>LDES in LDP</strong> is an <code>ldp:BasicContainer</code>. The LDP Resources present in a fragment (indicated by <code>ldp:contains</code>), are the members of the <strong>Event Stream</strong>.</p>
-   <p>Below is an example of a <a href="#root">root</a> .
-It consists of one <code>tree:relation</code>, where its class and properties indicate that all members, which were created after December the 15th, can be found by traversing to node <code>http://example.org/{container}/1639526400000/</code>.</p>
+   <p>Below is an example of a <a href="#root">root</a>.
+It consists of two <code>tree:relation</code>s. The first one indicating that all members, which were created after December the 15th and before December the 16th, can be found by traversing to node <code>http://example.org/{container}/1639526400000/</code>.</p>
    <div class="example" id="root">
     <a class="self-link" href="#root"></a> 
-<pre class="language-turtle highlight">@prefix <c- p>:</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl<c- c>#> .</c->
-&lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl> <c- nn>rdf</c-><c- p>:</c-><c- f>type</c-> <c- nn>tree</c-><c- p>:</c-><c- f>Node</c-> <c- p>;</c->
+<pre class="language-turtle highlight">@prefix <c- p>:</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- c>#> .</c->
+&lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- nn>rdf</c-><c- p>:</c-><c- f>type</c-> <c- nn>tree</c-><c- p>:</c-><c- f>Node</c-> <c- p>;</c->
     <c- nn>tree</c-><c- p>:</c-><c- f>relation</c-> <c- p>[</c-> 
         <c- b>a</c-> <c- nn>tree</c-><c- p>:</c-><c- f>GreaterThanOrEqualToRelation</c-> <c- p>;</c->
         <c- nn>tree</c-><c- p>:</c-><c- f>node</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639526400000</c->/> <c- p>;</c->
         <c- nn>tree</c-><c- p>:</c-><c- f>path</c-> <c- nn>dct</c-><c- p>:</c-><c- f>modified</c-> <c- p>;</c->
         <c- nn>tree</c-><c- p>:</c-><c- f>value</c-> <c- s>"2021-12-15T00:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c->
+        <c- p>],</c-> <c- p>[</c->
+        <c- b>a</c-> <c- nn>tree</c-><c- p>:</c-><c- f>GreaterThanOrEqualToRelation</c-> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>node</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639612800000</c->/> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>path</c-> <c- nn>dct</c-><c- p>:</c-><c- f>modified</c-> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>value</c-> <c- s>"2021-12-16T00:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c->
         <c- p>]</c-> <c- p>.</c->
 
-<c- p>:</c-><c- f>Collection</c-> <c- b>a</c-> <c- g>&lt;https://w3id.org/ldes#EventStream></c-> <c- p>;</c->
+<c- p>:</c-><c- f>EventStream</c-> <c- b>a</c-> <c- g>&lt;https://w3id.org/ldes#EventStream></c-> <c- p>;</c->
     <c- nn>tree</c-><c- p>:</c-><c- f>shape</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/shape> <c- p>;</c->
-    <c- nn>tree</c-><c- p>:</c-><c- f>view</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl>
+    <c- nn>tree</c-><c- p>:</c-><c- f>view</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl><c- p>.</c->
 </pre>
    </div>
-   <h3 class="heading settled" data-level="2.1" id="adding-resources"><span class="secno">2.1. </span><span class="content">Adding Resources</span><a class="self-link" href="#adding-resources"></a></h3>
-   <p>The method for adding a resource remains the same as for a normal LDP Resource creation: with an HTTP POST request. However, an application that adds a member to the Event Stream must know where to write to.
-To indicate the write location, a property already defined in the LDP specification is reused: the LDP Inbox (<code>ldp:inbox</code>, originated from the <a data-link-type="biblio" href="#biblio-ldn">[LDN]</a> specification).</p>
-   <p>Thus a triple of the form <code>&lt;baseContainer> ldp:inbox &lt;locationURI>.</code> is added to the metadata of the base container.
-This location URI is retrieved via the Link Header as the link value to the relation <code>ldp:inbox</code> when sending a GET or HEAD HTTP request.</p>
-   <p>Finally, a member can be added to the LDES with an HTTP POST request to the obtained location URI.</p>
-   <p>The following <a href="#meta-inbox">example</a> shows the inbox triple. When performing a HEAD <a href="#head-request">request</a> to the base URL (<code>http://example.org/{container}/</code>), the Link Header with the write location (<code>http://example.org/{container}/1639526400000/</code>) is present in the corresponding <a href="#head-response">response</a>.</p>
+   <p class="note" role="note"><span>Note:</span> It is also allowed to have a root resource called <code>root</code> in the root container which contains the information about the Event Stream and its view.</p>
+   <h3 class="heading settled" data-level="2.1" id="initialising"><span class="secno">2.1. </span><span class="content">Initialising</span><a class="self-link" href="#initialising"></a></h3>
+   <p>To initialise an LDES in LDP, the following steps must be performed.</p>
+   <ol>
+    <li data-md>
+     <p>Create the root container</p>
+    <li data-md>
+     <p>Create the Even Stream + view information</p>
+    <li data-md>
+     <p>Create the first fragment (more information can be found in its <a href="#new-fragment">section</a>)</p>
+    <li data-md>
+     <p>Add the inbox triple to the root container to make sure the write location is discoverable</p>
+   </ol>
+   <h3 class="heading settled" data-level="2.2" id="adding-member"><span class="secno">2.2. </span><span class="content">Appending a member</span><a class="self-link" href="#adding-member"></a></h3>
+   <p>The method for appending a member to the LDES is executed via an HTTP POST request to the <strong>write location</strong> with as body the member.
+To indicate the <strong>write location</strong>, a property already defined in the LDP specification is reused: the LDP Inbox (<code>ldp:inbox</code>, originated from the <a data-link-type="biblio" href="#biblio-ldn">[LDN]</a> specification).</p>
+   <p>A triple of the form <code>&lt;baseContainer> ldp:inbox &lt;locationURL>.</code> is added to the metadata of the base container.
+This location URL is retrieved via the Link Header as the link value to the relation <code>ldp:inbox</code> when sending a GET or HEAD HTTP request (as is defined in <a data-link-type="biblio" href="#biblio-ldn">[LDN]</a>).</p>
    <div class="example" id="meta-inbox">
-    <a class="self-link" href="#meta-inbox"></a> 
-<pre class="language-turtle highlight">&lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- nn>ldp</c-><c- p>:</c-><c- f>inbox</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639526400000</c->/><c- p>.</c->
+    <a class="self-link" href="#meta-inbox"></a> An example of the inbox triple. 
+<pre class="language-turtle highlight">&lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- nn>ldp</c-><c- p>:</c-><c- f>inbox</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639612800000</c->/><c- p>.</c->
 </pre>
    </div>
    <div class="example" id="head-request">
-    <a class="self-link" href="#head-request"></a> 
+    <a class="self-link" href="#head-request"></a> A HEAD request to the base of an LDES in LDP. 
 <pre class="language-HTTP highlight"><c- nf>HEAD</c-> <c- nn>/{container}/</c-> <c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c->
 <c- e>Host</c-><c- o>:</c-> <c- l>http://example.org</c->
 </pre>
-   </div>
-   <div class="example" id="head-response">
-    <a class="self-link" href="#head-response"></a> 
+    <p>The Link Header in the response of the HEAD request to the LDES in LDP base indicating that <code class="highlight">http://example.org/{container}/1639612800000/</code> is the write location of the LDES in LDP</p>
 <pre class="language-HTTP highlight"><c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c-> <c- m>200</c->
-<c- e>link</c-><c- o>:</c-> <c- l>&lt;http://example.org/{container}/1639526400000/>; rel="http://www.w3.org/ns/ldp#inbox"</c->
+<c- e>link</c-><c- o>:</c-> <c- l>&lt;http://example.org/{container}/1639612800000/>; rel="http://www.w3.org/ns/ldp#inbox"</c->
 </pre>
    </div>
-   <h3 class="heading settled" data-level="2.2" id="interoperability"><span class="secno">2.2. </span><span class="content">Improving Interoperability</span><a class="self-link" href="#interoperability"></a></h3>
+   <p class="note" role="note"><span>Note:</span> Add that in the body of the POST request, there must be a <code>&lt;LILBase> tree:member &lt;resource></code> triple.</p>
+   <h3 class="heading settled" data-level="2.3" id="new-fragment"><span class="secno">2.3. </span><span class="content">Creating a new fragment</span><a class="self-link" href="#new-fragment"></a></h3>
+   <p>The following steps need to be executed to create a new fragment:</p>
+   <ol>
+    <li data-md>
+     <p>Create a new <code>ldp:Container</code></p>
+    <li data-md>
+     <p>Add relation triples to the view of the LDES in LDP</p>
+    <li data-md>
+     <p>Update the inbox to link to the newly created container from step 1</p>
+   </ol>
+   <p><a href="#view-description">§ 5.2 View Description</a> provides extra information/instructions about <strong>when</strong> to create a new fragment.</p>
+   <h3 class="heading settled" data-level="2.4" id="interoperability"><span class="secno">2.4. </span><span class="content">Improving Interoperability</span><a class="self-link" href="#interoperability"></a></h3>
    <p>The <code>tree:shape</code> property of a <a data-link-type="biblio" href="#biblio-tree">[TREE]</a> Collection indicates the data model that all of its members conform to. This data model is called a <strong>shape</strong> and is expressed in a shape language like <a data-link-type="biblio" href="#biblio-shacl">[SHACL]</a> or <a data-link-type="biblio" href="#biblio-shex">[SHEX]</a>.</p>
    <p>When it is known a priori that the LDES will only have members with a certain predefined data model, it is possible to initialise the LDES in LDP with a shape.</p>
    <p>To enforce shape validation executed by the LDP, the validator requires to know which shape resource to use.
@@ -2169,59 +2198,16 @@ Therefore, the constrained by property of LDP (<code>ldp:constrainedBy</code>) w
 <pre class="language-turtle highlight">&lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639526400000</c->/> <c- nn>tree</c-><c- p>:</c-><c- f>shape</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/shape><c- p>.</c->
 </pre>
    </div>
-   <h2 class="heading settled" data-level="3" id="orchestrator"><span class="secno">3. </span><span class="content">Basic LDES Orchestrator</span><a class="self-link" href="#orchestrator"></a></h2>
-   <p>The <strong>Basic LDES Orchestrator</strong> is introduced to reduce overhead for the client and perform the operations that not any client is allowed to perform.</p>
-   <p>This Basic LDES Orchestrator has four roles:</p>
+   <h2 class="heading settled" data-level="3" id="VLIL"><span class="secno">3. </span><span class="content">Versioned LDES in LDP</span><a class="self-link" href="#VLIL"></a></h2>
+   <p>As stated in the <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification, members are immutable. However, through version-objects, it is possible to indicate changes.
+More information can be found in the <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification in the section <strong>Version Materializations</strong>.</p>
+   <p>Two properties MUST be added to the <strong>Event Stream</strong> description for a versioned <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a>.</p>
    <ul>
     <li data-md>
-     <p>Creation of a new LDP Container: when the current relation is deemed full, a new container is created with added metadata to indicate shape support</p>
+     <p><code>ldes:versionOfPath</code>: the version of path declares the <a data-link-type="biblio" href="#biblio-shacl">[SHACL]</a> property path that is used to define that a <code>tree:member</code> of an <code>ldes:EventStream</code> is a version.</p>
     <li data-md>
-     <p>Writable container indication: at the base container, update the metadata about the LDP Inbox</p>
-    <li data-md>
-     <p>Maintain the root of the LDES: add triples with TREE syntax to keep the view up to date</p>
-    <li data-md>
-     <p>Access control: when <a data-link-type="biblio" href="#biblio-solid">[Solid]</a> is used, the Access Control List (ACL) files must be updated</p>
+     <p><code>ldes:timestampPath</code>: the timestamp path declares the <a data-link-type="biblio" href="#biblio-shacl">[SHACL]</a> property path the <code>xsd:dateTime</code> (i.e. the timestamp) of the version.</p>
    </ul>
-   <h3 class="heading settled" data-level="3.1" id="create-containers"><span class="secno">3.1. </span><span class="content">Create Containers</span><a class="self-link" href="#create-containers"></a></h3>
-   <p>Downloading a document on the internet takes time proportional to the location of the server versus the location of the client, the bandwidth and the size of the document.
-Designing LDES in LDP while minimizing that time, results in controlling the size of documents where possible: the container size.
-When a container contains a large number of resources,  the serialization of the information of that container is large as well.
-This results in a bottleneck for the performance as loading the container page takes longer.</p>
-   <p>To overcome this bottleneck, every time the current container page is deemed full, a new, empty container is created.
-Furthermore, when the LDES in LDP is initialised with a shape, metadata must be added to this container to further impose this constraint, see <a href="#interoperability">§ 2.2 Improving Interoperability</a>.</p>
-   <h3 class="heading settled" data-level="3.2" id="writable-container-indication"><span class="secno">3.2. </span><span class="content">Writable Container Indication</span><a class="self-link" href="#writable-container-indication"></a></h3>
-   <p>When a new container is created, the Inbox must be updated as well.
-Clients that want to add a member to the LDES can then find the container where they can write new resources, see <a href="#adding-resources">§ 2.1 Adding Resources</a>.</p>
-   <p>It is the responsibility of the Orchestrator to update that triple in the metadata.</p>
-   <h3 class="heading settled" data-level="3.3" id="maintain-the-view"><span class="secno">3.3. </span><span class="content">Maintain the View</span><a class="self-link" href="#maintain-the-view"></a></h3>
-   <p>The <a data-link-type="biblio" href="#biblio-tree">[TREE]</a> hypermedia specification states that a view of a collection must reach all its members.
-Therefore on each creation of a new container, which is a new fragment of the collection, the view must be updated. 
-Thus a relation is added in the root by the Orchestrator for each new fragment.</p>
-   <h3 class="heading settled" data-level="3.4" id="update-acl-files"><span class="secno">3.4. </span><span class="content">Update ACL Files</span><a class="self-link" href="#update-acl-files"></a></h3>
-   <p>In case a <a data-link-type="biblio" href="#biblio-solid">[Solid]</a> pod is used as a back-end, ACL resources (defined by the Web Acces Control <a data-link-type="biblio" href="#biblio-wac">[WAC]</a> specification) are responsible for making sure that it is impossible to add new resources to containers that are not indicated as writeable.
-With an ACL resource in place in the current fragment container, it is enforced that only new resources may be added there.
-This is done by providing read (<code>acl:read</code>) and append (<code>acl:append</code>) rights in the ACL resource of that container.</p>
-   <p class="note" role="note"><span>Note:</span> The orchestrator must have <code>acl:Control</code> for the base container and each fragment container to be able to update the ACL resources.</p>
-   <h3 class="heading settled" data-level="3.5" id="sequence-diagram"><span class="secno">3.5. </span><span class="content">Sequence Diagram</span><a class="self-link" href="#sequence-diagram"></a></h3>
-   <p><a href="sequence_diagram">The figure below</a> shows the operations that the Orchestrator performs each time a new fragment is created for the case of a public LDES in LDP.</p>
-   <figure id="sequence_diagram">
-     <img height="341" src="./img/LDES_Write-Orchestrator.png" width="671"> 
-    <figcaption>Sequence diagram of the Basic LDES Orchestrator for a public LDES in LDP</figcaption>
-   </figure>
-   <p class="note" role="note"><span>Note:</span> An implementation of the Basic LDES Orchestrator can be found on <strong>npm</strong>: <a href="https://www.npmjs.com/package/@treecg/ldes-orchestrator">LDES Orchestrator</a></p>
-   <h2 class="heading settled" data-level="4" id="approaches"><span class="secno">4. </span><span class="content">Versioning Approaches</span><a class="self-link" href="#approaches"></a></h2>
-    There are two approaches to use <strong>LDES in LDP</strong>: 
-   <ul>
-    <li data-md>
-     <p>A <strong>Version-Aware</strong> approach: Here the client is writing and reading directly to the <strong>LDES in LDP</strong> as it is knowledgeable about <a href="#ldesinldp">§ 2 LDES in LDP Protocol</a> of this specification. Furthermore, it knows how to update a resource using <strong>Version Materializations</strong> from the <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification.</p>
-    <li data-md>
-     <p>A <strong>Version-Agnostic</strong> approach: Here the client is not knowledgeable about <a href="#ldesinldp">§ 2 LDES in LDP Protocol</a>. The client interacts with the server with the <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a> API. <strong>LDES in LDP</strong> is used as a back-end by the server and it is abstracted away from the client.</p>
-   </ul>
-   <h3 class="heading settled" data-level="4.1" id="versioning"><span class="secno">4.1. </span><span class="content">Versioning</span><a class="self-link" href="#versioning"></a></h3>
-   <p><a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> supports versioning of resources through <a href="https://semiceu.github.io/LinkedDataEventStreams/#version-materializations">Version Materializations</a>.
-To support versioning, an <code>ldes:EventStream</code> MUST define two properties: <code>ldes:versionOfPath</code> and <code>ldes:timestampPath</code>.</p>
-   <p><code>ldes:versionOfPath</code> declares the property that is used to define that a <code>tree:member</code> of an <code>ldes:EventStream</code> is a version.</p>
-   <p><code>ldes:timestampPath</code> declares the property that is used to define the DateTime of a <code>tree:member</code>.</p>
    <p>In the examples below, <code>dct:isVersionOf</code> is being used to define that a <code>tree:member</code> is a version of another member and <code>dct:issued</code> is used to denote the DateTime of when a this version was added to the Event Stream.</p>
    <div class="example" id="ldes-versioning-1">
     <a class="self-link" href="#ldes-versioning-1"></a> An Event Stream with one member which supports versioning (both <code class="highlight"><c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-></code> and <code class="highlight"><c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-></code> are defined). 
@@ -2256,12 +2242,11 @@ To support versioning, an <code>ldes:EventStream</code> MUST define two properti
 </pre>
     Here, a newer version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code> has been created (<code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-></code>), where the title has been changed. 
    </div>
-   <h4 class="heading settled" data-level="4.1.1" id="deleting-a-member"><span class="secno">4.1.1. </span><span class="content">Deleting a member</span><a class="self-link" href="#deleting-a-member"></a></h4>
-   <p>The <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification states that all members in an <code>ldes:EventStream</code> are immutable. This indicates that a member MUST NOT be changed and implicates that it MUST NOT be deleted.</p>
-   <p>With versioning, however, it SHOULD be possible to mark that a member of an Event Stream has become obsolete.</p>
-   <p>Therefore, this specification introduces the specific type <code>ldes:DeletedLDPResource</code>. This type for a <code>tree:member</code> states, when an LDES is used in the context for <strong>LDESinLDP</strong>, that it is marked as deleted from the <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a>.</p>
-   <div class="example" id="ldes-versioning-2①">
-    <a class="self-link" href="#ldes-versioning-2①"></a> An Event Stream where the most recent version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code> is marked as deleted. 
+   <p>As can be seen in the example, each member has two version-object triples. Thus in a versioned LDES in LDP, each member MUST have these version-object triples as well.</p>
+   <p>With versioning it SHOULD be possible to mark that a member of an Event Stream has become obsolete.</p>
+   <p>To mark a member of an Event Stream obsolete, this specification introduces the specific type <code>ldes:DeletedLDPResource</code>. This type for a <code>tree:member</code> states, when an LDES is used in the context for <strong>LDESinLDP</strong>, that it is marked as deleted from the <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a>.</p>
+   <div class="example" id="ldes-versioning-3">
+    <a class="self-link" href="#ldes-versioning-3"></a> An Event Stream where the most recent version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code> is marked as deleted. 
 <pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
     <c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
     <c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
@@ -2285,22 +2270,35 @@ To support versioning, an <code>ldes:EventStream</code> MUST define two properti
 </pre>
    </div>
    <p class="note" role="note"><span>Note:</span> It is preferred to mark members as deleted with a custom domain specific type. <code>ldes:DeletedLDPResource</code> is used to mark a member to be deleted in the case of LDESinLDP.
-Therefore, clients MUST also copy the last contents of the member when a domain specific type is added (which is done in <a href="#ldes-versioning-2">this example</a> as the title is copied from <code>ex:resource1v1</code>).</p>
-   <h3 class="heading settled" data-level="4.2" id="version-aware-approach"><span class="secno">4.2. </span><span class="content">Version-Aware Approach</span><a class="self-link" href="#version-aware-approach"></a></h3>
-   <h4 class="heading settled" data-level="4.2.1" id="client-implications"><span class="secno">4.2.1. </span><span class="content">Client Implications</span><a class="self-link" href="#client-implications"></a></h4>
+Therefore, clients MUST also copy the last contents of the member when a domain specific type is added (which is done in <a href="#ldes-versioning-3">this example</a> as the title is copied from <code>ex:resource1v1</code>).</p>
+   <p>This specification introduces two ways to interact with a versioned LDES in LDP.</p>
+   <ul>
+    <li data-md>
+     <p>Directly interacting with a versioned LDES in LDP, thus being aware of the LDES in LDP protocol and manually applying versioning.</p>
+    <li data-md>
+     <p>Interacting with a versioned LDES in LDP while being agnostic of the protocol. (I.e. it is abstracted away)</p>
+   </ul>
+   <h3 class="heading settled" data-level="3.1" id="client-managed"><span class="secno">3.1. </span><span class="content">Client managed versioned LDES in LDP</span><a class="self-link" href="#client-managed"></a></h3>
+   <p>A client can interact with a versioned LDES in LDP by following the protocol either by manually sending the requests or by libraries that have implemented it.</p>
+   <p>The basic requirements for the client and server are stated in the following subsections.</p>
+   <h4 class="heading settled" data-level="3.1.1" id="client-implication"><span class="secno">3.1.1. </span><span class="content">Client Implications</span><a class="self-link" href="#client-implication"></a></h4>
    <p>In this approach, clients are aware of the <a href="#ldesinldp">LDES in LDP Protocol</a>.
 They  know:</p>
    <ul>
     <li data-md>
-     <p>how to retrieve the <em>Write Location</em> to add a resource to the LDES (<a href="#adding-resources">§ 2.1 Adding Resources</a>)</p>
+     <p>how to initialise an LDES in LDP (<a href="#initialising">§ 2.1 Initialising</a>)</p>
     <li data-md>
-     <p>how to apply versioning of members of the LDES (<a href="#versioning">§ 4.1 Versioning</a>)</p>
+     <p>how to retrieve the <em>Write Location</em> to add a resource to the LDES (<a href="#adding-member">§ 2.2 Appending a member</a>)</p>
+     <ul>
+      <li data-md>
+       <p>how to apply versioning of members of the LDES</p>
+     </ul>
     <li data-md>
-     <p>know that the Basic LDES Orchestrator running in the background (either initiated by them or by the owner of the LDES in LDP) (<a href="#orchestrator">§ 3 Basic LDES Orchestrator</a>)</p>
+     <p>how to create a new fragment (<a href="#new-fragment">§ 2.3 Creating a new fragment</a>)</p>
    </ul>
-   <h4 class="heading settled" data-level="4.2.2" id="server-implications"><span class="secno">4.2.2. </span><span class="content">Server Implications</span><a class="self-link" href="#server-implications"></a></h4>
-   <p>As a result, any LDP Server Implementation SHOULD be able to handle the operations executed by the client and the Basic LDES Orchestrator without modifications.</p>
-   <p>For completeness: the minimum requirements for the LDP Server to comply with the <a href="#ldesinldp">LDES in LDP Protocol</a> and the <a href="#orchestrator">Basic LDES Orchestrator</a> are listed below:</p>
+   <h4 class="heading settled" data-level="3.1.2" id="server-implication"><span class="secno">3.1.2. </span><span class="content">Server Implications</span><a class="self-link" href="#server-implication"></a></h4>
+   <p>As a result, any LDP Server Implementation MUST be able to handle the operations executed by the client.</p>
+   <p>For completeness: the minimum requirements for the LDP Server to comply with the <a href="#ldesinldp">LDES in LDP Protocol</a>:</p>
    <ul>
     <li data-md>
      <p>SERVER REQUIREMENT: The server MUST allow editing the metadata of containers (such that the <code>ldp:inbox</code> or <code>tree:shape</code> metadata can be added)</p>
@@ -2309,60 +2307,139 @@ They  know:</p>
     <li data-md>
      <p>OPTIONAL: The server MAY have shape validation capabilities. When the server does not have those capabilities, the clients MUST only add resources that conform to the shape (when indicated by the root)</p>
    </ul>
-   <p class="note" role="note"><span>Note:</span> Currently the  Basic LDES Orchestrator  only works with the <a href="https://github.com/solid/community-server">Community Solid Server</a></p>
-   <h3 class="heading settled" data-level="4.3" id="version-agnostic-approach"><span class="secno">4.3. </span><span class="content">Version-Agnostic Approach</span><a class="self-link" href="#version-agnostic-approach"></a></h3>
-   <p>In contrast to the <a href="#version-aware-approach">Version-Aware Approach</a>, where a client is required to know everything, with a Version-Agnostic approach only knowledge about the LDP API is required.</p>
-   <h4 class="heading settled" data-level="4.3.1" id="version-agnostic-architecture"><span class="secno">4.3.1. </span><span class="content">Architecture</span><a class="self-link" href="#version-agnostic-architecture"></a></h4>
-   <p><a href="#ldesasbase">The architecture figure</a> shows the structure when the LDP is combined with the <strong>LDES in LDP</strong>.
-The resources that are present in the <code>{container}</code> are a view derived from the LDES in <em>feed</em>, which is stored as an <strong>LDES in LDP</strong>.</p>
-   <p>More specifically <code>{container}</code> is a view, represented as an <code>ldp:BasicContainer</code>, that
-contains links to the original members of the Event Stream via <code>ldp:contains</code>.
-Dereferencing that link, leads to an LDP Resource that has the latest version of that member as content.</p>
-   <p>When a resource has multiple versions (e.g. due to it being edited), only the latest version will be shown as the LDP Resource.</p>
-   <p class="note" role="note"><span>Note:</span> The whole history of those resources can be retrieved from the <em>feed</em>.</p>
+   <h3 class="heading settled" data-level="3.2" id="server-managed"><span class="secno">3.2. </span><span class="content">Server managed versioned LDES in LDP</span><a class="self-link" href="#server-managed"></a></h3>
+   <p>The versioned LDES in LDP protocol is abstracted away by the LDP API, which enables clients to work with CRUD operation to a versioned LDES.</p>
+   <p>The client is <strong>agnostic</strong> that version-objects were used to realise the resources. Though the use of those version-objects allows the client to query the history of a given <code>ldp:Resource</code>, which can be achieved by incorporating the Memento specification <a data-link-type="biblio" href="#biblio-rfc7089">[RFC7089]</a> on top of the LDP (<a href="#extensions">§ 5 Extensions</a>).
+Furthermore, it is possible to engineer additional views on top of the LDES through an LDES server.</p>
+   <p>An LDP server on top of a versioned LDES in LDP must translate the LDP operations to append and query operations to a versioned LDES.
+To illustrate how the operations can be translated to a versioned LDES, the complete behaviour of interactions with an <code>ldp:Container</code> is explained in the following subsection: <a href="#container">§ 3.2.1 LDP Container</a>.</p>
+   <p>With this explanation the requirements for such an LDP server (that abstracts away a versioned LDES in LDP) are elaborated, such that they can be build.</p>
+   <h4 class="heading settled" data-level="3.2.1" id="container"><span class="secno">3.2.1. </span><span class="content">LDP Container</span><a class="self-link" href="#container"></a></h4>
+   <p>A bi-directional mapping from an LDP Container to a versioned LDES in LDP is provided.</p>
+   <p>This means that when such an <code>ldp:container</code> is created, a versioned ldes in ldp is initialised whereas the container that you request is just a view of the versioned LDES.</p>
+   <p>An architectural overview of a view of an <code>ldp:BasicContainer</code> with two resources which uses a versioned LDES in LDP as backend can be seen in the following <a href="#ldesasbase">figure</a>.</p>
    <figure id="ldesasbase">
      <img height="354" src="./img/Version_Materialized_View.png" width="196"> 
-    <figcaption>Architecture when LDES is used as base in a version-agnostic approach</figcaption>
+    <figcaption>Architecture where a versioned LDES in LDP is used as a backend for LDP.</figcaption>
    </figure>
-   <p>The abstraction of the <strong>LDES in LDP</strong> through the LDP API results in several modifications to Creating, Reading, Updating and Deleting a Resource.</p>
-   <p>How to read the resources is already explained in the first paragraphs of the architecture.
-The other operations are explained in the subsections below.</p>
-   <h4 class="heading settled" data-level="4.3.2" id="creating"><span class="secno">4.3.2. </span><span class="content">Creating</span><a class="self-link" href="#creating"></a></h4>
+   <p>Operating the CRUD methods to the LDP results into respective interaction with the versioned LDES, which is further elaborated per operation in the following paragraphs.</p>
+   <h5 class="heading settled" data-level="3.2.1.1" id="create"><span class="secno">3.2.1.1. </span><span class="content">Creating a Resource</span><a class="self-link" href="#create"></a></h5>
    <p>An HTTP POST request is used to create a resource in an LDP.
 When a POST request is sent to an LDP Container three things happen: an identifier is created by the server for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the parent <code>ldp:Container</code> to indicate that it contains the new resource.</p>
-   <p>For  Version-Agnostic implementations, the LDP behaviour for a POST is just the first step. The second step consists of combining the body of the request with two extra triples to indicate the version-specific representation.
+   <p>For the server, the LDP behaviour for a POST is just the first step. The second step consists of combining the body of the request with two extra triples to indicate the version-specific representation.
 The newly composed body is then added to the <em>feed</em> LDES.</p>
    <p>The first triple is to indicate the time of the creation of the Resource, the second triple is the reference to the identifier of the resource.
 An example of those triples when the server chose <code>http://example.org/\{container\}/resource2</code> as identifier is shown in the <a href="#add-version-triples">example</a> below.</p>
-   <div class="example" id="add-version-triples">
-    <a class="self-link" href="#add-version-triples"></a> 
-<pre class="language-turtle highlight">@prefix <c- p>:</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- p>.</c->
+   <div class="example" id="post-resource">
+    <a class="self-link" href="#post-resource"></a> An HTTP POST request to create an <code class="highlight">ldp:Resource</code> 
+<pre class="language-HTTP highlight"><c- nf>POST</c-> <c- nn>/{container}/</c-> <c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c->
+<c- e>Host</c-><c- o>:</c-> <c- l>http://example.org</c->
+<c- e>Slug</c-><c- o>:</c-> <c- l>resource1</c->
+<c- e>Content-Type</c-><c- o>:</c-> <c- l>text/turtle</c->
 
-<c- p>:</c-><c- f>feed</c->/<c- mi>1639612800000</c->/<c- p>{</c->uuid<c- p>}</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-16T10:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-> <c- p>.</c->
-<c- p>:</c-><c- f>feed</c->/<c- mi>1639612800000</c->/<c- p>{</c->uuid<c- p>}</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- p>:</c-><c- f>resource2</c-> <c- p>.</c->
+<c- g>&lt;resource1></c-> <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"First version of the title."</c-><c- p>.</c->
 </pre>
    </div>
-   <p class="note" role="note"><span>Note:</span> When a slug is provided in the Header of a POST request, a server can choose to use that slug as an identifier.</p>
-   <h4 class="heading settled" data-level="4.3.3" id="updating"><span class="secno">4.3.3. </span><span class="content">Updating</span><a class="self-link" href="#updating"></a></h4>
+   <div class="example" id="add-version-triples">
+    <a class="self-link" href="#add-version-triples"></a> The effect of the POST request that now persists in the versioned LDES in LDP. 
+<pre class="language-turtle highlight">@prefix <c- p>:</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- p>.</c->
+
+<c- p>:</c-><c- f>feed</c->/<c- mi>1639612800000</c->/<c- p>{</c->uuid<c- p>}</c-> <c- nn>tree</c-><c- p>:</c-><c- f>member</c-><c- p>.</c->
+<c- p>:</c-><c- f>feed</c->/<c- mi>1639612800000</c->/<c- p>{</c->uuid<c- p>}</c-> <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"First version of the title."</c-> <c- p>.</c->
+<c- p>:</c-><c- f>feed</c->/<c- mi>1639612800000</c->/<c- p>{</c->uuid<c- p>}</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-16T10:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-> <c- p>.</c->
+<c- p>:</c-><c- f>feed</c->/<c- mi>1639612800000</c->/<c- p>{</c->uuid<c- p>}</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- p>:</c-><c- f>resource1</c-> <c- p>.</c->
+</pre>
+   </div>
+   <h5 class="heading settled" data-level="3.2.1.2" id="read"><span class="secno">3.2.1.2. </span><span class="content">Reading a Resource</span><a class="self-link" href="#read"></a></h5>
+   <p>Reading the above created resource with a GET request using the LDP API will result in the following triple: <code>&lt;http://example.org/{container}/resource1> dct:title "First version of the title." .</code></p>
+   <p class="note" role="note"><span>Note:</span> When the memento specification (<a data-link-type="biblio" href="#biblio-rfc7089">[RFC7089]</a>) is used as an extension, the <code>Accept-Datetime</code> request reader can be used to read previous versions of the resource. Additional information can be found in the <a href="#extensions">§ 5 Extensions</a></p>
+   <h5 class="heading settled" data-level="3.2.1.3" id="update"><span class="secno">3.2.1.3. </span><span class="content">Updating a Resource</span><a class="self-link" href="#update"></a></h5>
    <p>Updating LDP Resources can be done in two ways.
 First, there is an HTTP PUT request which replaces the resource with the body that accompanies the request. 
-The second option is using an HTTP PATCH request that uses a <a data-link-type="biblio" href="#biblio-sparql-update">[SPARQL-UPDATE]</a> query, where first the server applies the changes and then the result is stored as the updated resource.</p>
-   <p>An LDP with Version-Agnostic LDES in LDP  support stores those updates in the <em>feed</em> as the newest version. Thus when using PUT, the whole body of the request together with the version-specific triples are added to <em>feed</em>.
+The second option is using an HTTP PATCH request that uses a <a data-link-type="biblio" href="#biblio-sparql-update">[SPARQL-UPDATE]</a> or N3 Patch query, where first the server applies the changes and then the result is stored as the updated resource.</p>
+   <p>An LDP with a versioned LDES in LDP backend stores those updates in the <em>feed</em> as the newest version. Thus when using PUT, the whole body of the request together with the version-specific triples are added to <em>feed</em>.
 After applying the changes using a PATCH request, the resulting resource is accompanied by the version-specific triples and appended to the <em>feed</em>.</p>
-   <h4 class="heading settled" data-level="4.3.4" id="deleting"><span class="secno">4.3.4. </span><span class="content">Deleting</span><a class="self-link" href="#deleting"></a></h4>
+   <h5 class="heading settled" data-level="3.2.1.4" id="delete"><span class="secno">3.2.1.4. </span><span class="content">Deleting a Resource</span><a class="self-link" href="#delete"></a></h5>
    <p>An HTTP DELETE request to an identifier of a resource results in the removal of that resource and its corresponding metadata in the parent container. In the <em>feed</em> however, all the versions are not removed because of two reasons.
 The first one is that an LDES is immutable, meaning that members can not be edited once they are in an LDES.
 The second reason is that the history of this resource would be removed as well.</p>
    <p>Thus next to the LDP behaviour, an LDP Resource consisting of three triples is added to the <em>feed</em> to indicate the resource has been removed.</p>
-   <p>An example of such three triples can be seen in the <a href="#ldes-versioning-2">example</a> in <a href="#deleting-a-member">§ 4.1.1 Deleting a member</a>. They are the triples with as subject <code>ex:resource1v2</code>.</p>
-   <h2 class="heading settled" data-level="5" id="examples"><span class="secno">5. </span><span class="content">Examples</span><a class="self-link" href="#examples"></a></h2>
-   <h3 class="heading settled" data-level="5.1" id="metadata-notifications"><span class="secno">5.1. </span><span class="content">Metadata notifications</span><a class="self-link" href="#metadata-notifications"></a></h3>
+   <p>An example of such three triples can be seen in the <a href="#ldes-versioning-3">example</a>. They are the triples with as subject <code>ex:resource1v2</code>.</p>
+   <h2 class="heading settled" data-level="4" id="examples"><span class="secno">4. </span><span class="content">Examples</span><a class="self-link" href="#examples"></a></h2>
+   <h3 class="heading settled" data-level="4.1" id="metadata-POC"><span class="secno">4.1. </span><span class="content">Metadata notifications</span><a class="self-link" href="#metadata-POC"></a></h3>
    <p>At <a href="https://tree.linkeddatafragments.org/announcements/">https://tree.linkeddatafragments.org/announcements/</a>, a public, shape constrained LDES in LDP can be found which is used for publishing metadata of DCAT Application Profiles <a data-link-type="biblio" href="#biblio-vocab-dcat-3">[VOCAB-DCAT-3]</a> about datasets or data services, or metadata of a <a data-link-type="biblio" href="#biblio-tree">[TREE]</a> View.</p>
    <p>As LDP, a Community Solid Server <a href="https://github.com/solid/community-server">[CSS</a>] instance is used with shape support.
 On the server where the CSS resides, the Basic LDES Orchestrator runs.
 The trigger for creating new containers is when the current fragment container contains 100 resources or more.</p>
    <p class="note" role="note"><span>Note:</span> The CSS with shape support can be found at <a href="https://github.com/woutslabbinck/community-server">https://github.com/woutslabbinck/community-server</a> on branch feat/shape-support</p>
-   <p class="note" role="note"><span>Note:</span> The Orchestrator uses the following package: <a href="https://www.npmjs.com/package/@treecg/ldes-orchestrator">LDES Orchestrator</a></p>
+   <h3 class="heading settled" data-level="4.2" id="SES"><span class="secno">4.2. </span><span class="content">Solid Event Sourcing project</span><a class="self-link" href="#SES"></a></h3>
+   <p>A <a href="https://github.com/woutslabbinck/SolidEventSourcing">repository</a> to publish raw gpx data to a Solid pod. Here each location point is encapsulated as a version-object in a versioned LDES in LDP.</p>
+   <p>Furthermore, it provides functions with documentation to store any kind of streaming data to a Solid pod.</p>
+   <h2 class="heading settled" data-level="5" id="extensions"><span class="secno">5. </span><span class="content">Extensions</span><a class="self-link" href="#extensions"></a></h2>
+   <h3 class="heading settled" data-level="5.1" id="memento"><span class="secno">5.1. </span><span class="content">Memento</span><a class="self-link" href="#memento"></a></h3>
+   <p>The <a href="https://fedora.info/2018/11/22/spec/">Fedora API Specification</a> and <a href="https://www.trellisldp.org/">Trellis Linked Data Server</a> implement the memento specification (<a data-link-type="biblio" href="#biblio-rfc7089">[RFC7089]</a>) on top of <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a>. This allows dateTime negotiation over <code>ldp:Resource</code>s, which provides the historical values of that resource.</p>
+   <p>In a server managed versioned LDES in LDP, the memento specification can also be provided on top of that abstract LDP implementation. This provides an alternative (complementary to <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a>) to retrieve a historical version of a given <code>ldp:Resource</code>.
+Implementation wise, when an <code>Accept-DateTime</code> header is provided, the correct version-object is then queried in the versioned LDES in LDP and provided as response.</p>
+   <h3 class="heading settled" data-level="5.2" id="view-description"><span class="secno">5.2. </span><span class="content">View Description</span><a class="self-link" href="#view-description"></a></h3>
+   <p>The <a href="#ldesinldp">§ 2 LDES in LDP Protocol</a> provides instructions on <strong>how</strong> to create a new fragment. However, it does not state <strong>when</strong> to create one.</p>
+   <p>The <strong>View Description</strong> solves this problem by encapsulating the explicit strategy used to create an <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> or how it was created.</p>
+   <p>Using <a href="#view-description-example">following example</a>, the interpretation of the View Description is explained.
+The <strong>Event Stream</strong> has a property that links to the <strong>View Description</strong> (<code>ldes:viewDescription</code>).</p>
+   <p>A <strong>View Description</strong> consists of three core properties:</p>
+   <ul>
+    <li data-md>
+     <p><code>dcat:endpointURL</code>: An URI to a view of the LDES.</p>
+    <li data-md>
+     <p><code>dcat:servesDataset</code>: An URI to the Event Stream.</p>
+    <li data-md>
+     <p><code>ldes:managedby</code>: An URI that points the entity responsible to maintain the structure of the above mentioned view of the LDES (see <code>dcat:endpointURL</code>).</p>
+   </ul>
+   <p>The entity that maintains the structure is a client that conforms to the <a href="#ldesinldp">§ 2 LDES in LDP Protocol</a> and MAY have a <strong>Bucketize Strategy</strong>.</p>
+   <p>In this example, there is a <code>ldes:BucketizeStrategy</code> and it states that the view is a timestamp fragmentation is which uses the value of <code>tree:path</code> property.
+Furthermore it states that each fragment contains 100 members.</p>
+   <p>This means that if there are 100 members in a given fragment, a new one MUST be created (following the instructions in <a href="#new-fragment">§ 2.3 Creating a new fragment</a>) by an LDES in LDP client.</p>
+   <div class="example" id="view-description-example">
+    <a class="self-link" href="#view-description-example"></a> 
+<pre class="language-turtle highlight">@prefix <c- p>:</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- c>#> .</c->
+
+&lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- nn>rdf</c-><c- p>:</c-><c- f>type</c-> <c- nn>tree</c-><c- p>:</c-><c- f>Node</c-> <c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>relation</c-> <c- p>[</c-> 
+        <c- b>a</c-> <c- nn>tree</c-><c- p>:</c-><c- f>GreaterThanOrEqualToRelation</c-> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>node</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639526400000</c->/> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>path</c-> <c- nn>dct</c-><c- p>:</c-><c- f>modified</c-> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>value</c-> <c- s>"2021-12-15T00:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c->
+        <c- p>],</c-> <c- p>[</c->
+        <c- b>a</c-> <c- nn>tree</c-><c- p>:</c-><c- f>GreaterThanOrEqualToRelation</c-> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>node</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639612800000</c->/> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>path</c-> <c- nn>dct</c-><c- p>:</c-><c- f>modified</c-> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>value</c-> <c- s>"2021-12-16T00:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c->
+        <c- p>]</c-> <c- p>.</c->
+
+<c- p>:</c-><c- f>EventStream</c-> <c- b>a</c-> <c- g>&lt;https://w3id.org/ldes#EventStream></c-> <c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>viewDescription</c-> <c- p>:</c-><c- f>Fragmentation</c-> <c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>shape</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/shape> <c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>view</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl><c- p>.</c->
+  
+<c- p>:</c-><c- f>Fragmentation</c-> <c- b>a</c-> <c- nn>tree</c-><c- p>:</c-><c- f>ViewDescription</c-> <c- p>;</c-> 
+    <c- nn>dcat</c-><c- p>:</c-><c- f>endpointURL</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- p>;</c->
+    <c- nn>dcat</c-><c- p>:</c-><c- f>servesDataset</c-> <c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>managedBy</c-> <c- g>&lt;client></c-><c- p>.</c-> 
+
+<c- g>&lt;client></c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>LDESinLDPClient</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>bucketizeStrategy</c-> <c- nn>ex</c-><c- p>:</c-><c- f>BucketizeStrategy</c-><c- p>.</c->
+
+<c- p>:</c-><c- f>BucketizeStrategy</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>BucketizeStrategy</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>bucketType</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>timestampFragmentation</c-><c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>path</c-> <c- nn>dct</c-><c- p>:</c-><c- f>created</c-><c- p>;</c-> 
+    <c- nn>ldes</c-><c- p>:</c-><c- f>pageSize</c-> <c- mi>100</c-><c- p>.</c->
+</pre>
+   </div>
+   <p>To summarize, an LDES in LDP client that appends members to the LDES is thus responsible for creating new fragments as described in the <strong>View Description</strong>.</p>
+   <h3 class="heading settled" data-level="5.3" id="b+-tree"><span class="secno">5.3. </span><span class="content">B+-TREE implementation</span><a class="self-link" href="#b+-tree"></a></h3>
+   <p>Currently, new Fragments are made as a new container under the base container. This might become a bottleneck if lots of Fragments are present. A possibility is have nested fragments, which results in the LDES in LDP having a <a href="https://en.wikipedia.org/wiki/B%2B_tree">B+ tree structure</a>.</p>
+   <h3 class="heading settled" data-level="5.4" id="multiple-members"><span class="secno">5.4. </span><span class="content">Multiple members per LDP Resource</span><a class="self-link" href="#multiple-members"></a></h3>
+   <p>Due to a high velocity of incoming data, the number of HTTP POST requests might add too much overhead.</p>
+   <p>To overcome this, multiple version-objects can be grouped together into one <code>ldp:Resource</code>.</p>
    <h2 class="heading settled" data-level="6" id="namespaces"><span class="secno">6. </span><span class="content">Namespaces</span><a class="self-link" href="#namespaces"></a></h2>
    <p>Commonly used namespace prefixes used in this specification:</p>
 <pre class="language-turtle highlight"><c- k>@prefix</c-> <c- nn>acl:</c-> 	<c- g>&lt;http://www.w3.org/ns/auth/acl#></c-> <c- p>.</c->
@@ -2531,6 +2608,8 @@ The trigger for creating new containers is when the current fragment container c
    <dd>Steve Speicher; John Arwe; Ashok Malhotra. <a href="https://www.w3.org/2012/ldp/hg/ldp.html"><cite>Linked Data Platform 1.0</cite></a>. URL: <a href="https://www.w3.org/2012/ldp/hg/ldp.html">https://www.w3.org/2012/ldp/hg/ldp.html</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
+   <dt id="biblio-rfc7089">[RFC7089]
+   <dd>H. Van de Sompel; M. Nelson; R. Sanderson. <a href="https://www.rfc-editor.org/rfc/rfc7089"><cite>HTTP Framework for Time-Based Access to Resource States -- Memento</cite></a>. December 2013. Informational. URL: <a href="https://www.rfc-editor.org/rfc/rfc7089">https://www.rfc-editor.org/rfc/rfc7089</a>
    <dt id="biblio-shacl">[SHACL]
    <dd>Holger Knublauch; Dimitris Kontokostas. <a href="https://w3c.github.io/data-shapes/shacl/"><cite>Shapes Constraint Language (SHACL)</cite></a>. URL: <a href="https://w3c.github.io/data-shapes/shacl/">https://w3c.github.io/data-shapes/shacl/</a>
    <dt id="biblio-shex">[SHEX]
@@ -2545,6 +2624,4 @@ The trigger for creating new containers is when the current fragment container c
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
    <dt id="biblio-vocab-dcat-3">[VOCAB-DCAT-3]
    <dd>Riccardo Albertoni; et al. <a href="https://w3c.github.io/dxwg/dcat/"><cite>Data Catalog Vocabulary (DCAT) - Version 3</cite></a>. URL: <a href="https://w3c.github.io/dxwg/dcat/">https://w3c.github.io/dxwg/dcat/</a>
-   <dt id="biblio-wac">[WAC]
-   <dd>Sarven Capasdisli. <a href="https://solidproject.org/TR/wac"><cite>Web Access Control</cite></a>. Draft. URL: <a href="https://solidproject.org/TR/wac">https://solidproject.org/TR/wac</a>
   </dl>
