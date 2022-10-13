@@ -435,11 +435,27 @@ The [[#ldesinldp]] provides instructions on **how** to create a new fragment. Ho
 
 The **View Description** solves this problem by encapsulating the explicit strategy used to create an [[LDES]] or how it was created.
 
-TODO: add example and explain
-<div class="example" highlight="turtle" id="root"> 
+Using <a href=#view-description-example>following example</a>, the interpretation of the View Description is explained.
+The **Event Stream** has a property that links to the **View Description** (`ldes:viewDescription`). 
+
+A **View Description** consists of three core properties:
+
+* `dcat:endpointURL`: An URI to a view of the LDES. 
+* `dcat:servesDataset`: An URI to the Event Stream.
+* `ldes:managedby`: An URI that points the entity responsible to maintain the structure of the above mentioned view of the LDES (see `dcat:endpointURL`).
+
+The entity that maintains the structure is a client that conforms to the [[#ldesinldp]] and MAY have a **Bucketize Strategy**.
+
+In this example, there is a `ldes:BucketizeStrategy` and it states that the view is a timestamp fragmentation is which uses the value of `tree:path` property. 
+Furthermore it states that each fragment contains 100 members. 
+
+This means that if there are 100 members in a given fragment, a new one MUST be created (following the instructions in [[#new-fragment]]) by an LDES in LDP client.
+
+<div class="example" highlight="turtle" id="view-description-example"> 
 
 ```turtle
 @prefix : <http://example.org/{container}/#> .
+
 <http://example.org/{container}/> rdf:type tree:Node ;
     tree:relation [ 
         a tree:GreaterThanOrEqualToRelation ;
@@ -454,32 +470,26 @@ TODO: add example and explain
         ] .
 
 :EventStream a <https://w3id.org/ldes#EventStream> ;
-    tree:viewDescription ex:Fragmentation ;
+    tree:viewDescription :Fragmentation ;
     tree:shape <http://example.org/{container}/shape> ;
     tree:view <http://example.org/{container}/root.ttl>.
   
 :Fragmentation a tree:ViewDescription ; 
-    dcat:endpointURL :EventStream; # One of the rootnotes from which you can access all members
-    dcat:servesDataset <http://example.org/{container}/> ; # the LDES
-    ldes:retentionPolicy [
-        a ldes:DurationAgoPolicy ;
-        # ...
-    ];
-    ldes:managedBy <client>. # wie is er verantwoordelijk om de structuur van de LDES te onderhouden
-    # Options: 
-    # * ingester voor een sds:Stream
-    # * de client 
+    dcat:endpointURL <http://example.org/{container}/> ;
+    dcat:servesDataset :EventStream;
+    ldes:managedBy <client>. 
 
 <client> a ldes:LDESinLDPClient;
     ldes:bucketizeStrategy ex:BucketizeStrategy.
-    # evt property om te zeggen dat er tools zijn om mee te werken e.g. ex:preferedTool VALIL
 
 :BucketizeStrategy a ldes:BucketizeStrategy;
-    ldes:bucketType ldes:timestampFragmentation; # zegt aan de client dat ik een timestampfragmentation aan het maken ben ***
+    ldes:bucketType ldes:timestampFragmentation;
     tree:path dct:created; 
     ldes:pageSize 100.
 ```
 </div>
+
+To summarize, an LDES in LDP client that appends members to the LDES is thus responsible for creating new fragments as described in the **View Description**.
 
 ## B+-TREE implementation ## {#b+-tree}
 
