@@ -1,0 +1,2550 @@
+<!doctype html><html lang="en">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <title>Writing Linked Data Event Streams in LDP Basic Containers</title>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+<style data-fill-with="stylesheet">/******************************************************************************
+ *                   Style sheet for the W3C specifications                   *
+ *
+ * Special classes handled by this style sheet include:
+ *
+ * Indices
+ *   - .toc for the Table of Contents (<ol class="toc">)
+ *     + <span class="secno"> for the section numbers
+ *   - #toc for the Table of Contents (<nav id="toc">)
+ *   - ul.index for Indices (<a href="#ref">term</a><span>, in § N.M</span>)
+ *   - table.index for Index Tables (e.g. for properties or elements)
+ *
+ * Structural Markup
+ *   - table.data for general data tables
+ *     -> use 'scope' attribute, <colgroup>, <thead>, and <tbody> for best results !
+ *     -> use <table class='complex data'> for extra-complex tables
+ *     -> use <td class='long'> for paragraph-length cell content
+ *     -> use <td class='pre'> when manual line breaks/indentation would help readability
+ *   - dl.switch for switch statements
+ *   - ol.algorithm for algorithms (helps to visualize nesting)
+ *   - .figure and .caption (HTML4) and figure and figcaption (HTML5)
+ *     -> .sidefigure for right-floated figures
+ *   - ins/del
+ *     -> ins/del.c### for candidate and proposed changes (amendments)
+ *
+ * Code
+ *   - pre and code
+ *
+ * Special Sections
+ *   - .note       for informative notes             (div, p, span, aside, details)
+ *   - .example    for informative examples          (div, p, pre, span)
+ *   - .issue      for issues                        (div, p, span)
+ *   - .advisement for loud normative statements     (div, p, strong)
+ *   - .annoying-warning for spec obsoletion notices (div, aside, details)
+ *   - .correction for "candidate corrections"       (div, aside, details, section)
+ *   - .addition   for "candidate additions"         (div, aside, details, section)
+ *   - .correction.proposed for "proposed corrections" (div, aside, details, section)
+ *   - .addition.proposed   for "proposed additions"   (div, aside, details, section)
+ *
+ * Definition Boxes
+ *   - pre.def   for WebIDL definitions
+ *   - table.def for tables that define other entities (e.g. CSS properties)
+ *   - dl.def    for definition lists that define other entitles (e.g. HTML elements)
+ *
+ * Numbering
+ *   - .secno for section numbers in .toc and headings (<span class='secno'>3.2</span>)
+ *   - .marker for source-inserted example/figure/issue numbers (<span class='marker'>Issue 4</span>)
+ *   - ::before styled for CSS-generated issue/example/figure numbers:
+ *     -> Documents wishing to use this only need to add
+ *        figcaption::before,
+ *        .caption::before { content: "Figure "  counter(figure) " ";  }
+ *        .example::before { content: "Example " counter(example) " "; }
+ *        .issue::before   { content: "Issue "   counter(issue) " ";   }
+ *
+ * Header Stuff (ignore, just don't conflict with these classes)
+ *   - .head for the header
+ *   - .copyright for the copyright
+ *
+ * Outdated warning for old specs
+ *
+ * Miscellaneous
+ *   - .overlarge for things that should be as wide as possible, even if
+ *     that overflows the body text area. This can be used on an item or
+ *     on its container, depending on the effect desired.
+ *     Note that this styling basically doesn't help at all when printing,
+ *     since A4 paper isn't much wider than the max-width here.
+ *     It's better to design things to fit into a narrower measure if possible.
+ *
+ *   - js-added ToC jump links (see fixup.js)
+ *
+ ******************************************************************************/
+
+/* color variables included separately for reliability */
+
+/******************************************************************************/
+/*                                    Body                                    */
+/******************************************************************************/
+
+	html {
+	}
+
+	body {
+		counter-reset: example figure issue;
+
+		/* Layout */
+		max-width: 50em;			  /* limit line length to 50em for readability   */
+		margin: 0 auto;				/* center text within page                    */
+		padding: 1.6em 1.5em 2em 50px; /* assume 16px font size for downlevel clients */
+		padding: 1.6em 1.5em 2em calc(26px + 1.5em); /* leave space for status flag    */
+
+		/* Typography */
+		line-height: 1.5;
+		font-family: sans-serif;
+		widows: 2;
+		orphans: 2;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+		hyphens: auto;
+
+		color: black;
+		color: var(--text);
+		background: white top left fixed no-repeat;
+		background: var(--bg) top left fixed no-repeat;
+		background-size: 25px auto;
+	}
+
+
+/******************************************************************************/
+/*                         Front Matter & Navigation                          */
+/******************************************************************************/
+
+/** Header ********************************************************************/
+
+	div.head { margin-bottom: 1em; }
+	div.head hr { border-style: solid; }
+
+	div.head h1 {
+		font-weight: bold;
+		margin: 0 0 .1em;
+		font-size: 220%;
+	}
+
+	div.head h2 { margin-bottom: 1.5em;}
+
+/** W3C Logo ******************************************************************/
+
+	.head .logo {
+		float: right;
+		margin: 0.4rem 0 0.2rem .4rem;
+	}
+
+	.head img[src*="logos/W3C"] {
+		display: block;
+		border: solid #1a5e9a;
+		border: solid var(--logo-bg);
+		border-width: .65rem .7rem .6rem;
+		border-radius: .4rem;
+		background: #1a5e9a;
+		background: var(--logo-bg);
+		color: white;
+		color: var(--logo-text);
+		font-weight: bold;
+	}
+
+	.head a:hover > img[src*="logos/W3C"],
+	.head a:focus > img[src*="logos/W3C"] {
+		opacity: .8;
+	}
+
+	.head a:active > img[src*="logos/W3C"] {
+		background: #c00;
+		background: var(--logo-active-bg);
+		border-color: #c00;
+		border-color: var(--logo-active-bg);
+	}
+
+	/* see also additional rules in Link Styling section */
+
+/** Copyright *****************************************************************/
+
+	p.copyright,
+	p.copyright small { font-size: small; }
+
+/** Back to Top / ToC Toggle **************************************************/
+
+	@media print {
+		#toc-nav {
+			display: none;
+		}
+	}
+	@media not print {
+		#toc-nav {
+			position: fixed;
+			z-index: 3;
+			bottom: 0; left: 0;
+			margin: 0;
+			min-width: 1.33em;
+			border-top-right-radius: 2rem;
+			box-shadow: 0 0 2px;
+			font-size: 1.5em;
+		}
+		#toc-nav > a {
+			display: block;
+			white-space: nowrap;
+
+			height: 1.33em;
+			padding: .1em 0.3em;
+			margin: 0;
+
+			box-shadow: 0 0 2px;
+			border: none;
+			border-top-right-radius: 1.33em;
+
+			color: #707070;
+			color: var(--tocnav-normal-text);
+			background: white;
+			background: var(--tocnav-normal-bg);
+		}
+		#toc-nav > a:hover,
+		#toc-nav > a:focus {
+			color: black;
+			color: var(--tocnav-hover-text);
+			background: #f8f8f8;
+			background: var(--tocnav-hover-bg);
+		}
+		#toc-nav > a:active {
+			color: #c00;
+			color: var(--tocnav-active-text);
+			background: white;
+			background: var(--tocnav-active-bg);
+		}
+
+		#toc-nav > #toc-jump {
+			padding-bottom: 2em;
+			margin-bottom: -1.9em;
+		}
+
+		/* statusbar gets in the way on keyboard focus; remove once browsers fix */
+		#toc-nav > a[href="#toc"]:not(:hover):focus:last-child {
+			padding-bottom: 1.5rem;
+		}
+
+		#toc-nav:not(:hover) > a:not(:focus) > span + span {
+			/* Ideally this uses :focus-within on #toc-nav */
+			display: none;
+		}
+		#toc-nav > a > span + span {
+			padding-right: 0.2em;
+		}
+	}
+
+/** ToC Sidebar ***************************************************************/
+
+	/* Floating sidebar */
+	@media screen {
+		body.toc-sidebar #toc {
+			position: fixed;
+			top: 0; bottom: 0;
+			left: 0;
+			width: 23.5em;
+			max-width: 80%;
+			max-width: calc(100% - 2em - 26px);
+			overflow: auto;
+			padding: 0 1em;
+			padding-left: 42px;
+			padding-left: calc(1em + 26px);
+			color: black;
+			color: var(--tocsidebar-text);
+			background: inherit;
+			background-color: #f7f8f9;
+			background-color: var(--tocsidebar-bg);
+			z-index: 1;
+			box-shadow: -.1em 0 .25em rgba(0,0,0,.1) inset;
+			box-shadow: -.1em 0 .25em var(--tocsidebar-shadow) inset;
+		}
+		body.toc-sidebar #toc h2 {
+			margin-top: .8rem;
+			font-variant: small-caps;
+			font-variant: all-small-caps;
+			text-transform: lowercase;
+			font-weight: bold;
+			color: gray;
+			color: hsla(203,20%,40%,.7);
+			color: var(--tocsidebar-heading-text);
+		}
+		body.toc-sidebar #toc-jump:not(:focus) {
+			width: 0;
+			height: 0;
+			padding: 0;
+			position: absolute;
+			overflow: hidden;
+		}
+	}
+	/* Hide main scroller when only the ToC is visible anyway */
+	@media screen and (max-width: 28em) {
+		body.toc-sidebar {
+			overflow: hidden;
+		}
+	}
+
+	/* Sidebar with its own space */
+	@media screen and (min-width: 78em) {
+		body:not(.toc-inline) #toc {
+			position: fixed;
+			top: 0; bottom: 0;
+			left: 0;
+			width: 23.5em;
+			overflow: auto;
+			padding: 0 1em;
+			padding-left: 42px;
+			padding-left: calc(1em + 26px);
+			color: black;
+			color: var(--tocsidebar-text);
+			background: inherit;
+			background-color: #f7f8f9;
+			background-color: var(--tocsidebar-bg);
+			z-index: 1;
+			box-shadow: -.1em 0 .25em rgba(0,0,0,.1) inset;
+			box-shadow: -.1em 0 .25em var(--tocsidebar-shadow) inset;
+		}
+		body:not(.toc-inline) #toc h2 {
+			margin-top: .8rem;
+			font-variant: small-caps;
+			font-variant: all-small-caps;
+			text-transform: lowercase;
+			font-weight: bold;
+			color: gray;
+			color: hsla(203,20%,40%,.7);
+			color: var(--tocsidebar-heading-text);
+		}
+
+		body:not(.toc-inline) {
+			padding-left: 29em;
+		}
+		/* See also Overflow section at the bottom */
+
+		body:not(.toc-inline) #toc-jump:not(:focus) {
+			width: 0;
+			height: 0;
+			padding: 0;
+			position: absolute;
+			overflow: hidden;
+		}
+	}
+	@media screen and (min-width: 90em) {
+		body:not(.toc-inline) {
+			margin: 0 4em;
+		}
+	}
+
+/******************************************************************************/
+/*                                Sectioning                                  */
+/******************************************************************************/
+
+/** Headings ******************************************************************/
+
+	h1, h2, h3, h4, h5, h6, dt {
+		page-break-after: avoid;
+		page-break-inside: avoid;
+		font: 100% sans-serif;   /* Reset all font styling to clear out UA styles */
+		font-family: inherit;	/* Inherit the font family. */
+		line-height: 1.2;		/* Keep wrapped headings compact */
+		hyphens: manual;		/* Hyphenated headings look weird */
+	}
+
+	h2, h3, h4, h5, h6 {
+		margin-top: 3rem;
+	}
+
+	h1, h2, h3 {
+		color: #005A9C;
+		color: var(--heading-text);
+	}
+
+	h1 { font-size: 170%; }
+	h2 { font-size: 140%; }
+	h3 { font-size: 120%; }
+	h4 { font-weight: bold; }
+	h5 { font-style: italic; }
+	h6 { font-variant: small-caps; }
+	dt { font-weight: bold; }
+
+/** Subheadings ***************************************************************/
+
+	h1 + h2,
+	#profile-and-date {
+		/* #profile-and-date is a subtitle in an H2 under the H1 */
+		margin-top: 0;
+	}
+	h2 + h3,
+	h3 + h4,
+	h4 + h5,
+	h5 + h6 {
+		margin-top: 1.2em; /* = 1 x line-height */
+	}
+
+/** Section divider ***********************************************************/
+
+	:not(.head) > :not(.head) + hr {
+		font-size: 1.5em;
+		text-align: center;
+		margin: 1em auto;
+		height: auto;
+		color: black;
+		color: var(--hr-text);
+		border: transparent solid 0;
+		background: transparent;
+	}
+	:not(.head) > hr::before {
+		content: "\2727\2003\2003\2727\2003\2003\2727";
+	}
+
+/******************************************************************************/
+/*                            Paragraphs and Lists                            */
+/******************************************************************************/
+
+	p {
+		margin: 1em 0;
+	}
+
+	dd > p:first-child,
+	li > p:first-child {
+		margin-top: 0;
+	}
+
+	ul, ol {
+		margin-left: 0;
+		padding-left: 2em;
+	}
+
+	li {
+		margin: 0.25em 0 0.5em;
+		padding: 0;
+	}
+
+	dl dd {
+		margin: 0 0 .5em 2em;
+	}
+
+	.head dd + dd { /* compact for header */
+		margin-top: -.5em;
+	}
+
+	/* Style for algorithms */
+	ol.algorithm ol:not(.algorithm),
+	.algorithm > ol ol:not(.algorithm) {
+	border-left: 0.5em solid #DEF;
+	border-left: 0.5em solid var(--algo-border);
+	}
+
+	/* Put nice boxes around each algorithm. */
+	[data-algorithm]:not(.heading) {
+	 padding: .5em;
+	 border: thin solid #ddd;
+	 border: thin solid var(--algo-border);
+	 border-radius: .5em;
+	 margin: .5em calc(-0.5em - 1px);
+	}
+	[data-algorithm]:not(.heading) > :first-child {
+	 margin-top: 0;
+	}
+	[data-algorithm]:not(.heading) > :last-child {
+	 margin-bottom: 0;
+	}
+
+	/* Style for switch/case <dl>s */
+	dl.switch > dd > ol.only,
+	dl.switch > dd > .only > ol {
+	margin-left: 0;
+	}
+	dl.switch > dd > ol.algorithm,
+	dl.switch > dd > .algorithm > ol {
+	margin-left: -2em;
+	}
+	dl.switch {
+	padding-left: 2em;
+	}
+	dl.switch > dt {
+	text-indent: -1.5em;
+	margin-top: 1em;
+	}
+	dl.switch > dt + dt {
+	margin-top: 0;
+	}
+	dl.switch > dt::before {
+	content: '\21AA';
+	padding: 0 0.5em 0 0;
+	display: inline-block;
+	width: 1em;
+	text-align: right;
+	line-height: 0.5em;
+	}
+
+/** Terminology Markup ********************************************************/
+
+
+/******************************************************************************/
+/*                                 Inline Markup                              */
+/******************************************************************************/
+
+/** Terminology Markup ********************************************************/
+	dfn   { /* Defining instance */
+		font-weight: bolder;
+	}
+	a > i { /* Instance of term */
+		font-style: normal;
+	}
+	dt dfn code, code.idl {
+		font-size: inherit;
+	}
+	dfn var {
+		font-style: normal;
+	}
+
+/** Change Marking ************************************************************/
+
+	del {
+		color: #aa0000;
+		color: var(--del-text);
+		background: transparent;
+		background: var(--del-bg);
+		text-decoration: line-through;
+	}
+	ins {
+		color: #006100;
+		color: var(--ins-text);
+		background: transparent;
+		background: var(--ins-bg);
+		text-decoration: underline;
+	}
+
+	/* for amendments (candidate/proposed changes) */
+
+	.amendment ins, .correction ins, .addition ins,
+	ins[class^=c] {
+		text-decoration-style: dotted;
+	}
+	.amendment del, .correction del, .addition del,
+	del[class^=c] {
+		text-decoration-style: dotted;
+	}
+	.amendment.proposed ins, .correction.proposed ins, .addition.proposed ins,
+	ins[class^=c].proposed {
+		text-decoration-style: double;
+	}
+	.amendment.proposed del, .correction.proposed del, .addition.proposed del,
+	del[class^=c].proposed {
+		text-decoration-style: double;
+	}
+
+/** Miscellaneous improvements to inline formatting ***************************/
+
+	sup {
+		vertical-align: super;
+		font-size: 80%
+	}
+
+/******************************************************************************/
+/*                                    Code                                    */
+/******************************************************************************/
+
+/** General monospace/pre rules ***********************************************/
+
+	pre, code, samp {
+		font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
+		font-size: .9em;
+		hyphens: none;
+		text-transform: none;
+		text-align: left;
+		text-align: start;
+		font-variant: normal;
+		orphans: 3;
+		widows: 3;
+		page-break-before: avoid;
+	}
+	pre code,
+	code code {
+		font-size: 100%;
+	}
+
+	pre {
+		margin-top: 1em;
+		margin-bottom: 1em;
+		overflow: auto;
+	}
+
+/** Inline Code fragments *****************************************************/
+
+	/* Do something nice. */
+
+/******************************************************************************/
+/*                                    Links                                   */
+/******************************************************************************/
+
+/** General Hyperlinks ********************************************************/
+
+	/* We hyperlink a lot, so make it less intrusive */
+	a[href] {
+		color: #034575;
+		color: var(--a-normal-text);
+		text-decoration: underline #707070;
+		text-decoration: underline var(--a-normal-underline);
+		text-decoration-skip-ink: none;
+	}
+	a:visited {
+		color: #034575;
+		color: var(--a-visited-text);
+		text-decoration-color: #bbb;
+		text-decoration-color: var(--a-visited-underline);
+	}
+
+	/* Indicate interaction with the link */
+	a[href]:focus,
+	a[href]:hover {
+		text-decoration-thickness: 2px;
+	}
+	a[href]:active {
+		color: #c00;
+		color: var(--a-active-text);
+		text-decoration-color: #c00;
+		text-decoration-color: var(--a-active-underline);
+	}
+
+	/* Backout above styling for W3C logo */
+	.head .logo,
+	.head .logo a {
+		border: none;
+		text-decoration: none;
+		background: transparent;
+	}
+
+/******************************************************************************/
+/*                                    Images                                  */
+/******************************************************************************/
+
+	img {
+		border-style: none;
+	}
+
+	img, svg {
+		/* Intentionally not color-scheme aware. */
+		background: white;
+	}
+
+	/* For autogen numbers, add
+	  .caption::before, figcaption::before { content: "Figure " counter(figure) ". "; }
+	*/
+
+	figure, .figure, .sidefigure {
+		page-break-inside: avoid;
+		text-align: center;
+		margin: 2.5em 0;
+	}
+	.figure img,	.sidefigure img,	figure img,
+	.figure object, .sidefigure object, figure object {
+		max-width: 100%;
+		margin: auto;
+		height: auto;
+	}
+	.figure pre, .sidefigure pre, figure pre {
+		text-align: left;
+		display: table;
+		margin: 1em auto;
+	}
+	.figure table, figure table {
+		margin: auto;
+	}
+	@media screen and (min-width: 20em) {
+		.sidefigure {
+			float: right;
+			width: 50%;
+			margin: 0 0 0.5em 0.5em;
+		}
+	}
+	.caption, figcaption, caption {
+		font-style: italic;
+		font-size: 90%;
+	}
+	.caption::before, figcaption::before, figcaption > .marker {
+		font-weight: bold;
+	}
+	.caption, figcaption {
+		counter-increment: figure;
+	}
+
+	/* DL list is indented 2em, but figure inside it is not */
+	dd > .figure, dd > figure { margin-left: -2em; }
+
+/******************************************************************************/
+/*                             Colored Boxes                                  */
+/******************************************************************************/
+
+	.issue, .note, .example, .assertion, .advisement, blockquote,
+	.amendment, .correction, .addition {
+		margin: 1em auto;
+		padding: .5em;
+		border: .5em;
+		border-left-style: solid;
+		page-break-inside: avoid;
+	}
+	span.issue, span.note {
+		padding: .1em .5em .15em;
+		border-right-style: solid;
+	}
+
+	blockquote > :first-child,
+	.note  > p:first-child,
+	.issue > p:first-child,
+	.amendment > p:first-child,
+	.correction > p:first-child,
+	.addition > p:first-child {
+		margin-top: 0;
+	}
+	blockquote > :last-child,
+	.note  > p:last-child,
+	.issue > p:last-child,
+	.amendment > p:last-child,
+	.correction > p:last-child,
+	.addition > p:last-child {
+		margin-bottom: 0;
+	}
+
+
+	.issue::before, .issue > .marker,
+	.example::before, .example > .marker,
+	.note::before, .note > .marker,
+	details.note > summary > .marker,
+	.amendment::before, .amendment > .marker,
+	details.amendment > summary > .marker,
+	.addition::before, .addition > .marker,
+	addition.amendment > summary > .marker,
+	.correction::before, .correction > .marker,
+	correction.amendment > summary > .marker
+	{
+		text-transform: uppercase;
+		padding-right: 1em;
+	}
+
+	.example::before, .example > .marker {
+		display: block;
+		padding-right: 0em;
+	}
+
+/** Blockquotes ***************************************************************/
+
+	blockquote {
+		border-color: silver;
+		border-color: var(--blockquote-border);
+		background: transparent;
+		background: var(--blockquote-bg);
+		color: currentcolor;
+		color: var(--blockquote-text);
+	}
+
+/** Open issue ****************************************************************/
+
+	.issue {
+		border-color: #e05252;
+		border-color: var(--issue-border);
+		background: #fbe9e9;
+		background: var(--issue-bg);
+		color: black;
+		color: var(--issue-text);
+		counter-increment: issue;
+		overflow: auto;
+	}
+	.issue::before, .issue > .marker {
+		color: #831616;
+		color: var(--issueheading-text);
+	}
+	/* Add .issue::before { content: "Issue " counter(issue) " "; } for autogen numbers,
+	  or use class="marker" to mark up the issue number in source. */
+
+/** Example *******************************************************************/
+
+	.example {
+		border-color: #e0cb52;
+		border-color: var(--example-border);
+		background: #fcfaee;
+		background: var(--example-bg);
+		color: black;
+		color: var(--example-text);
+		counter-increment: example;
+		overflow: auto;
+		clear: both;
+	}
+	.example::before, .example > .marker {
+		color: #574b0f;
+		color: var(--exampleheading-text);
+	}
+	/* Add .example::before { content: "Example " counter(example) " "; } for autogen numbers,
+	  or use class="marker" to mark up the example number in source. */
+
+/** Non-normative Note ********************************************************/
+
+	.note {
+		border-color: #52e052;
+		border-color: var(--note-border);
+		background: #e9fbe9;
+		background: var(--note-bg);
+		color: black;
+		color: var(--note-text);
+		overflow: auto;
+	}
+
+	.note::before, .note > .marker,
+	details.note > summary {
+		color: hsl(120, 70%, 30%);
+		color: var(--noteheading-text);
+	}
+	/* Add .note::before { content: "Note "; } for autogen label,
+	  or use class="marker" to mark up the label in source. */
+
+	details.note[open] > summary {
+		border-bottom: 1px silver solid;
+		border-bottom: 1px var(--notesummary-underline) solid;
+	}
+
+/** Assertion Box *************************************************************/
+	/*  for assertions in algorithms */
+
+	.assertion {
+		border-color: #AAA;
+		border-color: var(--assertion-border);
+		background: #EEE;
+		background: var(--assertion-bg);
+		color: black;
+		color: var(--assertion-text);
+	}
+
+/** Advisement Box ************************************************************/
+	/*  for attention-grabbing normative statements */
+
+	.advisement {
+		border-color: orange;
+		border-color: var(--advisement-border);
+		border-style: none solid;
+		background: #fec;
+		background: var(--advisement-bg);
+		color: black;
+		color: var(--advisement-text);
+	}
+	strong.advisement {
+		display: block;
+		text-align: center;
+	}
+	.advisement::before, .advisement > .marker {
+		color: #b35f00;
+		color: var(--advisementheading-text);
+	}
+
+/** Amendment Box *************************************************************/
+
+	.amendment, .correction, .addition {
+		border-color: #330099;
+		border-color: var(--amendment-border);
+		background: #F5F0FF;
+		background: var(--amendment-bg);
+		color: black;
+		color: var(--amendment-text);
+	}
+	.amendment.proposed, .correction.proposed, .addition.proposed {
+		border-style: solid;
+		border-block-width: 0.25em;
+	}
+	.amendment::before, .amendment > .marker,
+	details.amendment > summary::before, details.amendment > summary > .marker,
+	.correction::before, .correction > .marker,
+	details.correction > summary::before, details.correction > summary > .marker,
+	.addition::before, .addition > .marker,
+	details.addition > summary::before, details.addition > summary > .marker {
+		color: #220066;
+		color: var(--amendmentheading-text);
+	}
+	.amendment.proposed::before, .amendment.proposed > .marker,
+	details.amendment.proposed > summary::before, details.amendment.proposed > summary > .marker,
+	.correction.proposed::before, .correction.proposed > .marker,
+	details.correction.proposed > summary::before, details.correction.proposed > summary > .marker,
+	.addition.proposed::before, .addition.proposed > .marker,
+	details.addition.proposed > summary::before, details.addition.proposed > summary > .marker {
+		font-weight: bold;
+	}
+
+/** Spec Obsoletion Notice ****************************************************/
+	/* obnoxious obsoletion notice for older/abandoned specs. */
+
+	details {
+		display: block;
+	}
+	summary {
+		font-weight: bolder;
+	}
+
+	.annoying-warning:not(details),
+	details.annoying-warning:not([open]) > summary,
+	details.annoying-warning[open] {
+		background: hsla(40,100%,50%,0.95);
+		background: var(--warning-bg);
+		color: black;
+		color: var(--warning-text);
+		padding: .75em 1em;
+		border: red;
+		border: var(--warning-border);
+		border-style: solid none;
+		box-shadow: 0 2px 8px black;
+		text-align: center;
+	}
+	.annoying-warning :last-child {
+		margin-bottom: 0;
+	}
+
+@media not print {
+	details.annoying-warning[open] {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 2em;
+		z-index: 1000;
+	}
+}
+
+	details.annoying-warning:not([open]) > summary {
+		text-align: center;
+	}
+
+/** Entity Definition Boxes ***************************************************/
+
+	.def {
+		padding: .5em 1em;
+		background: #def;
+		background: var(--def-bg);
+		margin: 1.2em 0;
+		border-left: 0.5em solid #8ccbf2;
+		border-left: 0.5em solid var(--def-border);
+		color: black;
+		color: var(--def-text);
+	}
+
+/******************************************************************************/
+/*                                    Tables                                  */
+/******************************************************************************/
+
+	th, td {
+		text-align: left;
+		text-align: start;
+	}
+
+/** Property/Descriptor Definition Tables *************************************/
+
+	table.def {
+		/* inherits .def box styling, see above */
+		width: 100%;
+		border-spacing: 0;
+	}
+
+	table.def td,
+	table.def th {
+		padding: 0.5em;
+		vertical-align: baseline;
+		border-bottom: 1px solid #bbd7e9;
+		border-bottom: 1px solid var(--defrow-border);
+	}
+
+	table.def > tbody > tr:last-child th,
+	table.def > tbody > tr:last-child td {
+		border-bottom: 0;
+	}
+
+	table.def th {
+		font-style: italic;
+		font-weight: normal;
+		padding-left: 1em;
+		width: 3em;
+	}
+
+	/* For when values are extra-complex and need formatting for readability */
+	table td.pre {
+		white-space: pre-wrap;
+	}
+
+	/* A footnote at the bottom of a def table */
+	table.def td.footnote {
+		padding-top: 0.6em;
+	}
+	table.def td.footnote::before {
+		content: " ";
+		display: block;
+		height: 0.6em;
+		width: 4em;
+		border-top: thin solid;
+	}
+
+/** Data tables (and properly marked-up index tables) *************************/
+	/*
+		<table class="data"> highlights structural relationships in a table
+		when correct markup is used (e.g. thead/tbody, th vs. td, scope attribute)
+
+		Use class="complex data" for particularly complicated tables --
+		(This will draw more lines: busier, but clearer.)
+
+		Use class="long" on table cells with paragraph-like contents
+		(This will adjust text alignment accordingly.)
+		Alternately use class="longlastcol" on tables, to have the last column assume "long".
+	*/
+
+	table {
+		word-wrap: normal;
+		overflow-wrap: normal;
+		hyphens: manual;
+	}
+
+	table.data,
+	table.index {
+		margin: 1em auto;
+		border-collapse: collapse;
+		border: hidden;
+		width: 100%;
+	}
+	table.data caption,
+	table.index caption {
+		max-width: 50em;
+		margin: 0 auto 1em;
+	}
+
+	table.data td,  table.data th,
+	table.index td, table.index th {
+		padding: 0.5em 1em;
+		border-width: 1px;
+		border-color: silver;
+		border-color: var(--datacell-border);
+		border-top-style: solid;
+	}
+
+	table.data thead td:empty {
+		padding: 0;
+		border: 0;
+	}
+
+	table.data  thead,
+	table.index thead,
+	table.data  tbody,
+	table.index tbody {
+		border-bottom: 2px solid;
+	}
+
+	table.data colgroup,
+	table.index colgroup {
+		border-left: 2px solid;
+	}
+
+	table.data  tbody th:first-child,
+	table.index tbody th:first-child  {
+		border-right: 2px solid;
+		border-top: 1px solid silver;
+		border-top: 1px solid var(--datacell-border);
+		padding-right: 1em;
+	}
+
+	table.data th[colspan],
+	table.data td[colspan] {
+		text-align: center;
+	}
+
+	table.complex.data th,
+	table.complex.data td {
+		border: 1px solid silver;
+		border: 1px solid var(--datacell-border);
+		text-align: center;
+	}
+
+	table.data.longlastcol td:last-child,
+	table.data td.long {
+		vertical-align: baseline;
+		text-align: left;
+	}
+
+	table.data img {
+		vertical-align: middle;
+	}
+
+
+/*
+Alternate table alignment rules
+
+	table.data,
+	table.index {
+		text-align: center;
+	}
+
+	table.data  thead th[scope="row"],
+	table.index thead th[scope="row"] {
+		text-align: right;
+	}
+
+	table.data  tbody th:first-child,
+	table.index tbody th:first-child  {
+		text-align: right;
+	}
+
+Possible extra rowspan handling
+
+	table.data  tbody th[rowspan]:not([rowspan='1']),
+	table.index tbody th[rowspan]:not([rowspan='1']),
+	table.data  tbody td[rowspan]:not([rowspan='1']),
+	table.index tbody td[rowspan]:not([rowspan='1']) {
+		border-left: 1px solid silver;
+	}
+
+	table.data  tbody th[rowspan]:first-child,
+	table.index tbody th[rowspan]:first-child,
+	table.data  tbody td[rowspan]:first-child,
+	table.index tbody td[rowspan]:first-child{
+		border-left: 0;
+		border-right: 1px solid silver;
+	}
+*/
+
+/******************************************************************************/
+/*                                  Indices                                   */
+/******************************************************************************/
+
+
+/** Table of Contents *********************************************************/
+
+	.toc a {
+		/* More spacing; use padding to make it part of the click target. */
+		padding: 0.1rem 1px 0;
+		/* Larger, more consistently-sized click target */
+		display: block;
+		/* Switch to using border-bottom for underlines */
+		text-decoration: none;
+		border-bottom: 1px solid;
+		/* Reverse color scheme */
+		color: black;
+		color: var(--toclink-text);
+		border-color: #3980b5;
+		border-color: var(--toclink-underline);
+	}
+	.toc a:visited {
+		color: black;
+		color: var(--toclink-visited-text);
+		border-color: #054572;
+		border-color: var(--toclink-visited-underline);
+	}
+	.toc a:focus,
+	.toc a:hover {
+		background: rgba(75%, 75%, 75%, .25);
+		background: var(--a-hover-bg);
+		border-bottom-width: 3px;
+		margin-bottom: -2px;
+	}
+	.toc a:not(:focus):not(:hover) {
+		/* Allow colors to cascade through from link styling */
+		border-bottom-color: transparent;
+	}
+
+	.toc, .toc ol, .toc ul, .toc li {
+		list-style: none; /* Numbers must be inlined into source */
+		/* because generated content isn't search/selectable and markers can't do multilevel yet */
+		margin:  0;
+		padding: 0;
+	}
+	.toc {
+		line-height: 1.1em;
+	}
+
+	/* ToC not indented until third level, but font style & margins show hierarchy */
+	.toc > li			{ font-weight: bold;   }
+	.toc > li li		 { font-weight: normal; }
+	.toc > li li li	  { font-size:   95%;	}
+	.toc > li li li li	{ font-size:   90%;	}
+	.toc > li li li li li { font-size:   85%;	}
+
+	/* @supports not (display:grid) { */
+		.toc > li			{ margin: 1.5rem 0;	}
+		.toc > li li		 { margin: 0.3rem 0;	}
+		.toc > li li li	  { margin-left: 2rem;   }
+
+		/* Section numbers in a column of their own */
+		.toc .secno {
+			float: left;
+			width: 4rem;
+			white-space: nowrap;
+		}
+		.toc > li li li li .secno { font-size: 85%; }
+		.toc > li li li li li .secno { font-size: 100%; }
+
+		.toc li {
+			clear: both;
+		}
+
+		:not(li) > .toc			 { margin-left:  5rem; }
+		.toc .secno				 { margin-left: -5rem; }
+		.toc > li li li .secno	  { margin-left: -7rem; }
+		.toc > li li li li .secno	{ margin-left: -9rem; }
+		.toc > li li li li li .secno { margin-left: -11rem; }
+
+		/* Tighten up indentation in narrow ToCs */
+		@media (max-width: 30em) {
+			:not(li) > .toc			 { margin-left:  4rem; }
+			.toc .secno				 { margin-left: -4rem; }
+			.toc > li li li			 { margin-left:  1rem; }
+			.toc > li li li .secno	  { margin-left: -5rem; }
+			.toc > li li li li .secno	{ margin-left: -6rem; }
+			.toc > li li li li li .secno { margin-left: -7rem; }
+		}
+		/* Loosen it on wide screens */
+		@media screen and (min-width: 78em) {
+			body:not(.toc-inline) :not(li) > .toc			 { margin-left:  4rem; }
+			body:not(.toc-inline) .toc .secno				 { margin-left: -4rem; }
+			body:not(.toc-inline) .toc > li li li			 { margin-left:  1rem; }
+			body:not(.toc-inline) .toc > li li li .secno	  { margin-left: -5rem; }
+			body:not(.toc-inline) .toc > li li li li .secno	{ margin-left: -6rem; }
+			body:not(.toc-inline) .toc > li li li li li .secno { margin-left: -7rem; }
+	}
+	/* } */
+
+	@supports (display:grid) and (display:contents) {
+		/* Use #toc over .toc to override non-@supports rules. */
+		#toc {
+			display: grid;
+			align-content: start;
+			grid-template-columns: auto 1fr;
+			grid-column-gap: 1rem;
+			column-gap: 1rem;
+			grid-row-gap: .6rem;
+			row-gap: .6rem;
+		}
+		#toc h2 {
+			grid-column: 1 / -1;
+			margin-bottom: 0;
+		}
+		#toc ol,
+		#toc li,
+		#toc a {
+			display: contents;
+			/* Switch <a> to subgrid when supported */
+		}
+		#toc span {
+			margin: 0;
+		}
+		#toc > .toc > li > a > span {
+			/* The spans of the top-level list,
+			  comprising the first items of each top-level section. */
+			margin-top: 1.1rem;
+		}
+		#toc#toc .secno { /* Ugh, need more specificity to override base.css */
+			grid-column: 1;
+			width: auto;
+			margin-left: 0;
+		}
+		#toc .content {
+			grid-column: 2;
+			width: auto;
+			margin-right: 1rem;
+		}
+		#toc .content:hover,
+		#toc .content:focus {
+			background: rgba(75%, 75%, 75%, .25);
+			background: var(--a-hover-bg);
+			border-bottom: 3px solid #054572;
+			border-bottom: 3px solid var(--toclink-underline);
+			margin-bottom: -3px;
+		}
+		#toc li li li .content {
+			margin-left: 1rem;
+		}
+		#toc li li li li .content {
+			margin-left: 2rem;
+		}
+	}
+
+
+/** Index *********************************************************************/
+
+	/* Index Lists: Layout */
+	ul.index	  { margin-left: 0; columns: 15em; text-indent: 1em hanging; }
+	ul.index li	{ margin-left: 0; list-style: none; break-inside: avoid; }
+	ul.index li li { margin-left: 1em; }
+	ul.index dl	{ margin-top: 0; }
+	ul.index dt	{ margin: .2em 0 .2em 20px;}
+	ul.index dd	{ margin: .2em 0 .2em 40px;}
+	/* Index Lists: Typography */
+	ul.index ul,
+	ul.index dl { font-size: smaller; }
+	@media not print {
+		ul.index li a + span {
+			white-space: nowrap;
+			color: transparent; }
+		ul.index li a:hover + span,
+		ul.index li a:focus + span {
+			color: #707070;
+			color: var(--indexinfo-text);
+		}
+	}
+
+/** Index Tables *****************************************************/
+	/* See also the data table styling section, which this effectively subclasses */
+
+	table.index {
+		font-size: small;
+		border-collapse: collapse;
+		border-spacing: 0;
+		text-align: left;
+		margin: 1em 0;
+	}
+
+	table.index td,
+	table.index th {
+		padding: 0.4em;
+	}
+
+	table.index tr:hover td:not([rowspan]),
+	table.index tr:hover th:not([rowspan]) {
+		color: black;
+		color: var(--indextable-hover-text);
+		background: #f7f8f9;
+		background: var(--indextable-hover-bg);
+	}
+
+	/* The link in the first column in the property table (formerly a TD) */
+	table.index th:first-child a {
+		font-weight: bold;
+	}
+
+/** Outdated warning **********************************************************/
+
+.outdated-spec {
+	color: black;
+	color: var(--outdatedspec-text);
+	background-color: rgba(0,0,0,0.5);
+	background-color: var(--outdatedspec-bg);
+}
+
+.outdated-warning {
+	position: fixed;
+	bottom: 50%;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	width: 50%;
+	background: maroon;
+	background: var(--outdated-bg);
+	color: white;
+	color: var(--outdated-text);
+	border-radius: 1em;
+	box-shadow: 0 0 1em red;
+	box-shadow: 0 0 1em var(--outdated-shadow);
+	padding: 2em;
+	text-align: center;
+	z-index: 2;
+}
+
+.outdated-warning a {
+	color: currentcolor;
+	background: transparent;
+}
+
+.edited-rec-warning {
+	background: darkorange;
+	background: var(--editedrec-bg);
+	box-shadow: 0 0 1em;
+}
+
+.outdated-warning button {
+	color: var(--outdated-text);
+	border-radius: 1em;
+	box-shadow: 0 0 1em red;
+	box-shadow: 0 0 1em var(--outdated-shadow);
+	padding: 2em;
+	text-align: center;
+	z-index: 2;
+}
+
+.outdated-warning a {
+	color: currentcolor;
+	background: transparent;
+}
+
+.edited-rec-warning {
+	background: darkorange;
+	background: var(--editedrec-bg);
+	box-shadow: 0 0 1em;
+}
+
+.outdated-warning button {
+	position: absolute;
+	top: 0;
+	right:0;
+	margin: 0;
+	border: 0;
+	padding: 0.25em 0.5em;
+	background: transparent;
+	color: white;
+	color: var(--outdated-text);
+	font:1em sans-serif;
+	text-align:center;
+}
+
+.outdated-warning span {
+	display: block;
+}
+
+.outdated-collapsed {
+	bottom: 0;
+	border-radius: 0;
+	width: 100%;
+	padding: 0;
+}
+
+/******************************************************************************/
+/*                                    Print                                   */
+/******************************************************************************/
+
+	@media print {
+		/* Pages have their own margins. */
+		html {
+			margin: 0;
+		}
+		/* Serif for print. */
+		body {
+			font-family: serif;
+		}
+
+		.outdated-warning {
+			position: absolute;
+			border-style: solid;
+			border-color: red;
+		}
+
+		.outdated-warning input {
+			display: none;
+		}
+	}
+	@page {
+		margin: 1.5cm 1.1cm;
+	}
+
+
+
+/******************************************************************************/
+/*                             Overflow Control                               */
+/******************************************************************************/
+
+	.figure .caption, .sidefigure .caption, figcaption {
+		/* in case figure is overlarge, limit caption to 50em */
+		max-width: 50rem;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.overlarge {
+		/* Magic to create good item positioning:
+		  "content column" is 50ems wide at max; less on smaller screens.
+		  Extra space (after ToC + content) is empty on the right.
+
+		  1. When item < content column, centers item in column.
+		  2. When content < item < available, left-aligns.
+		  3. When item > available, fills available + scroll bar.
+		*/
+		display: grid;
+		grid-template-columns: minmax(0, 50em);
+	}
+	.overlarge > table {
+		/* limit preferred width of table */
+		max-width: 50em;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	@media (min-width: 55em) {
+		.overlarge {
+			margin-right: calc(13px + 26.5rem - 50vw);
+			max-width: none;
+		}
+	}
+	@media screen and (min-width: 78em) {
+		body:not(.toc-inline) .overlarge {
+			/* 30.5em body padding 50em content area */
+			margin-right: calc(40em - 50vw) !important;
+		}
+	}
+	@media screen and (min-width: 90em) {
+		body:not(.toc-inline) .overlarge {
+			/* 4em html margin 30.5em body padding 50em content area */
+			margin-right: calc(84.5em - 100vw) !important;
+		}
+	}
+
+	@media not print {
+		.overlarge {
+			overflow-x: auto;
+			/* See Lea Verou's explanation background-attachment:
+			* http://lea.verou.me/2012/04/background-attachment-local/
+			*
+			background: top left  / 4em 100% linear-gradient(to right,  #ffffff, rgba(255, 255, 255, 0)) local,
+						top right / 4em 100% linear-gradient(to left, #ffffff, rgba(255, 255, 255, 0)) local,
+						top left  / 1em 100% linear-gradient(to right,  #c3c3c5, rgba(195, 195, 197, 0)) scroll,
+						top right / 1em 100% linear-gradient(to left, #c3c3c5, rgba(195, 195, 197, 0)) scroll,
+						white;
+			background-repeat: no-repeat;
+			*/
+		}
+	}
+</style>
+  <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
+  <meta content="67cc95098518eeecd50c10f65f06f41083405e04" name="document-revision">
+<style>/* style-autolinks */
+
+.css.css, .property.property, .descriptor.descriptor {
+    color: var(--a-normal-text);
+    font-size: inherit;
+    font-family: inherit;
+}
+.css::before, .property::before, .descriptor::before {
+    content: "‘";
+}
+.css::after, .property::after, .descriptor::after {
+    content: "’";
+}
+.property, .descriptor {
+    /* Don't wrap property and descriptor names */
+    white-space: nowrap;
+}
+.type { /* CSS value <type> */
+    font-style: italic;
+}
+pre .property::before, pre .property::after {
+    content: "";
+}
+[data-link-type="property"]::before,
+[data-link-type="propdesc"]::before,
+[data-link-type="descriptor"]::before,
+[data-link-type="value"]::before,
+[data-link-type="function"]::before,
+[data-link-type="at-rule"]::before,
+[data-link-type="selector"]::before,
+[data-link-type="maybe"]::before {
+    content: "‘";
+}
+[data-link-type="property"]::after,
+[data-link-type="propdesc"]::after,
+[data-link-type="descriptor"]::after,
+[data-link-type="value"]::after,
+[data-link-type="function"]::after,
+[data-link-type="at-rule"]::after,
+[data-link-type="selector"]::after,
+[data-link-type="maybe"]::after {
+    content: "’";
+}
+
+[data-link-type].production::before,
+[data-link-type].production::after,
+.prod [data-link-type]::before,
+.prod [data-link-type]::after {
+    content: "";
+}
+
+[data-link-type=element],
+[data-link-type=element-attr] {
+    font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace;
+    font-size: .9em;
+}
+[data-link-type=element]::before { content: "<" }
+[data-link-type=element]::after  { content: ">" }
+
+[data-link-type=biblio] {
+    white-space: pre;
+}</style>
+<style>/* style-colors */
+
+/* Any --*-text not paired with a --*-bg is assumed to have a transparent bg */
+:root {
+    color-scheme: light dark;
+
+    --text: black;
+    --bg: white;
+
+    --unofficial-watermark: url(https://www.w3.org/StyleSheets/TR/2016/logos/UD-watermark);
+
+    --logo-bg: #1a5e9a;
+    --logo-active-bg: #c00;
+    --logo-text: white;
+
+    --tocnav-normal-text: #707070;
+    --tocnav-normal-bg: var(--bg);
+    --tocnav-hover-text: var(--tocnav-normal-text);
+    --tocnav-hover-bg: #f8f8f8;
+    --tocnav-active-text: #c00;
+    --tocnav-active-bg: var(--tocnav-normal-bg);
+
+    --tocsidebar-text: var(--text);
+    --tocsidebar-bg: #f7f8f9;
+    --tocsidebar-shadow: rgba(0,0,0,.1);
+    --tocsidebar-heading-text: hsla(203,20%,40%,.7);
+
+    --toclink-text: var(--text);
+    --toclink-underline: #3980b5;
+    --toclink-visited-text: var(--toclink-text);
+    --toclink-visited-underline: #054572;
+
+    --heading-text: #005a9c;
+
+    --hr-text: var(--text);
+
+    --algo-border: #def;
+
+    --del-text: red;
+    --del-bg: transparent;
+    --ins-text: #080;
+    --ins-bg: transparent;
+
+    --a-normal-text: #034575;
+    --a-normal-underline: #bbb;
+    --a-visited-text: var(--a-normal-text);
+    --a-visited-underline: #707070;
+    --a-hover-bg: rgba(75%, 75%, 75%, .25);
+    --a-active-text: #c00;
+    --a-active-underline: #c00;
+
+    --blockquote-border: silver;
+    --blockquote-bg: transparent;
+    --blockquote-text: currentcolor;
+
+    --issue-border: #e05252;
+    --issue-bg: #fbe9e9;
+    --issue-text: var(--text);
+    --issueheading-text: #831616;
+
+    --example-border: #e0cb52;
+    --example-bg: #fcfaee;
+    --example-text: var(--text);
+    --exampleheading-text: #574b0f;
+
+    --note-border: #52e052;
+    --note-bg: #e9fbe9;
+    --note-text: var(--text);
+    --noteheading-text: hsl(120, 70%, 30%);
+    --notesummary-underline: silver;
+
+    --assertion-border: #aaa;
+    --assertion-bg: #eee;
+    --assertion-text: black;
+
+    --advisement-border: orange;
+    --advisement-bg: #fec;
+    --advisement-text: var(--text);
+    --advisementheading-text: #b35f00;
+
+    --warning-border: red;
+    --warning-bg: hsla(40,100%,50%,0.95);
+    --warning-text: var(--text);
+
+    --amendment-border: #330099;
+    --amendment-bg: #F5F0FF;
+    --amendment-text: var(--text);
+    --amendmentheading-text: #220066;
+
+    --def-border: #8ccbf2;
+    --def-bg: #def;
+    --def-text: var(--text);
+    --defrow-border: #bbd7e9;
+
+    --datacell-border: silver;
+
+    --indexinfo-text: #707070;
+
+    --indextable-hover-text: black;
+    --indextable-hover-bg: #f7f8f9;
+
+    --outdatedspec-bg: rgba(0, 0, 0, .5);
+    --outdatedspec-text: black;
+    --outdated-bg: maroon;
+    --outdated-text: white;
+    --outdated-shadow: red;
+
+    --editedrec-bg: darkorange;
+}</style>
+<style>/* style-counters */
+
+body {
+    counter-reset: example figure issue;
+}
+.issue {
+    counter-increment: issue;
+}
+.issue:not(.no-marker)::before {
+    content: "Issue " counter(issue);
+}
+
+.example {
+    counter-increment: example;
+}
+.example:not(.no-marker)::before {
+    content: "Example " counter(example);
+}
+.invalid.example:not(.no-marker)::before,
+.illegal.example:not(.no-marker)::before {
+    content: "Invalid Example" counter(example);
+}
+
+figcaption {
+    counter-increment: figure;
+}
+figcaption:not(.no-marker)::before {
+    content: "Figure " counter(figure) " ";
+}</style>
+<style>/* style-issues */
+
+a[href].issue-return {
+    float: right;
+    float: inline-end;
+    color: var(--issueheading-text);
+    font-weight: bold;
+    text-decoration: none;
+}
+</style>
+<style>/* style-md-lists */
+
+/* This is a weird hack for me not yet following the commonmark spec
+   regarding paragraph and lists. */
+[data-md] > :first-child {
+    margin-top: 0;
+}
+[data-md] > :last-child {
+    margin-bottom: 0;
+}</style>
+<style>/* style-selflinks */
+
+:root {
+    --selflink-text: white;
+    --selflink-bg: gray;
+    --selflink-hover-text: black;
+}
+.heading, .issue, .note, .example, li, dt {
+    position: relative;
+}
+a.self-link {
+    position: absolute;
+    top: 0;
+    left: calc(-1 * (3.5rem - 26px));
+    width: calc(3.5rem - 26px);
+    height: 2em;
+    text-align: center;
+    border: none;
+    transition: opacity .2s;
+    opacity: .5;
+}
+a.self-link:hover {
+    opacity: 1;
+}
+.heading > a.self-link {
+    font-size: 83%;
+}
+li > a.self-link {
+    left: calc(-1 * (3.5rem - 26px) - 2em);
+}
+dfn > a.self-link {
+    top: auto;
+    left: auto;
+    opacity: 0;
+    width: 1.5em;
+    height: 1.5em;
+    background: var(--selflink-bg);
+    color: var(--selflink-text);
+    font-style: normal;
+    transition: opacity .2s, background-color .2s, color .2s;
+}
+dfn:hover > a.self-link {
+    opacity: 1;
+}
+dfn > a.self-link:hover {
+    color: var(--selflink-hover-text);
+}
+
+a.self-link::before            { content: "¶"; }
+.heading > a.self-link::before { content: "§"; }
+dfn > a.self-link::before      { content: "#"; }
+</style>
+<style>/* style-syntax-highlighting */
+
+code.highlight { padding: .1em; border-radius: .3em; }
+pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
+
+.highlight:not(.idl) { background: rgba(0, 0, 0, .03); }
+c-[a] { color: #990055 } /* Keyword.Declaration */
+c-[b] { color: #990055 } /* Keyword.Type */
+c-[c] { color: #708090 } /* Comment */
+c-[d] { color: #708090 } /* Comment.Multiline */
+c-[e] { color: #0077aa } /* Name.Attribute */
+c-[f] { color: #669900 } /* Name.Tag */
+c-[g] { color: #222222 } /* Name.Variable */
+c-[k] { color: #990055 } /* Keyword */
+c-[l] { color: #000000 } /* Literal */
+c-[m] { color: #000000 } /* Literal.Number */
+c-[n] { color: #0077aa } /* Name */
+c-[o] { color: #999999 } /* Operator */
+c-[p] { color: #999999 } /* Punctuation */
+c-[s] { color: #a67f59 } /* Literal.String */
+c-[t] { color: #a67f59 } /* Literal.String.Single */
+c-[u] { color: #a67f59 } /* Literal.String.Double */
+c-[cp] { color: #708090 } /* Comment.Preproc */
+c-[c1] { color: #708090 } /* Comment.Single */
+c-[cs] { color: #708090 } /* Comment.Special */
+c-[kc] { color: #990055 } /* Keyword.Constant */
+c-[kn] { color: #990055 } /* Keyword.Namespace */
+c-[kp] { color: #990055 } /* Keyword.Pseudo */
+c-[kr] { color: #990055 } /* Keyword.Reserved */
+c-[ld] { color: #000000 } /* Literal.Date */
+c-[nc] { color: #0077aa } /* Name.Class */
+c-[no] { color: #0077aa } /* Name.Constant */
+c-[nd] { color: #0077aa } /* Name.Decorator */
+c-[ni] { color: #0077aa } /* Name.Entity */
+c-[ne] { color: #0077aa } /* Name.Exception */
+c-[nf] { color: #0077aa } /* Name.Function */
+c-[nl] { color: #0077aa } /* Name.Label */
+c-[nn] { color: #0077aa } /* Name.Namespace */
+c-[py] { color: #0077aa } /* Name.Property */
+c-[ow] { color: #999999 } /* Operator.Word */
+c-[mb] { color: #000000 } /* Literal.Number.Bin */
+c-[mf] { color: #000000 } /* Literal.Number.Float */
+c-[mh] { color: #000000 } /* Literal.Number.Hex */
+c-[mi] { color: #000000 } /* Literal.Number.Integer */
+c-[mo] { color: #000000 } /* Literal.Number.Oct */
+c-[sb] { color: #a67f59 } /* Literal.String.Backtick */
+c-[sc] { color: #a67f59 } /* Literal.String.Char */
+c-[sd] { color: #a67f59 } /* Literal.String.Doc */
+c-[se] { color: #a67f59 } /* Literal.String.Escape */
+c-[sh] { color: #a67f59 } /* Literal.String.Heredoc */
+c-[si] { color: #a67f59 } /* Literal.String.Interpol */
+c-[sx] { color: #a67f59 } /* Literal.String.Other */
+c-[sr] { color: #a67f59 } /* Literal.String.Regex */
+c-[ss] { color: #a67f59 } /* Literal.String.Symbol */
+c-[vc] { color: #0077aa } /* Name.Variable.Class */
+c-[vg] { color: #0077aa } /* Name.Variable.Global */
+c-[vi] { color: #0077aa } /* Name.Variable.Instance */
+c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
+</style>
+<style>/* style-darkmode */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text: #ddd;
+        --bg: black;
+
+        --unofficial-watermark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cg fill='%23100808' transform='translate(200 200) rotate(-45) translate(-200 -200)' stroke='%23100808' stroke-width='3'%3E%3Ctext x='50%25' y='220' style='font: bold 70px sans-serif; text-anchor: middle; letter-spacing: 6px;'%3EUNOFFICIAL%3C/text%3E%3Ctext x='50%25' y='305' style='font: bold 70px sans-serif; text-anchor: middle; letter-spacing: 6px;'%3EDRAFT%3C/text%3E%3C/g%3E%3C/svg%3E");
+
+        --logo-bg: #1a5e9a;
+        --logo-active-bg: #c00;
+        --logo-text: white;
+
+        --tocnav-normal-text: #999;
+        --tocnav-normal-bg: var(--bg);
+        --tocnav-hover-text: var(--tocnav-normal-text);
+        --tocnav-hover-bg: #080808;
+        --tocnav-active-text: #f44;
+        --tocnav-active-bg: var(--tocnav-normal-bg);
+
+        --tocsidebar-text: var(--text);
+        --tocsidebar-bg: #080808;
+        --tocsidebar-shadow: rgba(255,255,255,.1);
+        --tocsidebar-heading-text: hsla(203,20%,40%,.7);
+
+        --toclink-text: var(--text);
+        --toclink-underline: #6af;
+        --toclink-visited-text: var(--toclink-text);
+        --toclink-visited-underline: #054572;
+
+        --heading-text: #8af;
+
+        --hr-text: var(--text);
+
+        --algo-border: #456;
+
+        --del-text: #f44;
+        --del-bg: transparent;
+        --ins-text: #4a4;
+        --ins-bg: transparent;
+
+        --a-normal-text: #6af;
+        --a-normal-underline: #555;
+        --a-visited-text: var(--a-normal-text);
+        --a-visited-underline: var(--a-normal-underline);
+        --a-hover-bg: rgba(25%, 25%, 25%, .2);
+        --a-active-text: #f44;
+        --a-active-underline: var(--a-active-text);
+
+        --borderedblock-bg: rgba(255, 255, 255, .05);
+
+        --blockquote-border: silver;
+        --blockquote-bg: var(--borderedblock-bg);
+        --blockquote-text: currentcolor;
+
+        --issue-border: #e05252;
+        --issue-bg: var(--borderedblock-bg);
+        --issue-text: var(--text);
+        --issueheading-text: hsl(0deg, 70%, 70%);
+
+        --example-border: hsl(50deg, 90%, 60%);
+        --example-bg: var(--borderedblock-bg);
+        --example-text: var(--text);
+        --exampleheading-text: hsl(50deg, 70%, 70%);
+
+        --note-border: hsl(120deg, 100%, 35%);
+        --note-bg: var(--borderedblock-bg);
+        --note-text: var(--text);
+        --noteheading-text: hsl(120, 70%, 70%);
+        --notesummary-underline: silver;
+
+        --assertion-border: #444;
+        --assertion-bg: var(--borderedblock-bg);
+        --assertion-text: var(--text);
+
+        --advisement-border: orange;
+        --advisement-bg: #222218;
+        --advisement-text: var(--text);
+        --advisementheading-text: #f84;
+
+        --warning-border: red;
+        --warning-bg: hsla(40,100%,20%,0.95);
+        --warning-text: var(--text);
+
+        --amendment-border: #330099;
+        --amendment-bg: #080010;
+        --amendment-text: var(--text);
+        --amendmentheading-text: #cc00ff;
+
+        --def-border: #8ccbf2;
+        --def-bg: #080818;
+        --def-text: var(--text);
+        --defrow-border: #136;
+
+        --datacell-border: silver;
+
+        --indexinfo-text: #aaa;
+
+        --indextable-hover-text: var(--text);
+        --indextable-hover-bg: #181818;
+
+        --outdatedspec-bg: rgba(255, 255, 255, .5);
+        --outdatedspec-text: black;
+        --outdated-bg: maroon;
+        --outdated-text: white;
+        --outdated-shadow: red;
+
+        --editedrec-bg: darkorange;
+    }
+    /* In case a transparent-bg image doesn't expect to be on a dark bg,
+       which is quite common in practice... */
+    img { background: white; }
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --selflink-text: black;
+        --selflink-bg: silver;
+        --selflink-hover-text: white;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
+
+    c-[a] { color: #d33682 } /* Keyword.Declaration */
+    c-[b] { color: #d33682 } /* Keyword.Type */
+    c-[c] { color: #2aa198 } /* Comment */
+    c-[d] { color: #2aa198 } /* Comment.Multiline */
+    c-[e] { color: #268bd2 } /* Name.Attribute */
+    c-[f] { color: #b58900 } /* Name.Tag */
+    c-[g] { color: #cb4b16 } /* Name.Variable */
+    c-[k] { color: #d33682 } /* Keyword */
+    c-[l] { color: #657b83 } /* Literal */
+    c-[m] { color: #657b83 } /* Literal.Number */
+    c-[n] { color: #268bd2 } /* Name */
+    c-[o] { color: #657b83 } /* Operator */
+    c-[p] { color: #657b83 } /* Punctuation */
+    c-[s] { color: #6c71c4 } /* Literal.String */
+    c-[t] { color: #6c71c4 } /* Literal.String.Single */
+    c-[u] { color: #6c71c4 } /* Literal.String.Double */
+    c-[ch] { color: #2aa198 } /* Comment.Hashbang */
+    c-[cp] { color: #2aa198 } /* Comment.Preproc */
+    c-[cpf] { color: #2aa198 } /* Comment.PreprocFile */
+    c-[c1] { color: #2aa198 } /* Comment.Single */
+    c-[cs] { color: #2aa198 } /* Comment.Special */
+    c-[kc] { color: #d33682 } /* Keyword.Constant */
+    c-[kn] { color: #d33682 } /* Keyword.Namespace */
+    c-[kp] { color: #d33682 } /* Keyword.Pseudo */
+    c-[kr] { color: #d33682 } /* Keyword.Reserved */
+    c-[ld] { color: #657b83 } /* Literal.Date */
+    c-[nc] { color: #268bd2 } /* Name.Class */
+    c-[no] { color: #268bd2 } /* Name.Constant */
+    c-[nd] { color: #268bd2 } /* Name.Decorator */
+    c-[ni] { color: #268bd2 } /* Name.Entity */
+    c-[ne] { color: #268bd2 } /* Name.Exception */
+    c-[nf] { color: #268bd2 } /* Name.Function */
+    c-[nl] { color: #268bd2 } /* Name.Label */
+    c-[nn] { color: #268bd2 } /* Name.Namespace */
+    c-[py] { color: #268bd2 } /* Name.Property */
+    c-[ow] { color: #657b83 } /* Operator.Word */
+    c-[mb] { color: #657b83 } /* Literal.Number.Bin */
+    c-[mf] { color: #657b83 } /* Literal.Number.Float */
+    c-[mh] { color: #657b83 } /* Literal.Number.Hex */
+    c-[mi] { color: #657b83 } /* Literal.Number.Integer */
+    c-[mo] { color: #657b83 } /* Literal.Number.Oct */
+    c-[sa] { color: #6c71c4 } /* Literal.String.Affix */
+    c-[sb] { color: #6c71c4 } /* Literal.String.Backtick */
+    c-[sc] { color: #6c71c4 } /* Literal.String.Char */
+    c-[dl] { color: #6c71c4 } /* Literal.String.Delimiter */
+    c-[sd] { color: #6c71c4 } /* Literal.String.Doc */
+    c-[se] { color: #6c71c4 } /* Literal.String.Escape */
+    c-[sh] { color: #6c71c4 } /* Literal.String.Heredoc */
+    c-[si] { color: #6c71c4 } /* Literal.String.Interpol */
+    c-[sx] { color: #6c71c4 } /* Literal.String.Other */
+    c-[sr] { color: #6c71c4 } /* Literal.String.Regex */
+    c-[ss] { color: #6c71c4 } /* Literal.String.Symbol */
+    c-[fm] { color: #268bd2 } /* Name.Function.Magic */
+    c-[vc] { color: #cb4b16 } /* Name.Variable.Class */
+    c-[vg] { color: #cb4b16 } /* Name.Variable.Global */
+    c-[vi] { color: #cb4b16 } /* Name.Variable.Instance */
+    c-[vm] { color: #cb4b16 } /* Name.Variable.Magic */
+    c-[il] { color: #657b83 } /* Literal.Number.Integer.Long */
+}
+</style>
+ <body class="h-entry">
+  <div class="head">
+   <p data-fill-with="logo"></p>
+   <h1 class="p-name no-ref" id="title">Writing Linked Data Event Streams in LDP Basic Containers</h1>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2022-03-02">2 March 2022</time></span></h2>
+   <div data-fill-with="spec-metadata">
+    <dl>
+     <dt class="editor">Editors:
+     <dd class="editor p-author h-card vcard"><a class="p-name fn u-url url" href="https://pietercolpaert.be">Pieter Colpaert</a>
+     <dd class="editor p-author h-card vcard"><span class="p-name fn">Wout Slabbinck</span>
+     <dt>Issue Tracking:
+     <dd><a href="https://github.com/woutslabbinck/LDESinLDP/issues/">Issues</a>
+     <dd><a href="https://github.com/woutslabbinck/LDESinLDP/">Github</a>
+    </dl>
+   </div>
+   <div data-fill-with="warning"></div>
+   <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" height="15" src="https://licensebuttons.net/p/zero/1.0/80x15.png" width="80"></a> To the extent possible under law, the editors have waived all copyright
+and related or neighboring rights to this work.
+In addition, as of 2 March 2022,
+the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
+which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
+Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
+   <hr title="Separator for header">
+  </div>
+  <div class="p-summary" data-fill-with="abstract">
+   <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
+   <p>Writing to a time-based fragmented Linked Data Event Stream that is stored on a Linked Data Platform.</p>
+  </div>
+  <div data-fill-with="at-risk"></div>
+  <nav data-fill-with="table-of-contents" id="toc">
+   <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
+   <ol class="toc" role="directory">
+    <li><a href="#introduction"><span class="secno">1</span> <span class="content">Introduction</span></a>
+    <li>
+     <a href="#ldesinldp"><span class="secno">2</span> <span class="content">LDES in LDP Protocol</span></a>
+     <ol class="toc">
+      <li><a href="#adding-resources"><span class="secno">2.1</span> <span class="content">Adding Resources</span></a>
+      <li><a href="#interoperability"><span class="secno">2.2</span> <span class="content">Improving Interoperability</span></a>
+     </ol>
+    <li>
+     <a href="#orchestrator"><span class="secno">3</span> <span class="content">Basic LDES Orchestrator</span></a>
+     <ol class="toc">
+      <li><a href="#create-containers"><span class="secno">3.1</span> <span class="content">Create Containers</span></a>
+      <li><a href="#writable-container-indication"><span class="secno">3.2</span> <span class="content">Writable Container Indication</span></a>
+      <li><a href="#maintain-the-view"><span class="secno">3.3</span> <span class="content">Maintain the View</span></a>
+      <li><a href="#update-acl-files"><span class="secno">3.4</span> <span class="content">Update ACL Files</span></a>
+      <li><a href="#sequence-diagram"><span class="secno">3.5</span> <span class="content">Sequence Diagram</span></a>
+     </ol>
+    <li>
+     <a href="#approaches"><span class="secno">4</span> <span class="content">Versioning Approaches</span></a>
+     <ol class="toc">
+      <li>
+       <a href="#versioning"><span class="secno">4.1</span> <span class="content">Versioning</span></a>
+       <ol class="toc">
+        <li><a href="#deleting-a-member"><span class="secno">4.1.1</span> <span class="content">Deleting a member</span></a>
+       </ol>
+      <li>
+       <a href="#version-aware-approach"><span class="secno">4.2</span> <span class="content">Version-Aware Approach</span></a>
+       <ol class="toc">
+        <li><a href="#client-implications"><span class="secno">4.2.1</span> <span class="content">Client Implications</span></a>
+        <li><a href="#server-implications"><span class="secno">4.2.2</span> <span class="content">Server Implications</span></a>
+       </ol>
+      <li>
+       <a href="#version-agnostic-approach"><span class="secno">4.3</span> <span class="content">Version-Agnostic Approach</span></a>
+       <ol class="toc">
+        <li><a href="#version-agnostic-architecture"><span class="secno">4.3.1</span> <span class="content">Architecture</span></a>
+        <li><a href="#creating"><span class="secno">4.3.2</span> <span class="content">Creating</span></a>
+        <li><a href="#updating"><span class="secno">4.3.3</span> <span class="content">Updating</span></a>
+        <li><a href="#deleting"><span class="secno">4.3.4</span> <span class="content">Deleting</span></a>
+       </ol>
+     </ol>
+    <li>
+     <a href="#examples"><span class="secno">5</span> <span class="content">Examples</span></a>
+     <ol class="toc">
+      <li><a href="#metadata-notifications"><span class="secno">5.1</span> <span class="content">Metadata notifications</span></a>
+     </ol>
+    <li><a href="#namespaces"><span class="secno">6</span> <span class="content">Namespaces</span></a>
+    <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
+    <li>
+     <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
+     <ol class="toc">
+      <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
+     </ol>
+   </ol>
+  </nav>
+  <main>
+   <h2 class="heading settled" data-level="1" id="introduction"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#introduction"></a></h2>
+   <p>We coin the term <strong>LDES in LDP</strong> to describe a time-based fragmented <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> that is stored on a Linked Data Platform <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a>.
+Which allows interacting with LDESs using the LDP API.</p>
+   <h2 class="heading settled" data-level="2" id="ldesinldp"><span class="secno">2. </span><span class="content">LDES in LDP Protocol</span><a class="self-link" href="#ldesinldp"></a></h2>
+   <figure id="architecture">
+     <img height="264" src="./img/LDESinLDP_Architecture.png" width="161"> 
+    <figcaption>Architecture of a Linked Data Event Stream in an LDP Container</figcaption>
+   </figure>
+    The <strong>LDES in LDP</strong> Protocol consists of the structure and the rules to create, update and interpret a continuously growing time-based fragmented <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> that is stored in an <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a>. 
+   <p>The structure is visualized in the <a href="#architecture">figure</a> above and can be summarized in the following components:</p>
+   <ul>
+    <li data-md>
+     <p>The <code>ldp:BasicContainer</code>, identifyable with an <a data-link-type="biblio" href="#biblio-url">[URL]</a>, which is the base of the <strong>LDES in LDP</strong></p>
+    <li data-md>
+     <p>The <strong>root</strong> of the <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a></p>
+    <li data-md>
+     <p>The fragments</p>
+    <li data-md>
+     <p>(Optionally) The shape</p>
+    <li data-md>
+     <p>(Optionally) Access control List Resources</p>
+   </ul>
+   <p>An <strong>LDES in LDP</strong> is initialized in a data pod as an <code>ldp:BasicContainer</code> which contains the root of the LDES, a first fragment and extra metadata about this container. In the subsections, more details about this metadata will be given.</p>
+   <p>The <strong>root</strong> resource contains metadata about the <strong>Event Stream</strong> and its <strong>view</strong> using the <a data-link-type="biblio" href="#biblio-tree">[TREE]</a> hypermedia and <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> vocabulary.
+The <strong>view</strong> consists of several <code>tree:relation</code>s which contain information about the <strong>fragments</strong> of the <strong>Event Stream</strong>.</p>
+   <p>Each <strong>Fragment</strong> of an <strong>LDES in LDP</strong> is an <code>ldp:BasicContainer</code>. The LDP Resources present in a fragment (indicated by <code>ldp:contains</code>), are the members of the <strong>Event Stream</strong>.</p>
+   <p>Below is an example of a <a href="#root">root</a> .
+It consists of one <code>tree:relation</code>, where its class and properties indicate that all members, which were created after December the 15th, can be found by traversing to node <code>http://example.org/{container}/1639526400000/</code>.</p>
+   <div class="example" id="root">
+    <a class="self-link" href="#root"></a> 
+<pre class="language-turtle highlight">@prefix <c- p>:</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl<c- c>#> .</c->
+&lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl> <c- nn>rdf</c-><c- p>:</c-><c- f>type</c-> <c- nn>tree</c-><c- p>:</c-><c- f>Node</c-> <c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>relation</c-> <c- p>[</c-> 
+        <c- b>a</c-> <c- nn>tree</c-><c- p>:</c-><c- f>GreaterThanOrEqualToRelation</c-> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>node</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639526400000</c->/> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>path</c-> <c- nn>dct</c-><c- p>:</c-><c- f>modified</c-> <c- p>;</c->
+        <c- nn>tree</c-><c- p>:</c-><c- f>value</c-> <c- s>"2021-12-15T00:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c->
+        <c- p>]</c-> <c- p>.</c->
+
+<c- p>:</c-><c- f>Collection</c-> <c- b>a</c-> <c- g>&lt;https://w3id.org/ldes#EventStream></c-> <c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>shape</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/shape> <c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>view</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl>
+</pre>
+   </div>
+   <h3 class="heading settled" data-level="2.1" id="adding-resources"><span class="secno">2.1. </span><span class="content">Adding Resources</span><a class="self-link" href="#adding-resources"></a></h3>
+   <p>The method for adding a resource remains the same as for a normal LDP Resource creation: with an HTTP POST request. However, an application that adds a member to the Event Stream must know where to write to.
+To indicate the write location, a property already defined in the LDP specification is reused: the LDP Inbox (<code>ldp:inbox</code>, originated from the <a data-link-type="biblio" href="#biblio-ldn">[LDN]</a> specification).</p>
+   <p>Thus a triple of the form <code>&lt;baseContainer> ldp:inbox &lt;locationURI>.</code> is added to the metadata of the base container.
+This location URI is retrieved via the Link Header as the link value to the relation <code>ldp:inbox</code> when sending a GET or HEAD HTTP request.</p>
+   <p>Finally, a member can be added to the LDES with an HTTP POST request to the obtained location URI.</p>
+   <p>The following <a href="#meta-inbox">example</a> shows the inbox triple. When performing a HEAD <a href="#head-request">request</a> to the base URL (<code>http://example.org/{container}/</code>), the Link Header with the write location (<code>http://example.org/{container}/1639526400000/</code>) is present in the corresponding <a href="#head-response">response</a>.</p>
+   <div class="example" id="meta-inbox">
+    <a class="self-link" href="#meta-inbox"></a> 
+<pre class="language-turtle highlight">&lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- nn>ldp</c-><c- p>:</c-><c- f>inbox</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639526400000</c->/><c- p>.</c->
+</pre>
+   </div>
+   <div class="example" id="head-request">
+    <a class="self-link" href="#head-request"></a> 
+<pre class="language-HTTP highlight"><c- nf>HEAD</c-> <c- nn>/{container}/</c-> <c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c->
+<c- e>Host</c-><c- o>:</c-> <c- l>http://example.org</c->
+</pre>
+   </div>
+   <div class="example" id="head-response">
+    <a class="self-link" href="#head-response"></a> 
+<pre class="language-HTTP highlight"><c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c-> <c- m>200</c->
+<c- e>link</c-><c- o>:</c-> <c- l>&lt;http://example.org/{container}/1639526400000/>; rel="http://www.w3.org/ns/ldp#inbox"</c->
+</pre>
+   </div>
+   <h3 class="heading settled" data-level="2.2" id="interoperability"><span class="secno">2.2. </span><span class="content">Improving Interoperability</span><a class="self-link" href="#interoperability"></a></h3>
+   <p>The <code>tree:shape</code> property of a <a data-link-type="biblio" href="#biblio-tree">[TREE]</a> Collection indicates the data model that all of its members conform to. This data model is called a <strong>shape</strong> and is expressed in a shape language like <a data-link-type="biblio" href="#biblio-shacl">[SHACL]</a> or <a data-link-type="biblio" href="#biblio-shex">[SHEX]</a>.</p>
+   <p>When it is known a priori that the LDES will only have members with a certain predefined data model, it is possible to initialise the LDES in LDP with a shape.</p>
+   <p>To enforce shape validation executed by the LDP, the validator requires to know which shape resource to use.
+Therefore, the constrained by property of LDP (<code>ldp:constrainedBy</code>) will be used to encode an URI to the shape resource in the metadata of each fragment container.</p>
+   <p>Since all requests to add data that does not conform to the shape will be rejected, the resulting Event Stream consists of members that all conform to the shape.</p>
+   <div class="example" id="meta-shape">
+    <a class="self-link" href="#meta-shape"></a> Example of the metadata a fragment of an LDES in LDP that is constrained by a shape. 
+<pre class="language-turtle highlight">&lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639526400000</c->/> <c- nn>tree</c-><c- p>:</c-><c- f>shape</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/shape><c- p>.</c->
+</pre>
+   </div>
+   <h2 class="heading settled" data-level="3" id="orchestrator"><span class="secno">3. </span><span class="content">Basic LDES Orchestrator</span><a class="self-link" href="#orchestrator"></a></h2>
+   <p>The <strong>Basic LDES Orchestrator</strong> is introduced to reduce overhead for the client and perform the operations that not any client is allowed to perform.</p>
+   <p>This Basic LDES Orchestrator has four roles:</p>
+   <ul>
+    <li data-md>
+     <p>Creation of a new LDP Container: when the current relation is deemed full, a new container is created with added metadata to indicate shape support</p>
+    <li data-md>
+     <p>Writable container indication: at the base container, update the metadata about the LDP Inbox</p>
+    <li data-md>
+     <p>Maintain the root of the LDES: add triples with TREE syntax to keep the view up to date</p>
+    <li data-md>
+     <p>Access control: when <a data-link-type="biblio" href="#biblio-solid">[Solid]</a> is used, the Access Control List (ACL) files must be updated</p>
+   </ul>
+   <h3 class="heading settled" data-level="3.1" id="create-containers"><span class="secno">3.1. </span><span class="content">Create Containers</span><a class="self-link" href="#create-containers"></a></h3>
+   <p>Downloading a document on the internet takes time proportional to the location of the server versus the location of the client, the bandwidth and the size of the document.
+Designing LDES in LDP while minimizing that time, results in controlling the size of documents where possible: the container size.
+When a container contains a large number of resources,  the serialization of the information of that container is large as well.
+This results in a bottleneck for the performance as loading the container page takes longer.</p>
+   <p>To overcome this bottleneck, every time the current container page is deemed full, a new, empty container is created.
+Furthermore, when the LDES in LDP is initialised with a shape, metadata must be added to this container to further impose this constraint, see <a href="#interoperability">§ 2.2 Improving Interoperability</a>.</p>
+   <h3 class="heading settled" data-level="3.2" id="writable-container-indication"><span class="secno">3.2. </span><span class="content">Writable Container Indication</span><a class="self-link" href="#writable-container-indication"></a></h3>
+   <p>When a new container is created, the Inbox must be updated as well.
+Clients that want to add a member to the LDES can then find the container where they can write new resources, see <a href="#adding-resources">§ 2.1 Adding Resources</a>.</p>
+   <p>It is the responsibility of the Orchestrator to update that triple in the metadata.</p>
+   <h3 class="heading settled" data-level="3.3" id="maintain-the-view"><span class="secno">3.3. </span><span class="content">Maintain the View</span><a class="self-link" href="#maintain-the-view"></a></h3>
+   <p>The <a data-link-type="biblio" href="#biblio-tree">[TREE]</a> hypermedia specification states that a view of a collection must reach all its members.
+Therefore on each creation of a new container, which is a new fragment of the collection, the view must be updated. 
+Thus a relation is added in the root by the Orchestrator for each new fragment.</p>
+   <h3 class="heading settled" data-level="3.4" id="update-acl-files"><span class="secno">3.4. </span><span class="content">Update ACL Files</span><a class="self-link" href="#update-acl-files"></a></h3>
+   <p>In case a <a data-link-type="biblio" href="#biblio-solid">[Solid]</a> pod is used as a back-end, ACL resources (defined by the Web Acces Control <a data-link-type="biblio" href="#biblio-wac">[WAC]</a> specification) are responsible for making sure that it is impossible to add new resources to containers that are not indicated as writeable.
+With an ACL resource in place in the current fragment container, it is enforced that only new resources may be added there.
+This is done by providing read (<code>acl:read</code>) and append (<code>acl:append</code>) rights in the ACL resource of that container.</p>
+   <p class="note" role="note"><span>Note:</span> The orchestrator must have <code>acl:Control</code> for the base container and each fragment container to be able to update the ACL resources.</p>
+   <h3 class="heading settled" data-level="3.5" id="sequence-diagram"><span class="secno">3.5. </span><span class="content">Sequence Diagram</span><a class="self-link" href="#sequence-diagram"></a></h3>
+   <p><a href="sequence_diagram">The figure below</a> shows the operations that the Orchestrator performs each time a new fragment is created for the case of a public LDES in LDP.</p>
+   <figure id="sequence_diagram">
+     <img height="341" src="./img/LDES_Write-Orchestrator.png" width="671"> 
+    <figcaption>Sequence diagram of the Basic LDES Orchestrator for a public LDES in LDP</figcaption>
+   </figure>
+   <p class="note" role="note"><span>Note:</span> An implementation of the Basic LDES Orchestrator can be found on <strong>npm</strong>: <a href="https://www.npmjs.com/package/@treecg/ldes-orchestrator">LDES Orchestrator</a></p>
+   <h2 class="heading settled" data-level="4" id="approaches"><span class="secno">4. </span><span class="content">Versioning Approaches</span><a class="self-link" href="#approaches"></a></h2>
+    There are two approaches to use <strong>LDES in LDP</strong>: 
+   <ul>
+    <li data-md>
+     <p>A <strong>Version-Aware</strong> approach: Here the client is writing and reading directly to the <strong>LDES in LDP</strong> as it is knowledgeable about <a href="#ldesinldp">§ 2 LDES in LDP Protocol</a> of this specification. Furthermore, it knows how to update a resource using <strong>Version Materializations</strong> from the <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification.</p>
+    <li data-md>
+     <p>A <strong>Version-Agnostic</strong> approach: Here the client is not knowledgeable about <a href="#ldesinldp">§ 2 LDES in LDP Protocol</a>. The client interacts with the server with the <a data-link-type="biblio" href="#biblio-ldp">[LDP]</a> API. <strong>LDES in LDP</strong> is used as a back-end by the server and it is abstracted away from the client.</p>
+   </ul>
+   <h3 class="heading settled" data-level="4.1" id="versioning"><span class="secno">4.1. </span><span class="content">Versioning</span><a class="self-link" href="#versioning"></a></h3>
+   <p><a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> supports versioning of resources through <a href="https://semiceu.github.io/LinkedDataEventStreams/#version-materializations">Version Materializations</a>.
+To support versioning, an <code>ldes:EventStream</code> MUST define two properties: <code>ldes:versionOfPath</code> and <code>ldes:timestampPath</code>.</p>
+   <p><code>ldes:versionOfPath</code> declares the property that is used to define that a <code>tree:member</code> of an <code>ldes:EventStream</code> is a version.</p>
+   <p><code>ldes:timestampPath</code> declares the property that is used to define the DateTime of a <code>tree:member</code>.</p>
+   <p>In the examples below, <code>dct:isVersionOf</code> is being used to define that a <code>tree:member</code> is a version of another member and <code>dct:issued</code> is used to denote the DateTime of when a this version was added to the Event Stream.</p>
+   <div class="example" id="ldes-versioning-1">
+    <a class="self-link" href="#ldes-versioning-1"></a> An Event Stream with one member which supports versioning (both <code class="highlight"><c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-></code> and <code class="highlight"><c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-></code> are defined). 
+<pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T10:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"First version of the title"</c-><c- p>.</c->
+</pre>
+    Here, <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-></code> is the first version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code>. 
+   </div>
+   <div class="example" id="ldes-versioning-2">
+    <a class="self-link" href="#ldes-versioning-2"></a> An Event Stream where a member has been updated with a newer version. 
+<pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T10:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"First version of the title"</c-><c- p>.</c->
+    
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-> 
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T12:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
+</pre>
+    Here, a newer version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code> has been created (<code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-></code>), where the title has been changed. 
+   </div>
+   <h4 class="heading settled" data-level="4.1.1" id="deleting-a-member"><span class="secno">4.1.1. </span><span class="content">Deleting a member</span><a class="self-link" href="#deleting-a-member"></a></h4>
+   <p>The <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> specification states that all members in an <code>ldes:EventStream</code> are immutable. This indicates that a member MUST NOT be changed and implicates that it MUST NOT be deleted.</p>
+   <p>With versioning, however, it SHOULD be possible to mark that a member of an Event Stream has become obsolete.</p>
+   <p>Therefore, this specification introduces the specific type <code>ldes:DeletedLDPResource</code>. This type for a <code>tree:member</code> states, when an LDES is used in the context for <strong>LDESinLDP</strong>, that it is marked as deleted from the <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a>.</p>
+   <div class="example" id="ldes-versioning-2①">
+    <a class="self-link" href="#ldes-versioning-2①"></a> An Event Stream where the most recent version of <code class="highlight"><c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-></code> is marked as deleted. 
+<pre class="language-turtle highlight"><c- nn>ex</c-><c- p>:</c-><c- f>ES</c-> <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>EventStream</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>versionOfPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-><c- p>;</c->
+    <c- nn>ldes</c-><c- p>:</c-><c- f>timestampPath</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-><c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>member</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-><c- p>,</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1v2</c-><c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v0</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T10:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"First version of the title"</c-><c- p>.</c->
+    
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v1</c-> 
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T12:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>resource1v2</c->
+    <c- b>a</c-> <c- nn>ldes</c-><c- p>:</c-><c- f>DeletedLDPResource</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- nn>ex</c-><c- p>:</c-><c- f>resource1</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-15T14:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-><c- p>;</c->
+    <c- nn>dct</c-><c- p>:</c-><c- f>title</c-> <c- s>"Title has been updated once"</c-><c- p>.</c->
+</pre>
+   </div>
+   <p class="note" role="note"><span>Note:</span> It is preferred to mark members as deleted with a custom domain specific type. <code>ldes:DeletedLDPResource</code> is used to mark a member to be deleted in the case of LDESinLDP.
+Therefore, clients MUST also copy the last contents of the member when a domain specific type is added (which is done in <a href="#ldes-versioning-2">this example</a> as the title is copied from <code>ex:resource1v1</code>).</p>
+   <h3 class="heading settled" data-level="4.2" id="version-aware-approach"><span class="secno">4.2. </span><span class="content">Version-Aware Approach</span><a class="self-link" href="#version-aware-approach"></a></h3>
+   <h4 class="heading settled" data-level="4.2.1" id="client-implications"><span class="secno">4.2.1. </span><span class="content">Client Implications</span><a class="self-link" href="#client-implications"></a></h4>
+   <p>In this approach, clients are aware of the <a href="#ldesinldp">LDES in LDP Protocol</a>.
+They  know:</p>
+   <ul>
+    <li data-md>
+     <p>how to retrieve the <em>Write Location</em> to add a resource to the LDES (<a href="#adding-resources">§ 2.1 Adding Resources</a>)</p>
+    <li data-md>
+     <p>how to apply versioning of members of the LDES (<a href="#versioning">§ 4.1 Versioning</a>)</p>
+    <li data-md>
+     <p>know that the Basic LDES Orchestrator running in the background (either initiated by them or by the owner of the LDES in LDP) (<a href="#orchestrator">§ 3 Basic LDES Orchestrator</a>)</p>
+   </ul>
+   <h4 class="heading settled" data-level="4.2.2" id="server-implications"><span class="secno">4.2.2. </span><span class="content">Server Implications</span><a class="self-link" href="#server-implications"></a></h4>
+   <p>As a result, any LDP Server Implementation SHOULD be able to handle the operations executed by the client and the Basic LDES Orchestrator without modifications.</p>
+   <p>For completeness: the minimum requirements for the LDP Server to comply with the <a href="#ldesinldp">LDES in LDP Protocol</a> and the <a href="#orchestrator">Basic LDES Orchestrator</a> are listed below:</p>
+   <ul>
+    <li data-md>
+     <p>SERVER REQUIREMENT: The server MUST allow editing the metadata of containers (such that the <code>ldp:inbox</code> or <code>tree:shape</code> metadata can be added)</p>
+    <li data-md>
+     <p>SERVER REQUIREMENT: The server MUST reply <code>ldp:inbox</code> and (OPTIONAL) <code>ldp:constrainedBy</code> in Link Headers when performing GET or HEAD requests on a <code>ldp:BasicContainer</code> when it is present in its metadata.</p>
+    <li data-md>
+     <p>OPTIONAL: The server MAY have shape validation capabilities. When the server does not have those capabilities, the clients MUST only add resources that conform to the shape (when indicated by the root)</p>
+   </ul>
+   <p class="note" role="note"><span>Note:</span> Currently the  Basic LDES Orchestrator  only works with the <a href="https://github.com/solid/community-server">Community Solid Server</a></p>
+   <h3 class="heading settled" data-level="4.3" id="version-agnostic-approach"><span class="secno">4.3. </span><span class="content">Version-Agnostic Approach</span><a class="self-link" href="#version-agnostic-approach"></a></h3>
+   <p>In contrast to the <a href="#version-aware-approach">Version-Aware Approach</a>, where a client is required to know everything, with a Version-Agnostic approach only knowledge about the LDP API is required.</p>
+   <h4 class="heading settled" data-level="4.3.1" id="version-agnostic-architecture"><span class="secno">4.3.1. </span><span class="content">Architecture</span><a class="self-link" href="#version-agnostic-architecture"></a></h4>
+   <p><a href="#ldesasbase">The architecture figure</a> shows the structure when the LDP is combined with the <strong>LDES in LDP</strong>.
+The resources that are present in the <code>{container}</code> are a view derived from the LDES in <em>feed</em>, which is stored as an <strong>LDES in LDP</strong>.</p>
+   <p>More specifically <code>{container}</code> is a view, represented as an <code>ldp:BasicContainer</code>, that
+contains links to the original members of the Event Stream via <code>ldp:contains</code>.
+Dereferencing that link, leads to an LDP Resource that has the latest version of that member as content.</p>
+   <p>When a resource has multiple versions (e.g. due to it being edited), only the latest version will be shown as the LDP Resource.</p>
+   <p class="note" role="note"><span>Note:</span> The whole history of those resources can be retrieved from the <em>feed</em>.</p>
+   <figure id="ldesasbase">
+     <img height="354" src="./img/Version_Materialized_View.png" width="196"> 
+    <figcaption>Architecture when LDES is used as base in a version-agnostic approach</figcaption>
+   </figure>
+   <p>The abstraction of the <strong>LDES in LDP</strong> through the LDP API results in several modifications to Creating, Reading, Updating and Deleting a Resource.</p>
+   <p>How to read the resources is already explained in the first paragraphs of the architecture.
+The other operations are explained in the subsections below.</p>
+   <h4 class="heading settled" data-level="4.3.2" id="creating"><span class="secno">4.3.2. </span><span class="content">Creating</span><a class="self-link" href="#creating"></a></h4>
+   <p>An HTTP POST request is used to create a resource in an LDP.
+When a POST request is sent to an LDP Container three things happen: an identifier is created by the server for the created LDP Resource, the body of the request becomes the LDP Resource and metadata is added in the parent <code>ldp:Container</code> to indicate that it contains the new resource.</p>
+   <p>For  Version-Agnostic implementations, the LDP behaviour for a POST is just the first step. The second step consists of combining the body of the request with two extra triples to indicate the version-specific representation.
+The newly composed body is then added to the <em>feed</em> LDES.</p>
+   <p>The first triple is to indicate the time of the creation of the Resource, the second triple is the reference to the identifier of the resource.
+An example of those triples when the server chose <code>http://example.org/\{container\}/resource2</code> as identifier is shown in the <a href="#add-version-triples">example</a> below.</p>
+   <div class="example" id="add-version-triples">
+    <a class="self-link" href="#add-version-triples"></a> 
+<pre class="language-turtle highlight">@prefix <c- p>:</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- p>.</c->
+
+<c- p>:</c-><c- f>feed</c->/<c- mi>1639612800000</c->/<c- p>{</c->uuid<c- p>}</c-> <c- nn>dct</c-><c- p>:</c-><c- f>issued</c-> <c- s>"2021-12-16T10:00:00.000Z"</c-><c- p>^^</c-><c- nn>xsd</c-><c- p>:</c-><c- f>dateTime</c-> <c- p>.</c->
+<c- p>:</c-><c- f>feed</c->/<c- mi>1639612800000</c->/<c- p>{</c->uuid<c- p>}</c-> <c- nn>dct</c-><c- p>:</c-><c- f>isVersionOf</c-> <c- p>:</c-><c- f>resource2</c-> <c- p>.</c->
+</pre>
+   </div>
+   <p class="note" role="note"><span>Note:</span> When a slug is provided in the Header of a POST request, a server can choose to use that slug as an identifier.</p>
+   <h4 class="heading settled" data-level="4.3.3" id="updating"><span class="secno">4.3.3. </span><span class="content">Updating</span><a class="self-link" href="#updating"></a></h4>
+   <p>Updating LDP Resources can be done in two ways.
+First, there is an HTTP PUT request which replaces the resource with the body that accompanies the request. 
+The second option is using an HTTP PATCH request that uses a <a data-link-type="biblio" href="#biblio-sparql-update">[SPARQL-UPDATE]</a> query, where first the server applies the changes and then the result is stored as the updated resource.</p>
+   <p>An LDP with Version-Agnostic LDES in LDP  support stores those updates in the <em>feed</em> as the newest version. Thus when using PUT, the whole body of the request together with the version-specific triples are added to <em>feed</em>.
+After applying the changes using a PATCH request, the resulting resource is accompanied by the version-specific triples and appended to the <em>feed</em>.</p>
+   <h4 class="heading settled" data-level="4.3.4" id="deleting"><span class="secno">4.3.4. </span><span class="content">Deleting</span><a class="self-link" href="#deleting"></a></h4>
+   <p>An HTTP DELETE request to an identifier of a resource results in the removal of that resource and its corresponding metadata in the parent container. In the <em>feed</em> however, all the versions are not removed because of two reasons.
+The first one is that an LDES is immutable, meaning that members can not be edited once they are in an LDES.
+The second reason is that the history of this resource would be removed as well.</p>
+   <p>Thus next to the LDP behaviour, an LDP Resource consisting of three triples is added to the <em>feed</em> to indicate the resource has been removed.</p>
+   <p>An example of such three triples can be seen in the <a href="#ldes-versioning-2">example</a> in <a href="#deleting-a-member">§ 4.1.1 Deleting a member</a>. They are the triples with as subject <code>ex:resource1v2</code>.</p>
+   <h2 class="heading settled" data-level="5" id="examples"><span class="secno">5. </span><span class="content">Examples</span><a class="self-link" href="#examples"></a></h2>
+   <h3 class="heading settled" data-level="5.1" id="metadata-notifications"><span class="secno">5.1. </span><span class="content">Metadata notifications</span><a class="self-link" href="#metadata-notifications"></a></h3>
+   <p>At <a href="https://tree.linkeddatafragments.org/announcements/">https://tree.linkeddatafragments.org/announcements/</a>, a public, shape constrained LDES in LDP can be found which is used for publishing metadata of DCAT Application Profiles <a data-link-type="biblio" href="#biblio-vocab-dcat-3">[VOCAB-DCAT-3]</a> about datasets or data services, or metadata of a <a data-link-type="biblio" href="#biblio-tree">[TREE]</a> View.</p>
+   <p>As LDP, a Community Solid Server <a href="https://github.com/solid/community-server">[CSS</a>] instance is used with shape support.
+On the server where the CSS resides, the Basic LDES Orchestrator runs.
+The trigger for creating new containers is when the current fragment container contains 100 resources or more.</p>
+   <p class="note" role="note"><span>Note:</span> The CSS with shape support can be found at <a href="https://github.com/woutslabbinck/community-server">https://github.com/woutslabbinck/community-server</a> on branch feat/shape-support</p>
+   <p class="note" role="note"><span>Note:</span> The Orchestrator uses the following package: <a href="https://www.npmjs.com/package/@treecg/ldes-orchestrator">LDES Orchestrator</a></p>
+   <h2 class="heading settled" data-level="6" id="namespaces"><span class="secno">6. </span><span class="content">Namespaces</span><a class="self-link" href="#namespaces"></a></h2>
+   <p>Commonly used namespace prefixes used in this specification:</p>
+<pre class="language-turtle highlight"><c- k>@prefix</c-> <c- nn>acl:</c-> 	<c- g>&lt;http://www.w3.org/ns/auth/acl#></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>dct:</c-> 	<c- g>&lt;http://purl.org/dc/terms/></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>ldes:</c-> 	<c- g>&lt;https://w3id.org/ldes#></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>ldp:</c-> 	<c- g>&lt;http://www.w3.org/ns/ldp#></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>rdf:</c-> 	<c- g>&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>tree:</c-> 	<c- g>&lt;https://w3id.org/tree#></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>xsd:</c-> 	<c- g>&lt;http://www.w3.org/2001/XMLSchema#></c-> <c- p>.</c->
+</pre>
+  </main>
+  <div data-fill-with="conformance">
+   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
+   <p> Conformance requirements are expressed with a combination of descriptive assertions and RFC 2119 terminology.
+            The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL”
+            in the normative parts of this document
+            are to be interpreted as described in RFC 2119.
+            However, for readability,
+            these words do not appear in all uppercase letters in this specification. </p>
+   <p> All of the text of this specification is normative
+            except sections explicitly marked as non-normative, examples, and notes. <a data-link-type="biblio" href="#biblio-rfc2119">[RFC2119]</a> </p>
+   <p> Examples in this specification are introduced with the words “for example”
+            or are set apart from the normative text with <code>class="example"</code>, like this: </p>
+   <div class="example" id="example-example"><a class="self-link" href="#example-example"></a> This is an example of an informative example. </div>
+   <p> Informative notes begin with the word “Note”
+            and are set apart from the normative text with <code>class="note"</code>, like this: </p>
+   <p class="note" role="note"> Note, this is an informative note. </p>
+  </div>
+<script>
+(function() {
+  "use strict";
+  var collapseSidebarText = '<span aria-hidden="true">←</span> '
+                          + '<span>Collapse Sidebar</span>';
+  var expandSidebarText   = '<span aria-hidden="true">→</span> '
+                          + '<span>Pop Out Sidebar</span>';
+  var tocJumpText         = '<span aria-hidden="true">↑</span> '
+                          + '<span>Jump to Table of Contents</span>';
+
+  var sidebarMedia = window.matchMedia('screen and (min-width: 78em)');
+  var autoToggle   = function(e){ toggleSidebar(e.matches) };
+  if(sidebarMedia.addListener) {
+    sidebarMedia.addListener(autoToggle);
+  }
+
+  function toggleSidebar(on) {
+    if (on == undefined) {
+      on = !document.body.classList.contains('toc-sidebar');
+    }
+
+    /* Don’t scroll to compensate for the ToC if we’re above it already. */
+    var headY = 0;
+    var head = document.querySelector('.head');
+    if (head) {
+      // terrible approx of "top of ToC"
+      headY += head.offsetTop + head.offsetHeight;
+    }
+    var skipScroll = window.scrollY < headY;
+
+    var toggle = document.getElementById('toc-toggle');
+    var tocNav = document.getElementById('toc');
+    if (on) {
+      var tocHeight = tocNav.offsetHeight;
+      document.body.classList.add('toc-sidebar');
+      document.body.classList.remove('toc-inline');
+      toggle.innerHTML = collapseSidebarText;
+      if (!skipScroll) {
+        window.scrollBy(0, 0 - tocHeight);
+      }
+      tocNav.focus();
+      sidebarMedia.addListener(autoToggle); // auto-collapse when out of room
+    }
+    else {
+      document.body.classList.add('toc-inline');
+      document.body.classList.remove('toc-sidebar');
+      toggle.innerHTML = expandSidebarText;
+      if (!skipScroll) {
+        window.scrollBy(0, tocNav.offsetHeight);
+      }
+      if (toggle.matches(':hover')) {
+        /* Unfocus button when not using keyboard navigation,
+           because I don’t know where else to send the focus. */
+        toggle.blur();
+      }
+    }
+  }
+
+  function createSidebarToggle() {
+    /* Create the sidebar toggle in JS; it shouldn’t exist when JS is off. */
+    var toggle = document.createElement('a');
+      /* This should probably be a button, but appearance isn’t standards-track.*/
+    toggle.id = 'toc-toggle';
+    toggle.class = 'toc-toggle';
+    toggle.href = '#toc';
+    toggle.innerHTML = collapseSidebarText;
+
+    sidebarMedia.addListener(autoToggle);
+    var toggler = function(e) {
+      e.preventDefault();
+      sidebarMedia.removeListener(autoToggle); // persist explicit off states
+      toggleSidebar();
+      return false;
+    }
+    toggle.addEventListener('click', toggler, false);
+
+
+    /* Get <nav id=toc-nav>, or make it if we don’t have one. */
+    var tocNav = document.getElementById('toc-nav');
+    if (!tocNav) {
+      tocNav = document.createElement('p');
+      tocNav.id = 'toc-nav';
+      /* Prepend for better keyboard navigation */
+      document.body.insertBefore(tocNav, document.body.firstChild);
+    }
+    /* While we’re at it, make sure we have a Jump to Toc link. */
+    var tocJump = document.getElementById('toc-jump');
+    if (!tocJump) {
+      tocJump = document.createElement('a');
+      tocJump.id = 'toc-jump';
+      tocJump.href = '#toc';
+      tocJump.innerHTML = tocJumpText;
+      tocNav.appendChild(tocJump);
+    }
+
+    tocNav.appendChild(toggle);
+  }
+
+  var toc = document.getElementById('toc');
+  if (toc) {
+    createSidebarToggle();
+    toggleSidebar(sidebarMedia.matches);
+
+    /* If the sidebar has been manually opened and is currently overlaying the text
+       (window too small for the MQ to add the margin to body),
+       then auto-close the sidebar once you click on something in there. */
+    toc.addEventListener('click', function(e) {
+      if(e.target.tagName.toLowerCase() == "a" && document.body.classList.contains('toc-sidebar') && !sidebarMedia.matches) {
+        toggleSidebar(false);
+      }
+    }, false);
+  }
+  else {
+    console.warn("Can’t find Table of Contents. Please use <nav id='toc'> around the ToC.");
+  }
+
+  /* Wrap tables in case they overflow */
+  var tables = document.querySelectorAll(':not(.overlarge) > table.data, :not(.overlarge) > table.index');
+  var numTables = tables.length;
+  for (var i = 0; i < numTables; i++) {
+    var table = tables[i];
+    var wrapper = document.createElement('div');
+    wrapper.className = 'overlarge';
+    table.parentNode.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+  }
+
+})();
+</script>
+  <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+  <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
+  <dl>
+   <dt id="biblio-ldes">[LDES]
+   <dd>Pieter Colpaert. <a href="https://w3id.org/ldes/specification"><cite>Linked Data Event Streams</cite></a>. LS. URL: <a href="https://w3id.org/ldes/specification">https://w3id.org/ldes/specification</a>
+   <dt id="biblio-ldn">[LDN]
+   <dd>Sarven Capadisli; Amy Guy. <a href="https://www.w3.org/TR/ldn/"><cite>Linked Data Notifications</cite></a>. 2 May 2017. REC. URL: <a href="https://www.w3.org/TR/ldn/">https://www.w3.org/TR/ldn/</a>
+   <dt id="biblio-ldp">[LDP]
+   <dd>Steve Speicher; John Arwe; Ashok Malhotra. <a href="https://www.w3.org/TR/ldp/"><cite>Linked Data Platform 1.0</cite></a>. 26 February 2015. REC. URL: <a href="https://www.w3.org/TR/ldp/">https://www.w3.org/TR/ldp/</a>
+   <dt id="biblio-rfc2119">[RFC2119]
+   <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
+   <dt id="biblio-shacl">[SHACL]
+   <dd>Holger Knublauch; Dimitris Kontokostas. <a href="https://www.w3.org/TR/shacl/"><cite>Shapes Constraint Language (SHACL)</cite></a>. 20 July 2017. REC. URL: <a href="https://www.w3.org/TR/shacl/">https://www.w3.org/TR/shacl/</a>
+   <dt id="biblio-shex">[SHEX]
+   <dd>Eric Prud'hommeaux; et al. <a href="http://shex.io/shex-semantics/index.html"><cite>Shape Expressions Language 2.1</cite></a>. URL: <a href="http://shex.io/shex-semantics/index.html">http://shex.io/shex-semantics/index.html</a>
+   <dt id="biblio-solid">[Solid]
+   <dd>Sarven Capasdisli; et al. <a href="https://solidproject.org/TR/protocol"><cite>Solid Protocol</cite></a>. URL: <a href="https://solidproject.org/TR/protocol">https://solidproject.org/TR/protocol</a>
+   <dt id="biblio-sparql-update">[SPARQL-UPDATE]
+   <dd>Paula Gearon; Alexandre Passant; Axel Polleres. <a href="https://www.w3.org/TR/sparql11-update/"><cite>SPARQL 1.1 Update</cite></a>. 21 March 2013. REC. URL: <a href="https://www.w3.org/TR/sparql11-update/">https://www.w3.org/TR/sparql11-update/</a>
+   <dt id="biblio-tree">[TREE]
+   <dd>Pieter Colpaert. <a href="https://w3id.org/tree/specification"><cite>The TREE hypermedia specification</cite></a>. LS. URL: <a href="https://w3id.org/tree/specification">https://w3id.org/tree/specification</a>
+   <dt id="biblio-url">[URL]
+   <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
+   <dt id="biblio-vocab-dcat-3">[VOCAB-DCAT-3]
+   <dd>Riccardo Albertoni; et al. <a href="https://www.w3.org/TR/vocab-dcat-3/"><cite>Data Catalog Vocabulary (DCAT) - Version 3</cite></a>. 11 January 2022. WD. URL: <a href="https://www.w3.org/TR/vocab-dcat-3/">https://www.w3.org/TR/vocab-dcat-3/</a>
+   <dt id="biblio-wac">[WAC]
+   <dd>Sarven Capasdisli. <a href="https://solidproject.org/TR/wac"><cite>Web Access Control</cite></a>. Draft. URL: <a href="https://solidproject.org/TR/wac">https://solidproject.org/TR/wac</a>
+  </dl>
