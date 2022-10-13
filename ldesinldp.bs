@@ -9,8 +9,9 @@ Editor: Pieter Colpaert, https://pietercolpaert.be
 Editor: Wout Slabbinck
 !Issue Tracking: [Issues](https://github.com/woutslabbinck/LDESinLDP/issues/)
 !Issue Tracking: [Github](https://github.com/woutslabbinck/LDESinLDP/)
-Previous Version: https://woutslabbinck.github.io/LDESinLDP/V2022-03-02.html
+Previous Version: https://woutslabbinck.github.io/LDESinLDP/previous/V2022-03-02.html
 Repository:no
+Date: 2022-10-13
 Abstract: Writing to a time-based fragmented Linked Data Event Stream that is stored on a Linked Data Platform.
 </pre>
 
