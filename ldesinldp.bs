@@ -438,7 +438,7 @@ The [[#ldesinldp]] provides instructions on **how** to create a new fragment. Ho
 The **View Description** solves this problem by encapsulating the explicit strategy used to create an [[LDES]] or how it was created.
 
 Using <a href=#view-description-example>following example</a>, the interpretation of the View Description is explained.
-The **Event Stream** has a property that links to the **View Description** (`ldes:viewDescription`). 
+The view of an **Event Stream** has a property that links to the **View Description** (`ldes:viewDescription`). 
 
 A **View Description** consists of three core properties:
 
@@ -459,6 +459,7 @@ This means that if there are 100 members in a given fragment, a new one MUST be 
 @prefix : <http://example.org/{container}/#> .
 
 <http://example.org/{container}/> rdf:type tree:Node ;
+    tree:viewDescription :Fragmentation ;
     tree:relation [ 
         a tree:GreaterThanOrEqualToRelation ;
         tree:node <http://example.org/{container}/1639526400000/> ;
@@ -472,9 +473,8 @@ This means that if there are 100 members in a given fragment, a new one MUST be 
         ] .
 
 :EventStream a <https://w3id.org/ldes#EventStream> ;
-    tree:viewDescription :Fragmentation ;
     tree:shape <http://example.org/{container}/shape> ;
-    tree:view <http://example.org/{container}/root.ttl>.
+    tree:view <http://example.org/{container}/>.
   
 :Fragmentation a tree:ViewDescription ; 
     dcat:endpointURL <http://example.org/{container}/> ;
