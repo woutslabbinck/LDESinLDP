@@ -1487,8 +1487,8 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 07caf056f, updated Wed Oct 12 12:03:55 2022 -0700" name="generator">
-  <meta content="1f28b10c9e42ae7daface02d640f94a8b306d471" name="document-revision">
+  <meta content="Bikeshed version b0de3432c, updated Thu Oct 13 09:16:59 2022 -0700" name="generator">
+  <meta content="bb99b04ad2f6537c2511b7a09fcf3a88d0385104" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2384,7 +2384,7 @@ Implementation wise, when an <code>Accept-DateTime</code> header is provided, th
    <p>The <a href="#ldesinldp">§ 2 LDES in LDP Protocol</a> provides instructions on <strong>how</strong> to create a new fragment. However, it does not state <strong>when</strong> to create one.</p>
    <p>The <strong>View Description</strong> solves this problem by encapsulating the explicit strategy used to create an <a data-link-type="biblio" href="#biblio-ldes">[LDES]</a> or how it was created.</p>
    <p>Using <a href="#view-description-example">following example</a>, the interpretation of the View Description is explained.
-The <strong>Event Stream</strong> has a property that links to the <strong>View Description</strong> (<code>ldes:viewDescription</code>).</p>
+The view of an <strong>Event Stream</strong> has a property that links to the <strong>View Description</strong> (<code>ldes:viewDescription</code>).</p>
    <p>A <strong>View Description</strong> consists of three core properties:</p>
    <ul>
     <li data-md>
@@ -2403,6 +2403,7 @@ Furthermore it states that each fragment contains 100 members.</p>
 <pre class="language-turtle highlight">@prefix <c- p>:</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- c>#> .</c->
 
 &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- nn>rdf</c-><c- p>:</c-><c- f>type</c-> <c- nn>tree</c-><c- p>:</c-><c- f>Node</c-> <c- p>;</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>viewDescription</c-> <c- p>:</c-><c- f>Fragmentation</c-> <c- p>;</c->
     <c- nn>tree</c-><c- p>:</c-><c- f>relation</c-> <c- p>[</c-> 
         <c- b>a</c-> <c- nn>tree</c-><c- p>:</c-><c- f>GreaterThanOrEqualToRelation</c-> <c- p>;</c->
         <c- nn>tree</c-><c- p>:</c-><c- f>node</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/<c- mi>1639526400000</c->/> <c- p>;</c->
@@ -2416,9 +2417,8 @@ Furthermore it states that each fragment contains 100 members.</p>
         <c- p>]</c-> <c- p>.</c->
 
 <c- p>:</c-><c- f>EventStream</c-> <c- b>a</c-> <c- g>&lt;https://w3id.org/ldes#EventStream></c-> <c- p>;</c->
-    <c- nn>tree</c-><c- p>:</c-><c- f>viewDescription</c-> <c- p>:</c-><c- f>Fragmentation</c-> <c- p>;</c->
     <c- nn>tree</c-><c- p>:</c-><c- f>shape</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/shape> <c- p>;</c->
-    <c- nn>tree</c-><c- p>:</c-><c- f>view</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/root<c- p>.</c->ttl><c- p>.</c->
+    <c- nn>tree</c-><c- p>:</c-><c- f>view</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/><c- p>.</c->
   
 <c- p>:</c-><c- f>Fragmentation</c-> <c- b>a</c-> <c- nn>tree</c-><c- p>:</c-><c- f>ViewDescription</c-> <c- p>;</c-> 
     <c- nn>dcat</c-><c- p>:</c-><c- f>endpointURL</c-> &lt;<c- nn>http</c-><c- p>:</c->//example<c- p>.</c->org/<c- p>{</c->container<c- p>}</c->/> <c- p>;</c->
